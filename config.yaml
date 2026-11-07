@@ -44,9 +44,18 @@ thresholds:
     - payment_terms
   knockout_answer_min: 0.95
 gemini:
-  model: gemini-3.8-flash
+  model: gemini-3.6-flash   # was gemini-3.8-flash: its free-tier daily quota (20 requests) ran out on 2026-11-07 (gemini-3.7-flash is an alias of it)
+  task_models:              # optional per-prompt override; spreads calls over separate per-model daily quotas
+    doc_extract: gemini-3.5-flash
+  fallback_models:          # tried in order when a model's daily quota is exhausted (cache is checked for all of them)
+    - gemini-3.5-flash
+    - gemini-3.1-flash-lite   # smaller model: last resort, recorded per result in extraction_model
   temperature: 0
-  prompt_version: v1
+  prompt_version: v1        # default for every prompt
+  prompt_versions:          # per-prompt override: bump ONLY the prompt you changed
+    quote_extract: v4       # v2: volume discounts carry a quantity basis; v3: per-order phrases; v4: worked examples + firmer OCR-uncertainty rule
+  timeout_s: 180
+  max_output_tokens: 32768
 confidence:
   check_bonus: 0.05      # added per passed relevant validation check (core fields)
   cap: 0.99              # no field is ever 100% from signals alone

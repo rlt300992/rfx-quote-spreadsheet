@@ -1,0 +1,1234 @@
+{
+ "sha256": "64a8a0ba5e257523390750c07d5a0fd0851e5db7ef49bd59b9ce2edd4109e067",
+ "prompt": "quote_extract",
+ "prompt_version": "v4-b5129d84",
+ "model": "gemini-3.1-flash-lite",
+ "created_at": "2026-11-07T17:45:52+00:00",
+ "meta": {
+  "usage": {
+   "prompt_tokens": 6824,
+   "output_tokens": 11381
+  },
+  "file": "V1_Deccan_Price_Offer_SCPL.xlsx",
+  "model": "gemini-3.1-flash-lite"
+ },
+ "result": {
+  "header": {
+   "vendor_name": "DECCAN CORRUGATORS PVT LTD",
+   "quote_ref_no": "DCPL/SCPL/26-27/118",
+   "quote_date": "2026-11-10",
+   "validity_text": "Offer valid for 30 days",
+   "validity_date": "2026-12-10",
+   "price_basis": "firm",
+   "rm_clause_text": null,
+   "gst_rate_pct": 18.0,
+   "tax_basis": "ex_gst",
+   "payment_terms_days": 60,
+   "payment_terms_text": "60 days from date of invoice",
+   "lead_time_days": 10,
+   "moq_qty": 2000,
+   "moq_text": "MOQ 2,000 nos per size",
+   "declared_msme_category": null,
+   "freight_rules": [
+    {
+     "scope_ply": null,
+     "basis": "included",
+     "value_inr_per_piece": null,
+     "text": "Above rates are FOR your Chakan plant, i.e. inclusive of freight.",
+     "source": {
+      "ref": "Price Offer!A41",
+      "snippet": "Above rates are FOR your Chakan plant, i.e. inclusive of freight."
+     }
+    }
+   ],
+   "discounts": [],
+   "charges": [],
+   "blanket_rules": [],
+   "attached_documents": [
+    "ISO 9001 certificate",
+    "BS test report"
+   ],
+   "sources": [
+    {
+     "field": "vendor_name",
+     "source": {
+      "ref": "Price Offer!A1",
+      "snippet": "DECCAN CORRUGATORS PVT LTD"
+     }
+    },
+    {
+     "field": "quote_ref_no",
+     "source": {
+      "ref": "Price Offer!A3",
+      "snippet": "Ref DCPL/SCPL/26-27/118"
+     }
+    },
+    {
+     "field": "quote_date",
+     "source": {
+      "ref": "Price Offer!A3",
+      "snippet": "dt 10.11.2026"
+     }
+    },
+    {
+     "field": "validity_text",
+     "source": {
+      "ref": "Price Offer!A45",
+      "snippet": "Offer valid for 30 days"
+     }
+    },
+    {
+     "field": "price_basis",
+     "source": {
+      "ref": "Price Offer!A45",
+      "snippet": "Prices firm for 6 months from PO"
+     }
+    },
+    {
+     "field": "gst_rate_pct",
+     "source": {
+      "ref": "Price Offer!A42",
+      "snippet": "GST @ 18% extra"
+     }
+    },
+    {
+     "field": "tax_basis",
+     "source": {
+      "ref": "Price Offer!A42",
+      "snippet": "GST @ 18% extra"
+     }
+    },
+    {
+     "field": "payment_terms_days",
+     "source": {
+      "ref": "Price Offer!A43",
+      "snippet": "Payment: 60 days from date of invoice"
+     }
+    },
+    {
+     "field": "lead_time_days",
+     "source": {
+      "ref": "Price Offer!A44",
+      "snippet": "Lead time: 10 days"
+     }
+    },
+    {
+     "field": "moq_qty",
+     "source": {
+      "ref": "Price Offer!A44",
+      "snippet": "MOQ 2,000 nos per size"
+     }
+    }
+   ],
+   "notes": null
+  },
+  "lines": [
+   {
+    "line_key": "DCPL-C101",
+    "vendor_item_text": "EXPORT DETERGENT 25KG BULK BOX",
+    "length_mm": 600,
+    "width_mm": 400,
+    "height_mm": 400,
+    "dim_basis": "ID",
+    "ply": 7,
+    "construction_text": "7 Ply 200/150/150/150/150/150/200",
+    "vendor_layers_gsm": [
+     200,
+     150,
+     150,
+     150,
+     150,
+     150,
+     200
+    ],
+    "raw_price_text": "10945",
+    "price": 10945.0,
+    "unit": "per_100",
+    "currency": "INR",
+    "tiers": [],
+    "discounts": [],
+    "freight_basis": null,
+    "freight_value_inr_per_piece": null,
+    "capacity_per_month": null,
+    "capacity_text": null,
+    "remarks": null,
+    "ocr_uncertain": false,
+    "source": {
+     "ref": "Price Offer!A7",
+     "snippet": "DCPL-C101 | EXPORT DETERGENT 25KG BULK BOX | 600 x 400 x 400 | 7 Ply 200/150/150/150/150/150/200 | 10945"
+    }
+   },
+   {
+    "line_key": "DCPL-C102",
+    "vendor_item_text": "EXPORT EDIBLE OIL 15L TIN X 2 BOX",
+    "length_mm": 620,
+    "width_mm": 330,
+    "height_mm": 400,
+    "dim_basis": "ID",
+    "ply": 7,
+    "construction_text": "7 Ply 200/150/150/150/150/150/200",
+    "vendor_layers_gsm": [
+     200,
+     150,
+     150,
+     150,
+     150,
+     150,
+     200
+    ],
+    "raw_price_text": "9452",
+    "price": 9452.0,
+    "unit": "per_100",
+    "currency": "INR",
+    "tiers": [],
+    "discounts": [],
+    "freight_basis": null,
+    "freight_value_inr_per_piece": null,
+    "capacity_per_month": null,
+    "capacity_text": null,
+    "remarks": null,
+    "ocr_uncertain": false,
+    "source": {
+     "ref": "Price Offer!A8",
+     "snippet": "DCPL-C102 | EXPORT EDIBLE OIL 15L TIN X 2 BOX | 620 x 330 x 400 | 7 Ply 200/150/150/150/150/150/200 | 9452"
+    }
+   },
+   {
+    "line_key": "DCPL-C103",
+    "vendor_item_text": "PALLET-LOAD SPICE DRUM OUTER",
+    "length_mm": 580,
+    "width_mm": 400,
+    "height_mm": 450,
+    "dim_basis": "ID",
+    "ply": 7,
+    "construction_text": "7 Ply 200/150/150/150/150/150/200",
+    "vendor_layers_gsm": [
+     200,
+     150,
+     150,
+     150,
+     150,
+     150,
+     200
+    ],
+    "raw_price_text": "11572",
+    "price": 11572.0,
+    "unit": "per_100",
+    "currency": "INR",
+    "tiers": [],
+    "discounts": [],
+    "freight_basis": null,
+    "freight_value_inr_per_piece": null,
+    "capacity_per_month": null,
+    "capacity_text": null,
+    "remarks": null,
+    "ocr_uncertain": false,
+    "source": {
+     "ref": "Price Offer!A9",
+     "snippet": "DCPL-C103 | PALLET-LOAD SPICE DRUM OUTER | 580 x 400 x 450 | 7 Ply 200/150/150/150/150/150/200 | 11572"
+    }
+   },
+   {
+    "line_key": "DCPL-C104",
+    "vendor_item_text": "HEAVY-DUTY ATTA 25KG EXPORT BOX",
+    "length_mm": 560,
+    "width_mm": 400,
+    "height_mm": 420,
+    "dim_basis": "ID",
+    "ply": 7,
+    "construction_text": "7 Ply 200/150/150/150/150/150/200",
+    "vendor_layers_gsm": [
+     200,
+     150,
+     150,
+     150,
+     150,
+     150,
+     200
+    ],
+    "raw_price_text": "10621",
+    "price": 10621.0,
+    "unit": "per_100",
+    "currency": "INR",
+    "tiers": [],
+    "discounts": [],
+    "freight_basis": null,
+    "freight_value_inr_per_piece": null,
+    "capacity_per_month": null,
+    "capacity_text": null,
+    "remarks": null,
+    "ocr_uncertain": false,
+    "source": {
+     "ref": "Price Offer!A10",
+     "snippet": "DCPL-C104 | HEAVY-DUTY ATTA 25KG EXPORT BOX | 560 x 400 x 420 | 7 Ply 200/150/150/150/150/150/200 | 10621"
+    }
+   },
+   {
+    "line_key": "DCPL-C105",
+    "vendor_item_text": "DETERGENT POWDER 1KG X 20 MASTER",
+    "length_mm": 450,
+    "width_mm": 300,
+    "height_mm": 300,
+    "dim_basis": "ID",
+    "ply": 5,
+    "construction_text": "5 Ply 180/120/150/120/180",
+    "vendor_layers_gsm": [
+     180,
+     120,
+     150,
+     120,
+     180
+    ],
+    "raw_price_text": "4016",
+    "price": 4016.0,
+    "unit": "per_100",
+    "currency": "INR",
+    "tiers": [],
+    "discounts": [],
+    "freight_basis": null,
+    "freight_value_inr_per_piece": null,
+    "capacity_per_month": null,
+    "capacity_text": null,
+    "remarks": null,
+    "ocr_uncertain": false,
+    "source": {
+     "ref": "Price Offer!A12",
+     "snippet": "DCPL-C105 | DETERGENT POWDER 1KG X 20 MASTER | 450 x 300 x 300 | 5 Ply 180/120/150/120/180 | 4016"
+    }
+   },
+   {
+    "line_key": "DCPL-C106",
+    "vendor_item_text": "DETERGENT POWDER 500G X 40 MASTER",
+    "length_mm": 430,
+    "width_mm": 320,
+    "height_mm": 280,
+    "dim_basis": "ID",
+    "ply": 5,
+    "construction_text": "5 Ply 180/120/150/120/180",
+    "vendor_layers_gsm": [
+     180,
+     120,
+     150,
+     120,
+     180
+    ],
+    "raw_price_text": "3976",
+    "price": 3976.0,
+    "unit": "per_100",
+    "currency": "INR",
+    "tiers": [],
+    "discounts": [],
+    "freight_basis": null,
+    "freight_value_inr_per_piece": null,
+    "capacity_per_month": null,
+    "capacity_text": null,
+    "remarks": null,
+    "ocr_uncertain": false,
+    "source": {
+     "ref": "Price Offer!A13",
+     "snippet": "DCPL-C106 | DETERGENT POWDER 500G X 40 MASTER | 430 x 320 x 280 | 5 Ply 180/120/150/120/180 | 3976"
+    }
+   },
+   {
+    "line_key": "DCPL-C107",
+    "vendor_item_text": "LIQUID DETERGENT 1L X 12 SHIPPER BOX",
+    "length_mm": 400,
+    "width_mm": 300,
+    "height_mm": 270,
+    "dim_basis": "ID",
+    "ply": 5,
+    "construction_text": "5 Ply 180/120/150/120/180",
+    "vendor_layers_gsm": [
+     180,
+     120,
+     150,
+     120,
+     180
+    ],
+    "raw_price_text": "3452",
+    "price": 3452.0,
+    "unit": "per_100",
+    "currency": "INR",
+    "tiers": [],
+    "discounts": [],
+    "freight_basis": null,
+    "freight_value_inr_per_piece": null,
+    "capacity_per_month": null,
+    "capacity_text": null,
+    "remarks": null,
+    "ocr_uncertain": false,
+    "source": {
+     "ref": "Price Offer!A14",
+     "snippet": "DCPL-C107 | LIQUID DETERGENT 1L X 12 SHIPPER BOX | 400 x 300 x 270 | 5 Ply 180/120/150/120/180 | 3452"
+    }
+   },
+   {
+    "line_key": "DCPL-C108",
+    "vendor_item_text": "DISHWASH BAR 200G X 100 BOX",
+    "length_mm": 420,
+    "width_mm": 300,
+    "height_mm": 250,
+    "dim_basis": "ID",
+    "ply": 5,
+    "construction_text": "5 Ply 150/120/150/120/150",
+    "vendor_layers_gsm": [
+     150,
+     120,
+     150,
+     120,
+     150
+    ],
+    "raw_price_text": "3347",
+    "price": 3347.0,
+    "unit": "per_100",
+    "currency": "INR",
+    "tiers": [],
+    "discounts": [],
+    "freight_basis": null,
+    "freight_value_inr_per_piece": null,
+    "capacity_per_month": null,
+    "capacity_text": null,
+    "remarks": "Offered in 150 GSM outer liner - meets BS",
+    "ocr_uncertain": false,
+    "source": {
+     "ref": "Price Offer!A15",
+     "snippet": "DCPL-C108 | DISHWASH BAR 200G X 100 BOX | 420 x 300 x 250 | 5 Ply 150/120/150/120/150 | 3347 | Offered in 150 GSM outer liner - meets BS"
+    }
+   },
+   {
+    "line_key": "DCPL-C109",
+    "vendor_item_text": "FLOOR CLEANER 1L X 12 SHIPPER BOX",
+    "length_mm": 410,
+    "width_mm": 310,
+    "height_mm": 290,
+    "dim_basis": "ID",
+    "ply": 5,
+    "construction_text": "5 Ply 180/120/150/120/180",
+    "vendor_layers_gsm": [
+     180,
+     120,
+     150,
+     120,
+     180
+    ],
+    "raw_price_text": "3716",
+    "price": 3716.0,
+    "unit": "per_100",
+    "currency": "INR",
+    "tiers": [],
+    "discounts": [],
+    "freight_basis": null,
+    "freight_value_inr_per_piece": null,
+    "capacity_per_month": null,
+    "capacity_text": null,
+    "remarks": null,
+    "ocr_uncertain": false,
+    "source": {
+     "ref": "Price Offer!A16",
+     "snippet": "DCPL-C109 | FLOOR CLEANER 1L X 12 SHIPPER BOX | 410 x 310 x 290 | 5 Ply 180/120/150/120/180 | 3716"
+    }
+   },
+   {
+    "line_key": "DCPL-C110",
+    "vendor_item_text": "TOILET CLEANER 500ML X 24 SHIPPER BOX",
+    "length_mm": 420,
+    "width_mm": 280,
+    "height_mm": 260,
+    "dim_basis": "ID",
+    "ply": 5,
+    "construction_text": "5 Ply 180/120/150/120/180",
+    "vendor_layers_gsm": [
+     180,
+     120,
+     150,
+     120,
+     180
+    ],
+    "raw_price_text": "3357",
+    "price": 3357.0,
+    "unit": "per_100",
+    "currency": "INR",
+    "tiers": [],
+    "discounts": [],
+    "freight_basis": null,
+    "freight_value_inr_per_piece": null,
+    "capacity_per_month": null,
+    "capacity_text": null,
+    "remarks": null,
+    "ocr_uncertain": false,
+    "source": {
+     "ref": "Price Offer!A17",
+     "snippet": "DCPL-C110 | TOILET CLEANER 500ML X 24 SHIPPER BOX | 420 x 280 x 260 | 5 Ply 180/120/150/120/180 | 3357"
+    }
+   },
+   {
+    "line_key": "DCPL-C111",
+    "vendor_item_text": "EDIBLE OIL 1L POUCH X 16 BOX",
+    "length_mm": 380,
+    "width_mm": 280,
+    "height_mm": 260,
+    "dim_basis": "ID",
+    "ply": 5,
+    "construction_text": "5 Ply 200/120/180/120/200",
+    "vendor_layers_gsm": [
+     200,
+     120,
+     180,
+     120,
+     200
+    ],
+    "raw_price_text": "3360",
+    "price": 3360.0,
+    "unit": "per_100",
+    "currency": "INR",
+    "tiers": [],
+    "discounts": [
+     {
+      "pct": 3.0,
+      "condition_type": "volume_qty",
+      "condition_value": 50000.0,
+      "condition_text": "3% volume discount above 50,000 nos",
+      "qty_basis": "unclear",
+      "scope": "this_line",
+      "source": {
+       "ref": "Price Offer!G18",
+       "snippet": "3% volume discount above 50,000 nos"
+      }
+     }
+    ],
+    "freight_basis": null,
+    "freight_value_inr_per_piece": null,
+    "capacity_per_month": null,
+    "capacity_text": null,
+    "remarks": null,
+    "ocr_uncertain": false,
+    "source": {
+     "ref": "Price Offer!A18",
+     "snippet": "DCPL-C111 | EDIBLE OIL 1L POUCH X 16 BOX | 380 x 280 x 260 | 5 Ply 200/120/180/120/200 | 3360 | 3% volume discount above 50,000 nos"
+    }
+   },
+   {
+    "line_key": "DCPL-C112",
+    "vendor_item_text": "EDIBLE OIL 1L BOTTLE X 12 BOX",
+    "length_mm": 360,
+    "width_mm": 270,
+    "height_mm": 300,
+    "dim_basis": "ID",
+    "ply": 5,
+    "construction_text": "5 Ply 200/120/180/120/200",
+    "vendor_layers_gsm": [
+     200,
+     120,
+     180,
+     120,
+     200
+    ],
+    "raw_price_text": "3387",
+    "price": 3387.0,
+    "unit": "per_100",
+    "currency": "INR",
+    "tiers": [],
+    "discounts": [],
+    "freight_basis": null,
+    "freight_value_inr_per_piece": null,
+    "capacity_per_month": null,
+    "capacity_text": null,
+    "remarks": null,
+    "ocr_uncertain": false,
+    "source": {
+     "ref": "Price Offer!A19",
+     "snippet": "DCPL-C112 | EDIBLE OIL 1L BOTTLE X 12 BOX | 360 x 270 x 300 | 5 Ply 200/120/180/120/200 | 3387"
+    }
+   },
+   {
+    "line_key": "DCPL-C113",
+    "vendor_item_text": "GHEE 500ML JAR X 24 BOX",
+    "length_mm": 400,
+    "width_mm": 270,
+    "height_mm": 220,
+    "dim_basis": "ID",
+    "ply": 5,
+    "construction_text": "5 Ply 180/120/150/120/180",
+    "vendor_layers_gsm": [
+     180,
+     120,
+     150,
+     120,
+     180
+    ],
+    "raw_price_text": "2973",
+    "price": 2973.0,
+    "unit": "per_100",
+    "currency": "INR",
+    "tiers": [],
+    "discounts": [],
+    "freight_basis": null,
+    "freight_value_inr_per_piece": null,
+    "capacity_per_month": null,
+    "capacity_text": null,
+    "remarks": null,
+    "ocr_uncertain": false,
+    "source": {
+     "ref": "Price Offer!A20",
+     "snippet": "DCPL-C113 | GHEE 500ML JAR X 24 BOX | 400 x 270 x 220 | 5 Ply 180/120/150/120/180 | 2973"
+    }
+   },
+   {
+    "line_key": "DCPL-C114",
+    "vendor_item_text": "ATTA 5KG X 4 BOX",
+    "length_mm": 460,
+    "width_mm": 330,
+    "height_mm": 300,
+    "dim_basis": "ID",
+    "ply": 5,
+    "construction_text": "5 Ply 200/120/180/120/200",
+    "vendor_layers_gsm": [
+     200,
+     120,
+     180,
+     120,
+     200
+    ],
+    "raw_price_text": "4824",
+    "price": 4824.0,
+    "unit": "per_100",
+    "currency": "INR",
+    "tiers": [],
+    "discounts": [],
+    "freight_basis": null,
+    "freight_value_inr_per_piece": null,
+    "capacity_per_month": null,
+    "capacity_text": null,
+    "remarks": null,
+    "ocr_uncertain": false,
+    "source": {
+     "ref": "Price Offer!A21",
+     "snippet": "DCPL-C114 | ATTA 5KG X 4 BOX | 460 x 330 x 300 | 5 Ply 200/120/180/120/200 | 4824"
+    }
+   },
+   {
+    "line_key": "DCPL-C115",
+    "vendor_item_text": "SUGAR 1KG X 20 BOX",
+    "length_mm": 440,
+    "width_mm": 300,
+    "height_mm": 280,
+    "dim_basis": "ID",
+    "ply": 5,
+    "construction_text": "5 Ply 180/120/150/120/180",
+    "vendor_layers_gsm": [
+     180,
+     120,
+     150,
+     120,
+     180
+    ],
+    "raw_price_text": "3682",
+    "price": 3682.0,
+    "unit": "per_100",
+    "currency": "INR",
+    "tiers": [],
+    "discounts": [],
+    "freight_basis": null,
+    "freight_value_inr_per_piece": null,
+    "capacity_per_month": null,
+    "capacity_text": null,
+    "remarks": null,
+    "ocr_uncertain": false,
+    "source": {
+     "ref": "Price Offer!A22",
+     "snippet": "DCPL-C115 | SUGAR 1KG X 20 BOX | 440 x 300 x 280 | 5 Ply 180/120/150/120/180 | 3682"
+    }
+   },
+   {
+    "line_key": "DCPL-C116",
+    "vendor_item_text": "HAND WASH 250ML X 24 SHIPPER BOX",
+    "length_mm": 380,
+    "width_mm": 260,
+    "height_mm": 240,
+    "dim_basis": "ID",
+    "ply": 5,
+    "construction_text": "5 Ply 180/120/150/120/180",
+    "vendor_layers_gsm": [
+     180,
+     120,
+     150,
+     120,
+     180
+    ],
+    "raw_price_text": "2870",
+    "price": 2870.0,
+    "unit": "per_100",
+    "currency": "INR",
+    "tiers": [],
+    "discounts": [],
+    "freight_basis": null,
+    "freight_value_inr_per_piece": null,
+    "capacity_per_month": null,
+    "capacity_text": null,
+    "remarks": null,
+    "ocr_uncertain": false,
+    "source": {
+     "ref": "Price Offer!A23",
+     "snippet": "DCPL-C116 | HAND WASH 250ML X 24 SHIPPER BOX | 380 x 260 x 240 | 5 Ply 180/120/150/120/180 | 2870"
+    }
+   },
+   {
+    "line_key": "DCPL-C117",
+    "vendor_item_text": "MIXED SKU E-COMMERCE SHIPPER BOX",
+    "length_mm": 400,
+    "width_mm": 300,
+    "height_mm": 300,
+    "dim_basis": "ID",
+    "ply": 3,
+    "construction_text": "3 Ply 200/150/200",
+    "vendor_layers_gsm": [
+     200,
+     150,
+     200
+    ],
+    "raw_price_text": "2284",
+    "price": 2284.0,
+    "unit": "per_100",
+    "currency": "INR",
+    "tiers": [],
+    "discounts": [],
+    "freight_basis": null,
+    "freight_value_inr_per_piece": null,
+    "capacity_per_month": null,
+    "capacity_text": null,
+    "remarks": "We suggest 3 ply heavy duty 200/150/200 - cost effective alternative",
+    "ocr_uncertain": false,
+    "source": {
+     "ref": "Price Offer!A24",
+     "snippet": "DCPL-C117 | MIXED SKU E-COMMERCE SHIPPER BOX | 400 x 300 x 300 | 3 Ply 200/150/200 | 2284 | We suggest 3 ply heavy duty 200/150/200 - cost effective alternative"
+    }
+   },
+   {
+    "line_key": "DCPL-C118",
+    "vendor_item_text": "PROMO GIFT-PACK OUTER",
+    "length_mm": 450,
+    "width_mm": 350,
+    "height_mm": 250,
+    "dim_basis": "ID",
+    "ply": 5,
+    "construction_text": "5 Ply 180/120/150/120/180",
+    "vendor_layers_gsm": [
+     180,
+     120,
+     150,
+     120,
+     180
+    ],
+    "raw_price_text": "4443",
+    "price": 4443.0,
+    "unit": "per_100",
+    "currency": "INR",
+    "tiers": [],
+    "discounts": [],
+    "freight_basis": null,
+    "freight_value_inr_per_piece": null,
+    "capacity_per_month": null,
+    "capacity_text": null,
+    "remarks": null,
+    "ocr_uncertain": false,
+    "source": {
+     "ref": "Price Offer!A25",
+     "snippet": "DCPL-C118 | PROMO GIFT-PACK OUTER | 450 x 350 x 250 | 5 Ply 180/120/150/120/180 | 4443"
+    }
+   },
+   {
+    "line_key": "DCPL-C119",
+    "vendor_item_text": "SHAMPOO 180ML BOTTLE SHIPPER BOX (24S)",
+    "length_mm": 300,
+    "width_mm": 200,
+    "height_mm": 150,
+    "dim_basis": "ID",
+    "ply": 3,
+    "construction_text": "3 Ply 150/120/150",
+    "vendor_layers_gsm": [
+     150,
+     120,
+     150
+    ],
+    "raw_price_text": "887",
+    "price": 887.0,
+    "unit": "per_100",
+    "currency": "INR",
+    "tiers": [],
+    "discounts": [
+     {
+      "pct": 4.0,
+      "condition_type": "volume_qty",
+      "condition_value": 20000.0,
+      "condition_text": "* Addl 4% off for release qty >= 20,000 nos",
+      "qty_basis": "per_order",
+      "scope": "this_line",
+      "source": {
+       "ref": "Price Offer!G27",
+       "snippet": "* Addl 4% off for release qty >= 20,000 nos"
+      }
+     }
+    ],
+    "freight_basis": null,
+    "freight_value_inr_per_piece": null,
+    "capacity_per_month": null,
+    "capacity_text": null,
+    "remarks": null,
+    "ocr_uncertain": false,
+    "source": {
+     "ref": "Price Offer!A27",
+     "snippet": "DCPL-C119 | SHAMPOO 180ML BOTTLE SHIPPER BOX (24S) | 300 x 200 x 150 | 3 Ply 150/120/150 | 887 | * Addl 4% off for release qty >= 20,000 nos"
+    }
+   },
+   {
+    "line_key": "DCPL-C120",
+    "vendor_item_text": "SHAMPOO SACHET MASTER (960S)",
+    "length_mm": 380,
+    "width_mm": 250,
+    "height_mm": 200,
+    "dim_basis": "ID",
+    "ply": 3,
+    "construction_text": "3 Ply 150/120/150",
+    "vendor_layers_gsm": [
+     150,
+     120,
+     150
+    ],
+    "raw_price_text": "1416",
+    "price": 1416.0,
+    "unit": "per_100",
+    "currency": "INR",
+    "tiers": [],
+    "discounts": [],
+    "freight_basis": null,
+    "freight_value_inr_per_piece": null,
+    "capacity_per_month": null,
+    "capacity_text": null,
+    "remarks": null,
+    "ocr_uncertain": false,
+    "source": {
+     "ref": "Price Offer!A28",
+     "snippet": "DCPL-C120 | SHAMPOO SACHET MASTER (960S) | 380 x 250 x 200 | 3 Ply 150/120/150 | 1416"
+    }
+   },
+   {
+    "line_key": "DCPL-C121",
+    "vendor_item_text": "BATHING SOAP 75G X 144 BOX",
+    "length_mm": 360,
+    "width_mm": 240,
+    "height_mm": 180,
+    "dim_basis": "ID",
+    "ply": 3,
+    "construction_text": "3 Ply 180/120/150",
+    "vendor_layers_gsm": [
+     180,
+     120,
+     150
+    ],
+    "raw_price_text": "1393",
+    "price": 1393.0,
+    "unit": "per_100",
+    "currency": "INR",
+    "tiers": [],
+    "discounts": [
+     {
+      "pct": 4.0,
+      "condition_type": "volume_qty",
+      "condition_value": 20000.0,
+      "condition_text": "* Addl 4% off for release qty >= 20,000 nos",
+      "qty_basis": "per_order",
+      "scope": "this_line",
+      "source": {
+       "ref": "Price Offer!G29",
+       "snippet": "* Addl 4% off for release qty >= 20,000 nos"
+      }
+     }
+    ],
+    "freight_basis": null,
+    "freight_value_inr_per_piece": null,
+    "capacity_per_month": null,
+    "capacity_text": null,
+    "remarks": null,
+    "ocr_uncertain": false,
+    "source": {
+     "ref": "Price Offer!A29",
+     "snippet": "DCPL-C121 | BATHING SOAP 75G X 144 BOX | 360 x 240 x 180 | 3 Ply 180/120/150 | 1393 | * Addl 4% off for release qty >= 20,000 nos"
+    }
+   },
+   {
+    "line_key": "DCPL-C122",
+    "vendor_item_text": "BATHING SOAP 125G X 72 BOX",
+    "length_mm": 340,
+    "width_mm": 260,
+    "height_mm": 160,
+    "dim_basis": "ID",
+    "ply": 3,
+    "construction_text": "3 Ply 180/120/150",
+    "vendor_layers_gsm": [
+     180,
+     120,
+     150
+    ],
+    "raw_price_text": "1319",
+    "price": 1319.0,
+    "unit": "per_100",
+    "currency": "INR",
+    "tiers": [],
+    "discounts": [],
+    "freight_basis": null,
+    "freight_value_inr_per_piece": null,
+    "capacity_per_month": null,
+    "capacity_text": null,
+    "remarks": null,
+    "ocr_uncertain": false,
+    "source": {
+     "ref": "Price Offer!A30",
+     "snippet": "DCPL-C122 | BATHING SOAP 125G X 72 BOX | 340 x 260 x 160 | 3 Ply 180/120/150 | 1319"
+    }
+   },
+   {
+    "line_key": "DCPL-C123",
+    "vendor_item_text": "TOOTHPASTE 150G X 72 SHIPPER BOX",
+    "length_mm": 420,
+    "width_mm": 280,
+    "height_mm": 190,
+    "dim_basis": "ID",
+    "ply": 3,
+    "construction_text": "3 Ply 150/120/150",
+    "vendor_layers_gsm": [
+     150,
+     120,
+     150
+    ],
+    "raw_price_text": "1701",
+    "price": 1701.0,
+    "unit": "per_100",
+    "currency": "INR",
+    "tiers": [],
+    "discounts": [],
+    "freight_basis": null,
+    "freight_value_inr_per_piece": null,
+    "capacity_per_month": null,
+    "capacity_text": null,
+    "remarks": null,
+    "ocr_uncertain": false,
+    "source": {
+     "ref": "Price Offer!A31",
+     "snippet": "DCPL-C123 | TOOTHPASTE 150G X 72 SHIPPER BOX | 420 x 280 x 190 | 3 Ply 150/120/150 | 1701"
+    }
+   },
+   {
+    "line_key": "DCPL-C124",
+    "vendor_item_text": "TOOTHBRUSH RETAIL DISPLAY (INNER)",
+    "length_mm": 250,
+    "width_mm": 180,
+    "height_mm": 120,
+    "dim_basis": "ID",
+    "ply": 3,
+    "construction_text": "3 Ply 120/100/120",
+    "vendor_layers_gsm": [
+     120,
+     100,
+     120
+    ],
+    "raw_price_text": "671",
+    "price": 671.0,
+    "unit": "per_100",
+    "currency": "INR",
+    "tiers": [],
+    "discounts": [],
+    "freight_basis": null,
+    "freight_value_inr_per_piece": null,
+    "capacity_per_month": null,
+    "capacity_text": null,
+    "remarks": null,
+    "ocr_uncertain": false,
+    "source": {
+     "ref": "Price Offer!A32",
+     "snippet": "DCPL-C124 | TOOTHBRUSH RETAIL DISPLAY (INNER) | 250 x 180 x 120 | 3 Ply 120/100/120 | 671"
+    }
+   },
+   {
+    "line_key": "DCPL-C125",
+    "vendor_item_text": "HAIR OIL 100ML X 48 SHIPPER BOX",
+    "length_mm": 320,
+    "width_mm": 240,
+    "height_mm": 170,
+    "dim_basis": "ID",
+    "ply": 3,
+    "construction_text": "3 Ply 150/120/150",
+    "vendor_layers_gsm": [
+     150,
+     120,
+     150
+    ],
+    "raw_price_text": "1147",
+    "price": 1147.0,
+    "unit": "per_100",
+    "currency": "INR",
+    "tiers": [],
+    "discounts": [],
+    "freight_basis": null,
+    "freight_value_inr_per_piece": null,
+    "capacity_per_month": null,
+    "capacity_text": null,
+    "remarks": null,
+    "ocr_uncertain": false,
+    "source": {
+     "ref": "Price Offer!A33",
+     "snippet": "DCPL-C125 | HAIR OIL 100ML X 48 SHIPPER BOX | 320 x 240 x 170 | 3 Ply 150/120/150 | 1147"
+    }
+   },
+   {
+    "line_key": "DCPL-C126",
+    "vendor_item_text": "FACE CREAM 50G X 96 SHIPPER BOX",
+    "length_mm": 300,
+    "width_mm": 220,
+    "height_mm": 140,
+    "dim_basis": "ID",
+    "ply": 3,
+    "construction_text": "3 Ply 150/120/150",
+    "vendor_layers_gsm": [
+     150,
+     120,
+     150
+    ],
+    "raw_price_text": "987",
+    "price": 987.0,
+    "unit": "per_100",
+    "currency": "INR",
+    "tiers": [],
+    "discounts": [],
+    "freight_basis": null,
+    "freight_value_inr_per_piece": null,
+    "capacity_per_month": null,
+    "capacity_text": null,
+    "remarks": null,
+    "ocr_uncertain": false,
+    "source": {
+     "ref": "Price Offer!A34",
+     "snippet": "DCPL-C126 | FACE CREAM 50G X 96 SHIPPER BOX | 300 x 220 x 140 | 3 Ply 150/120/150 | 987"
+    }
+   },
+   {
+    "line_key": "DCPL-C127",
+    "vendor_item_text": "BISCUIT 75G X 60 BOX",
+    "length_mm": 400,
+    "width_mm": 300,
+    "height_mm": 220,
+    "dim_basis": "ID",
+    "ply": 3,
+    "construction_text": "3 Ply 150/120/150",
+    "vendor_layers_gsm": [
+     150,
+     120,
+     150
+    ],
+    "raw_price_text": "1772",
+    "price": 1772.0,
+    "unit": "per_100",
+    "currency": "INR",
+    "tiers": [],
+    "discounts": [
+     {
+      "pct": 4.0,
+      "condition_type": "volume_qty",
+      "condition_value": 20000.0,
+      "condition_text": "* Addl 4% off for release qty >= 20,000 nos",
+      "qty_basis": "per_order",
+      "scope": "this_line",
+      "source": {
+       "ref": "Price Offer!G35",
+       "snippet": "* Addl 4% off for release qty >= 20,000 nos"
+      }
+     }
+    ],
+    "freight_basis": null,
+    "freight_value_inr_per_piece": null,
+    "capacity_per_month": null,
+    "capacity_text": null,
+    "remarks": null,
+    "ocr_uncertain": false,
+    "source": {
+     "ref": "Price Offer!A35",
+     "snippet": "DCPL-C127 | BISCUIT 75G X 60 BOX | 400 x 300 x 220 | 3 Ply 150/120/150 | 1772 | * Addl 4% off for release qty >= 20,000 nos"
+    }
+   },
+   {
+    "line_key": "DCPL-C128",
+    "vendor_item_text": "NOODLES 70G X 96 BOX",
+    "length_mm": 420,
+    "width_mm": 320,
+    "height_mm": 250,
+    "dim_basis": "ID",
+    "ply": 3,
+    "construction_text": "3 Ply 150/120/150",
+    "vendor_layers_gsm": [
+     150,
+     120,
+     150
+    ],
+    "raw_price_text": "2097",
+    "price": 2097.0,
+    "unit": "per_100",
+    "currency": "INR",
+    "tiers": [],
+    "discounts": [],
+    "freight_basis": null,
+    "freight_value_inr_per_piece": null,
+    "capacity_per_month": null,
+    "capacity_text": null,
+    "remarks": null,
+    "ocr_uncertain": false,
+    "source": {
+     "ref": "Price Offer!A36",
+     "snippet": "DCPL-C128 | NOODLES 70G X 96 BOX | 420 x 320 x 250 | 3 Ply 150/120/150 | 2097"
+    }
+   },
+   {
+    "line_key": "DCPL-C129",
+    "vendor_item_text": "TEA 250G X 40 BOX",
+    "length_mm": 360,
+    "width_mm": 280,
+    "height_mm": 230,
+    "dim_basis": "ID",
+    "ply": 3,
+    "construction_text": "3 Ply 180/120/150",
+    "vendor_layers_gsm": [
+     180,
+     120,
+     150
+    ],
+    "raw_price_text": "1726",
+    "price": 1726.0,
+    "unit": "per_100",
+    "currency": "INR",
+    "tiers": [],
+    "discounts": [],
+    "freight_basis": null,
+    "freight_value_inr_per_piece": null,
+    "capacity_per_month": null,
+    "capacity_text": null,
+    "remarks": null,
+    "ocr_uncertain": false,
+    "source": {
+     "ref": "Price Offer!A37",
+     "snippet": "DCPL-C129 | TEA 250G X 40 BOX | 360 x 280 x 230 | 3 Ply 180/120/150 | 1726"
+    }
+   },
+   {
+    "line_key": "DCPL-C130",
+    "vendor_item_text": "SPICES 100G X 120 BOX",
+    "length_mm": 330,
+    "width_mm": 250,
+    "height_mm": 200,
+    "dim_basis": "ID",
+    "ply": 3,
+    "construction_text": "3 Ply 150/120/150",
+    "vendor_layers_gsm": [
+     150,
+     120,
+     150
+    ],
+    "raw_price_text": "1325",
+    "price": 1325.0,
+    "unit": "per_100",
+    "currency": "INR",
+    "tiers": [],
+    "discounts": [],
+    "freight_basis": null,
+    "freight_value_inr_per_piece": null,
+    "capacity_per_month": null,
+    "capacity_text": null,
+    "remarks": null,
+    "ocr_uncertain": false,
+    "source": {
+     "ref": "Price Offer!A38",
+     "snippet": "DCPL-C130 | SPICES 100G X 120 BOX | 330 x 250 x 200 | 3 Ply 150/120/150 | 1325"
+    }
+   }
+  ],
+  "answers": [
+   {
+    "q_code": "Q01_ISO9001",
+    "answer_text": "Yes - Cert No. QMS/IN/22814, valid till Aug 2027 (copy attached)",
+    "answer_value": "yes",
+    "document_attached": true,
+    "source": {
+     "ref": "Vendor Questionnaire!C2",
+     "snippet": "Yes - Cert No. QMS/IN/22814, valid till Aug 2027 (copy attached)"
+    }
+   },
+   {
+    "q_code": "Q02_BS_TEST",
+    "answer_text": "Yes, all grades meet BS. Test report dt 20-Sep-2026 attached",
+    "answer_value": "yes",
+    "document_attached": true,
+    "source": {
+     "ref": "Vendor Questionnaire!C3",
+     "snippet": "Yes, all grades meet BS. Test report dt 20-Sep-2026 attached"
+    }
+   },
+   {
+    "q_code": "Q03_REJECTION",
+    "answer_text": "Agreed",
+    "answer_value": "yes",
+    "document_attached": false,
+    "source": {
+     "ref": "Vendor Questionnaire!C4",
+     "snippet": "Agreed"
+    }
+   },
+   {
+    "q_code": "Q04_CAPACITY",
+    "answer_text": "260 MT per month available",
+    "answer_value": "260",
+    "document_attached": false,
+    "source": {
+     "ref": "Vendor Questionnaire!C5",
+     "snippet": "260 MT per month available"
+    }
+   },
+   {
+    "q_code": "Q05_FIRST_SUPPLY",
+    "answer_text": "10 days",
+    "answer_value": "10",
+    "document_attached": false,
+    "source": {
+     "ref": "Vendor Questionnaire!C6",
+     "snippet": "10 days"
+    }
+   },
+   {
+    "q_code": "Q06_PAPER_SOURCE",
+    "answer_text": "Mixed (virgin kraft liner + recycled fluting)",
+    "answer_value": "mixed",
+    "document_attached": false,
+    "source": {
+     "ref": "Vendor Questionnaire!C7",
+     "snippet": "Mixed (virgin kraft liner + recycled fluting)"
+    }
+   },
+   {
+    "q_code": "Q07_FSC",
+    "answer_text": "Not certified",
+    "answer_value": "no",
+    "document_attached": false,
+    "source": {
+     "ref": "Vendor Questionnaire!C8",
+     "snippet": "Not certified"
+    }
+   },
+   {
+    "q_code": "Q08_COMPLAINTS",
+    "answer_text": "1 (resolved)",
+    "answer_value": "1",
+    "document_attached": false,
+    "source": {
+     "ref": "Vendor Questionnaire!C9",
+     "snippet": "1 (resolved)"
+    }
+   }
+  ]
+ }
+}

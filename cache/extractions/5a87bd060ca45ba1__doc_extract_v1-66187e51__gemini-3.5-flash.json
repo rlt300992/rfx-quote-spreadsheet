@@ -1,0 +1,30 @@
+{
+ "sha256": "5a87bd060ca45ba1925bfcc136bed3a240c4cef3a3fe5f714ee7bf1937408564",
+ "prompt": "doc_extract",
+ "prompt_version": "v1-66187e51",
+ "model": "gemini-3.5-flash",
+ "created_at": "2026-11-07T17:32:43+00:00",
+ "meta": {
+  "usage": {
+   "prompt_tokens": 1415,
+   "output_tokens": 120
+  },
+  "file": "V4_OmSai_ratecard_photo.jpg",
+  "model": "gemini-3.5-flash"
+ },
+ "result": {
+  "doc_type": "quotation",
+  "issuer": null,
+  "doc_number": null,
+  "issue_date": "2026-11-30",
+  "expiry_date": "2026-12-31",
+  "holder_name": null,
+  "site_address": "Ranjangaon MIDC, Pune",
+  "scope_text": null,
+  "covers_text": null,
+  "source": {
+   "ref": "page 1",
+   "snippet": "RATE LIST - CORRUGATED BOXES (Nov 2026) Rates valid till 31 Dec 2026."
+  }
+ }
+}

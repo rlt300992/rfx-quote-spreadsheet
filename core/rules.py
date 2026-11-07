@@ -130,6 +130,8 @@ def judge(question: sqlite3.Row, answer: sqlite3.Row | None, doc: sqlite3.Row | 
 
     # knock-out answers must be read with high confidence before they can pass or fail a vendor
     conf = answer["confidence"] if answer else None
+    if rtype == "doc_valid_on" and doc is not None:  # the verdict comes from the document, so gate on ITS confidence
+        conf = doc["confidence"]
     min_conf = cfg["thresholds"]["knockout_answer_min"]
     if question["is_knockout"] and res in ("pass", "fail") and conf is not None and conf < min_conf:
         res, why = "unknown", f"{why}; extraction confidence {conf:.0%} is below the {min_conf:.0%} knock-out minimum"

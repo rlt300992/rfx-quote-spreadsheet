@@ -73,6 +73,7 @@ SELECT vr.response_id, vr.vendor_id, v.vendor_code, v.name AS vendor_name,
 FROM vendor_responses vr
 JOIN vendors v ON v.vendor_id = vr.vendor_id
 LEFT JOIN quotes q ON q.response_id = vr.response_id AND q.is_current = 1
+WHERE NOT EXISTS (SELECT 1 FROM vendor_responses n WHERE n.supersedes_response_id = vr.response_id)
 GROUP BY vr.response_id;
 
 -- One row per current (line, vendor). is_awardable = quote-level eligible AND vendor qualified.
@@ -106,6 +107,9 @@ WITH base AS (
 )
 SELECT r.*,
        r.evaluated_inr_pc * r.annual_qty AS annual_value_inr,
+       json_extract(r.field_meta_json, '$.flags') AS flags_json,
+       CASE WHEN instr(COALESCE(json_extract(r.field_meta_json, '$.flags'), ''), 'PRICE_NOT_FIRM') > 0
+            THEN 1 ELSE 0 END AS price_not_firm,
        lb.ly_landed_inr_pc,
        lb.ly_landed_inr_pc - r.landed_inr_pc AS saving_vs_ly_inr_pc,
        CASE WHEN lb.ly_landed_inr_pc > 0 AND r.landed_inr_pc IS NOT NULL

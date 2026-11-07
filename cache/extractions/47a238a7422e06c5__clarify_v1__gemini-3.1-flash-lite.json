@@ -1,0 +1,12 @@
+{
+ "sha256": "47a238a7422e06c5cfcb1f271e9310ea015c750cc73f6f776d6123af84de3790",
+ "prompt": "clarify",
+ "prompt_version": "v1",
+ "model": "gemini-3.1-flash-lite",
+ "created_at": "2026-11-07T17:47:59+00:00",
+ "meta": {
+  "items": 8,
+  "model": "gemini-3.1-flash-lite"
+ },
+ "result": "Subject: Clarification regarding RFQ for Corrugated Boxes - FY2026-27\n\nDear Krishna Kraft Packaging LLP,\n\nThank you for your proposal regarding our annual rate contract for corrugated boxes. To proceed with our evaluation, please provide clarifications on the following points:\n\n1. Could you confirm the freight per box for 3-ply, 5-ply, and 7-ply boxes delivered to our Chakan MIDC plant, or confirm if your quoted rates are FOR Chakan?\n2. For the items listed in line 26, could you provide the per-box prices or specify the assumed box weight used for your per-kg quote?\n3. What is the exact per-box price for the items in line 27 and line 29?\n4. Given the specification changes for line 28 and line 30, could you provide the current price based on the specifications in our RFQ?\n5. Are your quoted rates exclusive or inclusive of GST?\n6. As your ISO9001 certificate (QMS/IN/17260) expires on 2026-03-31, could you provide a current certificate or evidence of renewal?\n7. Can you confirm that you meet the specified bursting strength for every quoted line and provide a test report dated within the last six months?\n8. Regarding Q03_REJECTION, could you please reconfirm your compliance with our rejection policy?\n\nWe look forward to your prompt response.\n\nRegards,\n\nCategory Buyer, Sahyadri Consumer Products Ltd, Chakan MIDC, Pune"
+}

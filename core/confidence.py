@@ -134,3 +134,47 @@ def rollup(fields: dict[str, dict]) -> tuple[float | None, str]:
     else:
         state = "auto_ok"
     return (min(open_conf) if open_conf else 1.0), state
+
+
+def score_document(source_type: str, cfg: dict, verified: list[bool | None]) -> tuple[float, list[str]]:
+    """Confidence for an extracted document: base by source type + a bonus for each key field (holder, number,
+    the expiry or issue date) that was found in the document's own text layer. None = could not be checked."""
+    bonus = cfg.get("confidence", {}).get("check_bonus", 0.05)
+    cap = cfg.get("confidence", {}).get("cap", 0.99)
+    conf = cfg["confidence_base"][source_type]
+    signals = [f"base {conf:.2f} from source type '{source_type}'"]
+    failed = False
+    for name, ok in zip(("holder name", "document number", "expiry/issue date"), verified):
+        if ok:
+            conf += bonus
+            signals.append(f"+{bonus:.2f} {name} found verbatim in the document text")
+        elif ok is False:
+            failed = True
+            signals.append(f"{name} NOT found in the document text -> capped below the knock-out minimum")
+    conf = min(conf, cap)
+    if failed:  # applied after all bonuses so passing checks can never buy back a failed one
+        conf = min(conf, cfg["thresholds"]["knockout_answer_min"] - 0.01)
+    return round(conf, 4), signals
+
+
+def score_answer(source_type: str, cfg: dict, verified_in_source: bool | None, second_read_agrees: bool | None) -> tuple[float, list[str]]:
+    """Confidence for an extracted questionnaire answer, from signals (never the model's self-report).
+
+    base by source type; +check_bonus if the quoted answer text was found verbatim in the source;
+    +check_bonus if an independent second read gives the same answer; a disagreeing second read caps the
+    answer below the knock-out minimum so it cannot pass or fail a vendor on its own.
+    """
+    bonus = cfg.get("confidence", {}).get("check_bonus", 0.05)
+    cap = cfg.get("confidence", {}).get("cap", 0.99)
+    conf = cfg["confidence_base"][source_type]
+    signals = [f"base {conf:.2f} from source type '{source_type}'"]
+    if verified_in_source:
+        conf += bonus
+        signals.append(f"+{bonus:.2f} answer text found verbatim in the source")
+    if second_read_agrees is True:
+        conf += bonus
+        signals.append(f"+{bonus:.2f} second read agrees")
+    elif second_read_agrees is False:
+        conf = min(conf, cfg["thresholds"]["knockout_answer_min"] - 0.01)
+        signals.append("second read DISAGREES -> capped below the knock-out minimum")
+    return round(min(conf, cap), 4), signals

@@ -1,0 +1,241 @@
+{
+ "sha256": "18e755bb5d28239d57971bb61bd5f210a00b44daea3f46f158d0c1bdfd878207",
+ "prompt": "second_read",
+ "prompt_version": "v1-9cbed478",
+ "model": "gemini-3.6-flash",
+ "created_at": "2026-11-07T17:34:53+00:00",
+ "meta": {
+  "usage": {
+   "prompt_tokens": 1771,
+   "output_tokens": 1314
+  },
+  "file": "V2_ShreeGanesh_Quotation_SGPI-Q-1127.pdf",
+  "model": "gemini-3.6-flash"
+ },
+ "result": {
+  "lines": [
+   {
+    "line_key": "1",
+    "price": 8.42,
+    "unit": "per_box",
+    "currency": "INR"
+   },
+   {
+    "line_key": "2",
+    "price": 13.34,
+    "unit": "per_box",
+    "currency": "INR"
+   },
+   {
+    "line_key": "3",
+    "price": 12.82,
+    "unit": "per_box",
+    "currency": "INR"
+   },
+   {
+    "line_key": "4",
+    "price": 12.46,
+    "unit": "per_box",
+    "currency": "INR"
+   },
+   {
+    "line_key": "5",
+    "price": 15.3,
+    "unit": "per_box",
+    "currency": "INR"
+   },
+   {
+    "line_key": "6",
+    "price": 620.0,
+    "unit": "per_box",
+    "currency": "INR"
+   },
+   {
+    "line_key": "7",
+    "price": 11.16,
+    "unit": "per_box",
+    "currency": "INR"
+   },
+   {
+    "line_key": "8",
+    "price": 944.0,
+    "unit": "per_box",
+    "currency": "INR"
+   },
+   {
+    "line_key": "9",
+    "price": 16.73,
+    "unit": "per_box",
+    "currency": "INR"
+   },
+   {
+    "line_key": "10",
+    "price": 19.54,
+    "unit": "per_box",
+    "currency": "INR"
+   },
+   {
+    "line_key": "11",
+    "price": 16.52,
+    "unit": "per_box",
+    "currency": "INR"
+   },
+   {
+    "line_key": "12",
+    "price": 1229.0,
+    "unit": "per_box",
+    "currency": "INR"
+   },
+   {
+    "line_key": "13",
+    "price": 38.49,
+    "unit": "per_box",
+    "currency": "INR"
+   },
+   {
+    "line_key": "14",
+    "price": 38.28,
+    "unit": "per_box",
+    "currency": "INR"
+   },
+   {
+    "line_key": "15",
+    "price": 32.98,
+    "unit": "per_box",
+    "currency": "INR"
+   },
+   {
+    "line_key": "16",
+    "price": 33.42,
+    "unit": "per_box",
+    "currency": "INR"
+   },
+   {
+    "line_key": "17",
+    "price": 36.15,
+    "unit": "per_box",
+    "currency": "INR"
+   },
+   {
+    "line_key": "18",
+    "price": 32.55,
+    "unit": "per_box",
+    "currency": "INR"
+   },
+   {
+    "line_key": "19",
+    "price": 33.02,
+    "unit": "per_box",
+    "currency": "INR"
+   },
+   {
+    "line_key": "20",
+    "price": 32.38,
+    "unit": "per_box",
+    "currency": "INR"
+   },
+   {
+    "line_key": "21",
+    "price": 28.97,
+    "unit": "per_box",
+    "currency": "INR"
+   },
+   {
+    "line_key": "22",
+    "price": 43.7,
+    "unit": "per_box",
+    "currency": "INR"
+   },
+   {
+    "line_key": "23",
+    "price": 35.45,
+    "unit": "per_box",
+    "currency": "INR"
+   },
+   {
+    "line_key": "24",
+    "price": 27.94,
+    "unit": "per_box",
+    "currency": "INR"
+   },
+   {
+    "line_key": "25",
+    "price": 34.12,
+    "unit": "per_box",
+    "currency": "INR"
+   },
+   {
+    "line_key": "26",
+    "price": 40.8,
+    "unit": "per_box",
+    "currency": "INR"
+   },
+   {
+    "line_key": "27",
+    "price": 101.69,
+    "unit": "per_box",
+    "currency": "INR"
+   },
+   {
+    "line_key": "28",
+    "price": 92.18,
+    "unit": "per_box",
+    "currency": "INR"
+   },
+   {
+    "line_key": "29",
+    "price": 110.17,
+    "unit": "per_box",
+    "currency": "INR"
+   },
+   {
+    "line_key": "30",
+    "price": 103.5,
+    "unit": "per_box",
+    "currency": "INR"
+   }
+  ],
+  "blanket_rules": [],
+  "freight_rules": [
+   {
+    "scope_ply": null,
+    "basis": "extra_quoted",
+    "value_inr_per_piece": 0.6
+   }
+  ],
+  "answers": [
+   {
+    "q_code": "Q01_ISO9001",
+    "answer_value": "yes"
+   },
+   {
+    "q_code": "Q02_BS_TEST",
+    "answer_value": "yes"
+   },
+   {
+    "q_code": "Q03_REJECTION",
+    "answer_value": "conditional"
+   },
+   {
+    "q_code": "Q04_CAPACITY",
+    "answer_value": "180"
+   },
+   {
+    "q_code": "Q05_FIRST_SUPPLY",
+    "answer_value": "12"
+   },
+   {
+    "q_code": "Q06_PAPER_SOURCE",
+    "answer_value": "recycled"
+   },
+   {
+    "q_code": "Q07_FSC",
+    "answer_value": "no"
+   },
+   {
+    "q_code": "Q08_COMPLAINTS",
+    "answer_value": "2"
+   }
+  ]
+ }
+}

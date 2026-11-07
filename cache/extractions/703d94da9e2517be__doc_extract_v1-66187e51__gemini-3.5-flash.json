@@ -1,0 +1,30 @@
+{
+ "sha256": "703d94da9e2517be49d4713cfb9308df08fb4be94a8e540c0fa7f817cfea80cc",
+ "prompt": "doc_extract",
+ "prompt_version": "v1-66187e51",
+ "model": "gemini-3.5-flash",
+ "created_at": "2026-11-07T17:32:30+00:00",
+ "meta": {
+  "usage": {
+   "prompt_tokens": 845,
+   "output_tokens": 126
+  },
+  "file": "V5_KKP_ISO9001.pdf",
+  "model": "gemini-3.5-flash"
+ },
+ "result": {
+  "doc_type": "ISO9001",
+  "issuer": "Bharat Quality Assurance Pvt Ltd (fictional)",
+  "doc_number": "QMS/IN/17260",
+  "issue_date": "2023-04-01",
+  "expiry_date": "2026-03-31",
+  "holder_name": "Krishna Kraft Packaging LLP",
+  "site_address": "MIDC Shirwal, Satara",
+  "scope_text": "Design and manufacture of corrugated boxes and sheets",
+  "covers_text": null,
+  "source": {
+   "ref": "page 1",
+   "snippet": "Certified organisation Krishna Kraft Packaging LLP"
+  }
+ }
+}

@@ -1,0 +1,251 @@
+{
+ "sha256": "050d4a576d4ee18ff4441d5917ef960142827a1e186efbc2b0b54c775a87c8b1",
+ "prompt": "second_read",
+ "prompt_version": "v1-9cbed478",
+ "model": "gemini-3.6-flash",
+ "created_at": "2026-11-07T17:34:51+00:00",
+ "meta": {
+  "usage": {
+   "prompt_tokens": 2552,
+   "output_tokens": 1442
+  },
+  "file": "V3_WesternIndiaCartons_Offer_WICL-2611-044.docx",
+  "model": "gemini-3.6-flash"
+ },
+ "result": {
+  "lines": [
+   {
+    "line_key": "1",
+    "price": 0.0866,
+    "unit": "per_piece",
+    "currency": "USD"
+   },
+   {
+    "line_key": "2",
+    "price": 0.1349,
+    "unit": "per_piece",
+    "currency": "USD"
+   },
+   {
+    "line_key": "3",
+    "price": 0.1313,
+    "unit": "per_piece",
+    "currency": "USD"
+   },
+   {
+    "line_key": "4",
+    "price": 0.1305,
+    "unit": "per_piece",
+    "currency": "USD"
+   },
+   {
+    "line_key": "5",
+    "price": 0.1602,
+    "unit": "per_piece",
+    "currency": "USD"
+   },
+   {
+    "line_key": "6",
+    "price": 0.0641,
+    "unit": "per_piece",
+    "currency": "USD"
+   },
+   {
+    "line_key": "7",
+    "price": 0.1144,
+    "unit": "per_piece",
+    "currency": "USD"
+   },
+   {
+    "line_key": "8",
+    "price": 0.0987,
+    "unit": "per_piece",
+    "currency": "USD"
+   },
+   {
+    "line_key": "9",
+    "price": 0.1715,
+    "unit": "per_piece",
+    "currency": "USD"
+   },
+   {
+    "line_key": "10",
+    "price": 0.1992,
+    "unit": "per_piece",
+    "currency": "USD"
+   },
+   {
+    "line_key": "11",
+    "price": 0.164,
+    "unit": "per_piece",
+    "currency": "USD"
+   },
+   {
+    "line_key": "12",
+    "price": 0.1278,
+    "unit": "per_piece",
+    "currency": "USD"
+   },
+   {
+    "line_key": "13",
+    "price": 0.3874,
+    "unit": "per_piece",
+    "currency": "USD"
+   },
+   {
+    "line_key": "14",
+    "price": 0.3952,
+    "unit": "per_piece",
+    "currency": "USD"
+   },
+   {
+    "line_key": "15",
+    "price": 0.3464,
+    "unit": "per_piece",
+    "currency": "USD"
+   },
+   {
+    "line_key": "16",
+    "price": 0.3333,
+    "unit": "per_piece",
+    "currency": "USD"
+   },
+   {
+    "line_key": "17",
+    "price": 0.3639,
+    "unit": "per_piece",
+    "currency": "USD"
+   },
+   {
+    "line_key": "18",
+    "price": 0.3263,
+    "unit": "per_piece",
+    "currency": "USD"
+   },
+   {
+    "line_key": "19",
+    "price": 0.3212,
+    "unit": "per_piece",
+    "currency": "USD"
+   },
+   {
+    "line_key": "20",
+    "price": 0.3321,
+    "unit": "per_piece",
+    "currency": "USD"
+   },
+   {
+    "line_key": "21",
+    "price": 0.2805,
+    "unit": "per_piece",
+    "currency": "USD"
+   },
+   {
+    "line_key": "22",
+    "price": 0.4434,
+    "unit": "per_piece",
+    "currency": "USD"
+   },
+   {
+    "line_key": "23",
+    "price": 0.3519,
+    "unit": "per_piece",
+    "currency": "USD"
+   },
+   {
+    "line_key": "24",
+    "price": 0.2839,
+    "unit": "per_piece",
+    "currency": "USD"
+   },
+   {
+    "line_key": "25",
+    "price": 0.3456,
+    "unit": "per_piece",
+    "currency": "USD"
+   },
+   {
+    "line_key": "26",
+    "price": 0.4086,
+    "unit": "per_piece",
+    "currency": "USD"
+   },
+   {
+    "line_key": "600x400x400",
+    "price": 1.0541,
+    "unit": "per_piece",
+    "currency": "USD"
+   },
+   {
+    "line_key": "620x330x400",
+    "price": 0.9465,
+    "unit": "per_piece",
+    "currency": "USD"
+   },
+   {
+    "line_key": "580x400x450",
+    "price": 1.0725,
+    "unit": "per_piece",
+    "currency": "USD"
+   },
+   {
+    "line_key": "560x400x420",
+    "price": 1.0424,
+    "unit": "per_piece",
+    "currency": "USD"
+   }
+  ],
+  "blanket_rules": [],
+  "freight_rules": [
+   {
+    "scope_ply": 3,
+    "basis": "extra_quoted",
+    "value_inr_per_piece": 1.2
+   },
+   {
+    "scope_ply": 5,
+    "basis": "extra_quoted",
+    "value_inr_per_piece": 2.4
+   },
+   {
+    "scope_ply": 7,
+    "basis": "extra_quoted",
+    "value_inr_per_piece": 5.5
+   }
+  ],
+  "answers": [
+   {
+    "q_code": "Q01_ISO9001",
+    "answer_value": "yes"
+   },
+   {
+    "q_code": "Q02_BS_TEST",
+    "answer_value": "yes"
+   },
+   {
+    "q_code": "Q03_REJECTION",
+    "answer_value": "yes"
+   },
+   {
+    "q_code": "Q04_CAPACITY",
+    "answer_value": "400"
+   },
+   {
+    "q_code": "Q05_FIRST_SUPPLY",
+    "answer_value": "18"
+   },
+   {
+    "q_code": "Q06_PAPER_SOURCE",
+    "answer_value": "virgin"
+   },
+   {
+    "q_code": "Q07_FSC",
+    "answer_value": "yes"
+   },
+   {
+    "q_code": "Q08_COMPLAINTS",
+    "answer_value": "0"
+   }
+  ]
+ }
+}

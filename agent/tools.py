@@ -46,13 +46,13 @@ def award_scenario(conn: sqlite3.Connection, basis: str = "evaluated", exclude_v
         rec = {"line_no": int(line_no), "catalog_sku": first["catalog_sku"], "annual_qty": first["annual_qty"],
                "vendor_code": None, "quote_id": None, "price_inr_pc": None, "annual_value_inr": None,
                "backup_vendor": None, "backup_price_inr_pc": None, "ly_landed_inr_pc": first["ly_landed_inr_pc"],
-               "no_winner_reason": None}
+               "price_not_firm": False, "no_winner_reason": None}
         if ok.empty:
             rec["no_winner_reason"] = "no eligible quote"
         else:
             w = ok.iloc[0]
             rec.update(vendor_code=w["vendor_code"], quote_id=int(w["quote_id"]), price_inr_pc=w[col],
-                       annual_value_inr=w[col] * w["annual_qty"])
+                       annual_value_inr=w[col] * w["annual_qty"], price_not_firm=bool(w["price_not_firm"]))
             if len(ok) > 1:
                 rec.update(backup_vendor=ok.iloc[1]["vendor_code"], backup_price_inr_pc=ok.iloc[1][col])
         rows.append(rec)
@@ -64,5 +64,9 @@ def award_scenario(conn: sqlite3.Connection, basis: str = "evaluated", exclude_v
             "total_value_inr": float(won["annual_value_inr"].sum()),
             "by_vendor": won.groupby("vendor_code")["annual_value_inr"].sum().round(2).to_dict(),
             "ly_value_inr": float((won["ly_landed_inr_pc"] * won["annual_qty"]).sum()),
+            # PRICE_NOT_FIRM (raw-material-linked) is a flag, not an exclusion: surface it in every summary
+            "lines_on_not_firm_prices": int(won["price_not_firm"].sum()),
+            "value_on_not_firm_prices_inr": float(won.loc[won["price_not_firm"], "annual_value_inr"].sum()),
+            "not_firm_vendors": sorted(won.loc[won["price_not_firm"], "vendor_code"].unique().tolist()),
         }
     return df

@@ -1,0 +1,30 @@
+{
+ "sha256": "ffcc2da2063cb1cb2130e59cd6a6b2731176c18398d95539090f75061648cd63",
+ "prompt": "doc_extract",
+ "prompt_version": "v1-66187e51",
+ "model": "gemini-3.5-flash",
+ "created_at": "2026-11-07T17:33:39+00:00",
+ "meta": {
+  "usage": {
+   "prompt_tokens": 845,
+   "output_tokens": 180
+  },
+  "file": "V2_BS_test_report.pdf",
+  "model": "gemini-3.5-flash"
+ },
+ "result": {
+  "doc_type": "test_report",
+  "issuer": "Pune Packaging Test Lab (fictional)",
+  "doc_number": "PPTL/26/10/4610",
+  "issue_date": "2026-10-05",
+  "expiry_date": null,
+  "holder_name": "Shree Ganesh Packaging Industries",
+  "site_address": null,
+  "scope_text": null,
+  "covers_text": "Samples 3-ply and 5-ply standard grades Result Meets specified BS",
+  "source": {
+   "ref": "page 1",
+   "snippet": "Customer Shree Ganesh Packaging Industries Date of test 05 Oct 2026"
+  }
+ }
+}

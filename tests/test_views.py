@@ -206,3 +206,16 @@ def test_recompute_is_idempotent(conn):
     before = snap()
     recompute_all(conn)
     assert snap() == before
+
+
+# ------------------------------------------------------------------ PRICE_NOT_FIRM stays a flag but is always surfaced
+def test_price_not_firm_is_flagged_in_grid_and_award_summary_not_excluded(ro):
+    g = pd.read_sql("SELECT vendor_code, price_not_firm, is_awardable FROM v_comparison_grid", ro)
+    v3 = g[g.vendor_code == "V3"]
+    assert v3.price_not_firm.eq(1).all() and g[g.vendor_code != "V3"].price_not_firm.eq(0).all()
+    s = award_scenario(ro)
+    t = s.attrs["totals"]
+    won_v3 = s[s.vendor_code == "V3"]
+    assert t["not_firm_vendors"] == ["V3"] and t["lines_on_not_firm_prices"] == len(won_v3) > 0
+    assert t["value_on_not_firm_prices_inr"] == pytest.approx(won_v3.annual_value_inr.sum())
+    assert s[s.vendor_code == "V3"].price_not_firm.all() and not s[s.vendor_code != "V3"].price_not_firm.any()

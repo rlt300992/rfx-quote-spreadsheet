@@ -1,0 +1,30 @@
+{
+ "sha256": "b37634780629675d0e7f07c16705bbb258db7fd8c686cc6cb910003b3f2b8095",
+ "prompt": "doc_extract",
+ "prompt_version": "v1-66187e51",
+ "model": "gemini-3.5-flash",
+ "created_at": "2026-11-07T17:32:39+00:00",
+ "meta": {
+  "usage": {
+   "prompt_tokens": 845,
+   "output_tokens": 165
+  },
+  "file": "V3_FSC_CoC_certificate.pdf",
+  "model": "gemini-3.5-flash"
+ },
+ "result": {
+  "doc_type": "FSC",
+  "issuer": null,
+  "doc_number": "XX-COC-018832 (fictional)",
+  "issue_date": null,
+  "expiry_date": "2028-06-30",
+  "holder_name": "Western India Cartons Ltd",
+  "site_address": "Vapi, Gujarat",
+  "scope_text": "Corrugated board and boxes",
+  "covers_text": null,
+  "source": {
+   "ref": "page 1",
+   "snippet": "Holder Western India Cartons Ltd Valid until 30 Jun 2028"
+  }
+ }
+}

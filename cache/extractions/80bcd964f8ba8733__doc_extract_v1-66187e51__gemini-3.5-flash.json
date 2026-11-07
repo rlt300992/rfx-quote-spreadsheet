@@ -1,0 +1,30 @@
+{
+ "sha256": "80bcd964f8ba8733ba45fc1f57252d7dc5caccb1823664253adc37480fa11e7c",
+ "prompt": "doc_extract",
+ "prompt_version": "v1-66187e51",
+ "model": "gemini-3.5-flash",
+ "created_at": "2026-11-07T17:32:43+00:00",
+ "meta": {
+  "usage": {
+   "prompt_tokens": 845,
+   "output_tokens": 131
+  },
+  "file": "V2_ISO9001_certificate.pdf",
+  "model": "gemini-3.5-flash"
+ },
+ "result": {
+  "doc_type": "ISO9001",
+  "issuer": "Bharat Quality Assurance Pvt Ltd (fictional)",
+  "doc_number": "QMS/IN/31907",
+  "issue_date": "2025-03-03",
+  "expiry_date": "2028-03-02",
+  "holder_name": "Shree Ganesh Group Holdings Pvt Ltd",
+  "site_address": "Corporate Office, Nigdi, Pune",
+  "scope_text": "Design and manufacture of corrugated boxes and sheets",
+  "covers_text": null,
+  "source": {
+   "ref": "page 1",
+   "snippet": "Certified organisation Shree Ganesh Group Holdings Pvt Ltd"
+  }
+ }
+}

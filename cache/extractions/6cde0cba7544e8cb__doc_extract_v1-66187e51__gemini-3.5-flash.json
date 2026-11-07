@@ -1,0 +1,30 @@
+{
+ "sha256": "6cde0cba7544e8cb7acae48ad6882cbf24640d8c495e2293eaa39a35221a21d6",
+ "prompt": "doc_extract",
+ "prompt_version": "v1-66187e51",
+ "model": "gemini-3.5-flash",
+ "created_at": "2026-11-07T17:32:35+00:00",
+ "meta": {
+  "usage": {
+   "prompt_tokens": 845,
+   "output_tokens": 209
+  },
+  "file": "V1_BS_test_report.pdf",
+  "model": "gemini-3.5-flash"
+ },
+ "result": {
+  "doc_type": "test_report",
+  "issuer": "Pune Packaging Test Lab (fictional)",
+  "doc_number": "PPTL/26/09/4471",
+  "issue_date": "2026-09-20",
+  "expiry_date": null,
+  "holder_name": "Deccan Corrugators Pvt Ltd",
+  "site_address": null,
+  "scope_text": null,
+  "covers_text": "Samples: 3-ply 150/120/150, 5-ply 180/120/150/120/180, 7-ply 200/150/150/150/150/150/200. Result: All samples meet or exceed specified BS (min 7 / 13 / 20 kg/cm²)",
+  "source": {
+   "ref": "page 1",
+   "snippet": "Customer Deccan Corrugators Pvt Ltd"
+  }
+ }
+}

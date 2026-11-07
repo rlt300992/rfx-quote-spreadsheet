@@ -1,0 +1,1036 @@
+{
+ "sha256": "18e755bb5d28239d57971bb61bd5f210a00b44daea3f46f158d0c1bdfd878207",
+ "prompt": "quote_extract",
+ "prompt_version": "v4-b5129d84",
+ "model": "gemini-3.1-flash-lite",
+ "created_at": "2026-11-07T17:45:42+00:00",
+ "meta": {
+  "usage": {
+   "prompt_tokens": 3576,
+   "output_tokens": 6644
+  },
+  "file": "V2_ShreeGanesh_Quotation_SGPI-Q-1127.pdf",
+  "model": "gemini-3.1-flash-lite"
+ },
+ "result": {
+  "header": {
+   "vendor_name": "Shree Ganesh Packaging Industries",
+   "quote_ref_no": "SGPI/Q/1127",
+   "quote_date": "2026-11-12",
+   "validity_text": "45 days from date of quotation",
+   "validity_date": "2026-12-27",
+   "price_basis": "unspecified",
+   "rm_clause_text": null,
+   "gst_rate_pct": 18.0,
+   "tax_basis": "ex_gst",
+   "payment_terms_days": 90,
+   "payment_terms_text": "90 days credit from date of invoice",
+   "lead_time_days": 12,
+   "moq_qty": null,
+   "moq_text": null,
+   "declared_msme_category": "small",
+   "freight_rules": [
+    {
+     "scope_ply": null,
+     "basis": "extra_quoted",
+     "value_inr_per_piece": 0.6,
+     "text": "₹0.60 per box extra up to your Chakan plant.",
+     "source": {
+      "ref": "page 1 row 33",
+      "snippet": "Freight: ₹0.60 per box extra up to your Chakan plant."
+     }
+    }
+   ],
+   "discounts": [
+    {
+     "pct": 2.0,
+     "condition_type": "payment_days_max",
+     "condition_value": 15.0,
+     "condition_text": "2% cash discount if payment is released within 15 days of invoice.",
+     "qty_basis": null,
+     "scope": "all_lines",
+     "source": {
+      "ref": "page 1 row 1",
+      "snippet": "Rates subject to 2% cash discount if payment is released within 15 days of invoice."
+     }
+    }
+   ],
+   "charges": [
+    {
+     "type": "print",
+     "amount": 2500.0,
+     "basis": "one_time",
+     "per_colour": true,
+     "applies_to": "printed_items",
+     "text": "Printing plates: ₹2,500 per colour, one time, for printed items.",
+     "source": {
+      "ref": "page 1 row 35",
+      "snippet": "Printing plates: ₹2,500 per colour, one time, for printed items."
+     }
+    }
+   ],
+   "blanket_rules": [],
+   "attached_documents": [],
+   "sources": [
+    {
+     "field": "vendor_name",
+     "source": {
+      "ref": "page 1 row 2",
+      "snippet": "SHREE GANESH PACKAGING INDUSTRIES"
+     }
+    },
+    {
+     "field": "quote_ref_no",
+     "source": {
+      "ref": "page 1 row 6",
+      "snippet": "Ref: SGPI/Q/1127"
+     }
+    },
+    {
+     "field": "quote_date",
+     "source": {
+      "ref": "page 1 row 6",
+      "snippet": "Date: 12/11/2026"
+     }
+    },
+    {
+     "field": "validity_text",
+     "source": {
+      "ref": "page 1 row 36",
+      "snippet": "Validity: 45 days from date of quotation."
+     }
+    },
+    {
+     "field": "gst_rate_pct",
+     "source": {
+      "ref": "page 1 row 33",
+      "snippet": "GST @ 18% extra."
+     }
+    },
+    {
+     "field": "tax_basis",
+     "source": {
+      "ref": "page 1 row 33",
+      "snippet": "GST @ 18% extra."
+     }
+    },
+    {
+     "field": "payment_terms_days",
+     "source": {
+      "ref": "page 1 row 34",
+      "snippet": "Payment: 90 days credit from date of invoice."
+     }
+    },
+    {
+     "field": "lead_time_days",
+     "source": {
+      "ref": "page 1 row 36",
+      "snippet": "Delivery: 12 days from PO."
+     }
+    },
+    {
+     "field": "declared_msme_category",
+     "source": {
+      "ref": "page 1 row 4",
+      "snippet": "Udyam Regd. (Small Enterprise)"
+     }
+    }
+   ],
+   "notes": null
+  },
+  "lines": [
+   {
+    "line_key": "1",
+    "vendor_item_text": "Shampoo 180ml bottle shipper (24s)",
+    "length_mm": 300,
+    "width_mm": 200,
+    "height_mm": 150,
+    "dim_basis": "unknown",
+    "ply": 3,
+    "construction_text": null,
+    "vendor_layers_gsm": null,
+    "raw_price_text": "8.42",
+    "price": 8.42,
+    "unit": "per_box",
+    "currency": "INR",
+    "tiers": [],
+    "discounts": [],
+    "freight_basis": null,
+    "freight_value_inr_per_piece": null,
+    "capacity_per_month": null,
+    "capacity_text": null,
+    "remarks": null,
+    "ocr_uncertain": false,
+    "source": {
+     "ref": "page 1 row 9",
+     "snippet": "1 Shampoo 180ml bottle shipper (24s) 300x200x150 3 8.42"
+    }
+   },
+   {
+    "line_key": "2",
+    "vendor_item_text": "Shampoo sachet master (960s)",
+    "length_mm": 380,
+    "width_mm": 250,
+    "height_mm": 200,
+    "dim_basis": "unknown",
+    "ply": 3,
+    "construction_text": null,
+    "vendor_layers_gsm": null,
+    "raw_price_text": "13.34",
+    "price": 13.34,
+    "unit": "per_box",
+    "currency": "INR",
+    "tiers": [],
+    "discounts": [],
+    "freight_basis": null,
+    "freight_value_inr_per_piece": null,
+    "capacity_per_month": null,
+    "capacity_text": null,
+    "remarks": null,
+    "ocr_uncertain": false,
+    "source": {
+     "ref": "page 1 row 10",
+     "snippet": "2 Shampoo sachet master (960s) 380x250x200 3 13.34"
+    }
+   },
+   {
+    "line_key": "3",
+    "vendor_item_text": "Bathing soap 75g x 144 carton",
+    "length_mm": 360,
+    "width_mm": 240,
+    "height_mm": 180,
+    "dim_basis": "unknown",
+    "ply": 3,
+    "construction_text": null,
+    "vendor_layers_gsm": null,
+    "raw_price_text": "12.82",
+    "price": 12.82,
+    "unit": "per_box",
+    "currency": "INR",
+    "tiers": [],
+    "discounts": [],
+    "freight_basis": null,
+    "freight_value_inr_per_piece": null,
+    "capacity_per_month": null,
+    "capacity_text": null,
+    "remarks": null,
+    "ocr_uncertain": false,
+    "source": {
+     "ref": "page 1 row 11",
+     "snippet": "3 Bathing soap 75g x 144 carton 360x240x180 3 12.82"
+    }
+   },
+   {
+    "line_key": "4",
+    "vendor_item_text": "Bathing soap 125g x 72 carton",
+    "length_mm": 340,
+    "width_mm": 260,
+    "height_mm": 160,
+    "dim_basis": "unknown",
+    "ply": 3,
+    "construction_text": null,
+    "vendor_layers_gsm": null,
+    "raw_price_text": "12.46",
+    "price": 12.46,
+    "unit": "per_box",
+    "currency": "INR",
+    "tiers": [],
+    "discounts": [],
+    "freight_basis": null,
+    "freight_value_inr_per_piece": null,
+    "capacity_per_month": null,
+    "capacity_text": null,
+    "remarks": null,
+    "ocr_uncertain": false,
+    "source": {
+     "ref": "page 1 row 12",
+     "snippet": "4 Bathing soap 125g x 72 carton 340x260x160 3 12.46"
+    }
+   },
+   {
+    "line_key": "5",
+    "vendor_item_text": "Toothpaste 150g x 72 shipper",
+    "length_mm": 420,
+    "width_mm": 280,
+    "height_mm": 190,
+    "dim_basis": "unknown",
+    "ply": 3,
+    "construction_text": null,
+    "vendor_layers_gsm": null,
+    "raw_price_text": "15.30",
+    "price": 15.3,
+    "unit": "per_box",
+    "currency": "INR",
+    "tiers": [],
+    "discounts": [],
+    "freight_basis": null,
+    "freight_value_inr_per_piece": null,
+    "capacity_per_month": null,
+    "capacity_text": null,
+    "remarks": null,
+    "ocr_uncertain": false,
+    "source": {
+     "ref": "page 1 row 13",
+     "snippet": "5 Toothpaste 150g x 72 shipper 420x280x190 3 15.30"
+    }
+   },
+   {
+    "line_key": "6",
+    "vendor_item_text": "Toothbrush retail display (inner)",
+    "length_mm": 250,
+    "width_mm": 180,
+    "height_mm": 120,
+    "dim_basis": "unknown",
+    "ply": 3,
+    "construction_text": null,
+    "vendor_layers_gsm": null,
+    "raw_price_text": "620.00",
+    "price": 620.0,
+    "unit": "per_box",
+    "currency": "INR",
+    "tiers": [],
+    "discounts": [],
+    "freight_basis": null,
+    "freight_value_inr_per_piece": null,
+    "capacity_per_month": null,
+    "capacity_text": null,
+    "remarks": null,
+    "ocr_uncertain": false,
+    "source": {
+     "ref": "page 1 row 14",
+     "snippet": "6 Toothbrush retail display (inner) 250x180x120 3 620.00"
+    }
+   },
+   {
+    "line_key": "7",
+    "vendor_item_text": "Hair oil 100ml x 48 shipper",
+    "length_mm": 320,
+    "width_mm": 240,
+    "height_mm": 170,
+    "dim_basis": "unknown",
+    "ply": 3,
+    "construction_text": null,
+    "vendor_layers_gsm": null,
+    "raw_price_text": "11.16",
+    "price": 11.16,
+    "unit": "per_box",
+    "currency": "INR",
+    "tiers": [],
+    "discounts": [],
+    "freight_basis": null,
+    "freight_value_inr_per_piece": null,
+    "capacity_per_month": null,
+    "capacity_text": null,
+    "remarks": null,
+    "ocr_uncertain": false,
+    "source": {
+     "ref": "page 1 row 15",
+     "snippet": "7 Hair oil 100ml x 48 shipper 320x240x170 3 11.16"
+    }
+   },
+   {
+    "line_key": "8",
+    "vendor_item_text": "Face cream 50g x 96 shipper",
+    "length_mm": 300,
+    "width_mm": 220,
+    "height_mm": 140,
+    "dim_basis": "unknown",
+    "ply": 3,
+    "construction_text": null,
+    "vendor_layers_gsm": null,
+    "raw_price_text": "944.00",
+    "price": 944.0,
+    "unit": "per_box",
+    "currency": "INR",
+    "tiers": [],
+    "discounts": [],
+    "freight_basis": null,
+    "freight_value_inr_per_piece": null,
+    "capacity_per_month": null,
+    "capacity_text": null,
+    "remarks": null,
+    "ocr_uncertain": false,
+    "source": {
+     "ref": "page 1 row 16",
+     "snippet": "8 Face cream 50g x 96 shipper 300x220x140 3 944.00"
+    }
+   },
+   {
+    "line_key": "9",
+    "vendor_item_text": "Biscuit 75g x 60 carton",
+    "length_mm": 400,
+    "width_mm": 300,
+    "height_mm": 220,
+    "dim_basis": "unknown",
+    "ply": 3,
+    "construction_text": null,
+    "vendor_layers_gsm": null,
+    "raw_price_text": "16.73",
+    "price": 16.73,
+    "unit": "per_box",
+    "currency": "INR",
+    "tiers": [],
+    "discounts": [],
+    "freight_basis": null,
+    "freight_value_inr_per_piece": null,
+    "capacity_per_month": null,
+    "capacity_text": null,
+    "remarks": null,
+    "ocr_uncertain": false,
+    "source": {
+     "ref": "page 1 row 17",
+     "snippet": "9 Biscuit 75g x 60 carton 400x300x220 3 16.73"
+    }
+   },
+   {
+    "line_key": "10",
+    "vendor_item_text": "Noodles 70g x 96 carton",
+    "length_mm": 420,
+    "width_mm": 320,
+    "height_mm": 250,
+    "dim_basis": "unknown",
+    "ply": 3,
+    "construction_text": null,
+    "vendor_layers_gsm": null,
+    "raw_price_text": "19.54",
+    "price": 19.54,
+    "unit": "per_box",
+    "currency": "INR",
+    "tiers": [],
+    "discounts": [],
+    "freight_basis": null,
+    "freight_value_inr_per_piece": null,
+    "capacity_per_month": null,
+    "capacity_text": null,
+    "remarks": null,
+    "ocr_uncertain": false,
+    "source": {
+     "ref": "page 1 row 18",
+     "snippet": "10 Noodles 70g x 96 carton 420x320x250 3 19.54"
+    }
+   },
+   {
+    "line_key": "11",
+    "vendor_item_text": "Tea 250g x 40 carton",
+    "length_mm": 360,
+    "width_mm": 280,
+    "height_mm": 230,
+    "dim_basis": "unknown",
+    "ply": 3,
+    "construction_text": null,
+    "vendor_layers_gsm": null,
+    "raw_price_text": "16.52",
+    "price": 16.52,
+    "unit": "per_box",
+    "currency": "INR",
+    "tiers": [],
+    "discounts": [],
+    "freight_basis": null,
+    "freight_value_inr_per_piece": null,
+    "capacity_per_month": null,
+    "capacity_text": null,
+    "remarks": null,
+    "ocr_uncertain": false,
+    "source": {
+     "ref": "page 1 row 19",
+     "snippet": "11 Tea 250g x 40 carton 360x280x230 3 16.52"
+    }
+   },
+   {
+    "line_key": "12",
+    "vendor_item_text": "Spices 100g x 120 carton",
+    "length_mm": 330,
+    "width_mm": 250,
+    "height_mm": 200,
+    "dim_basis": "unknown",
+    "ply": 3,
+    "construction_text": null,
+    "vendor_layers_gsm": null,
+    "raw_price_text": "1,229.00",
+    "price": 1229.0,
+    "unit": "per_box",
+    "currency": "INR",
+    "tiers": [],
+    "discounts": [],
+    "freight_basis": null,
+    "freight_value_inr_per_piece": null,
+    "capacity_per_month": null,
+    "capacity_text": null,
+    "remarks": null,
+    "ocr_uncertain": false,
+    "source": {
+     "ref": "page 1 row 20",
+     "snippet": "12 Spices 100g x 120 carton 330x250x200 3 1,229.00"
+    }
+   },
+   {
+    "line_key": "13",
+    "vendor_item_text": "Detergent powder 1kg x 20 master",
+    "length_mm": 450,
+    "width_mm": 300,
+    "height_mm": 300,
+    "dim_basis": "unknown",
+    "ply": 5,
+    "construction_text": null,
+    "vendor_layers_gsm": null,
+    "raw_price_text": "38.49",
+    "price": 38.49,
+    "unit": "per_box",
+    "currency": "INR",
+    "tiers": [],
+    "discounts": [],
+    "freight_basis": null,
+    "freight_value_inr_per_piece": null,
+    "capacity_per_month": null,
+    "capacity_text": null,
+    "remarks": null,
+    "ocr_uncertain": false,
+    "source": {
+     "ref": "page 1 row 21",
+     "snippet": "13 Detergent powder 1kg x 20 master 450x300x300 5 38.49"
+    }
+   },
+   {
+    "line_key": "14",
+    "vendor_item_text": "Detergent powder 500g x 40 master",
+    "length_mm": 430,
+    "width_mm": 320,
+    "height_mm": 280,
+    "dim_basis": "unknown",
+    "ply": 5,
+    "construction_text": null,
+    "vendor_layers_gsm": null,
+    "raw_price_text": "38.28",
+    "price": 38.28,
+    "unit": "per_box",
+    "currency": "INR",
+    "tiers": [],
+    "discounts": [],
+    "freight_basis": null,
+    "freight_value_inr_per_piece": null,
+    "capacity_per_month": null,
+    "capacity_text": null,
+    "remarks": null,
+    "ocr_uncertain": false,
+    "source": {
+     "ref": "page 1 row 22",
+     "snippet": "14 Detergent powder 500g x 40 master 430x320x280 5 38.28"
+    }
+   },
+   {
+    "line_key": "15",
+    "vendor_item_text": "Liquid detergent 1L x 12 shipper",
+    "length_mm": 400,
+    "width_mm": 300,
+    "height_mm": 270,
+    "dim_basis": "unknown",
+    "ply": 5,
+    "construction_text": null,
+    "vendor_layers_gsm": null,
+    "raw_price_text": "32.98",
+    "price": 32.98,
+    "unit": "per_box",
+    "currency": "INR",
+    "tiers": [],
+    "discounts": [],
+    "freight_basis": null,
+    "freight_value_inr_per_piece": null,
+    "capacity_per_month": null,
+    "capacity_text": null,
+    "remarks": null,
+    "ocr_uncertain": false,
+    "source": {
+     "ref": "page 1 row 23",
+     "snippet": "15 Liquid detergent 1L x 12 shipper 400x300x270 5 32.98"
+    }
+   },
+   {
+    "line_key": "16",
+    "vendor_item_text": "Dishwash bar 200g x 100 carton",
+    "length_mm": 420,
+    "width_mm": 300,
+    "height_mm": 250,
+    "dim_basis": "unknown",
+    "ply": 5,
+    "construction_text": null,
+    "vendor_layers_gsm": null,
+    "raw_price_text": "33.42",
+    "price": 33.42,
+    "unit": "per_box",
+    "currency": "INR",
+    "tiers": [],
+    "discounts": [],
+    "freight_basis": null,
+    "freight_value_inr_per_piece": null,
+    "capacity_per_month": null,
+    "capacity_text": null,
+    "remarks": null,
+    "ocr_uncertain": false,
+    "source": {
+     "ref": "page 1 row 24",
+     "snippet": "16 Dishwash bar 200g x 100 carton 420x300x250 5 33.42"
+    }
+   },
+   {
+    "line_key": "17",
+    "vendor_item_text": "Floor cleaner 1L x 12 shipper",
+    "length_mm": 410,
+    "width_mm": 310,
+    "height_mm": 290,
+    "dim_basis": "unknown",
+    "ply": 5,
+    "construction_text": null,
+    "vendor_layers_gsm": null,
+    "raw_price_text": "36.15",
+    "price": 36.15,
+    "unit": "per_box",
+    "currency": "INR",
+    "tiers": [],
+    "discounts": [],
+    "freight_basis": null,
+    "freight_value_inr_per_piece": null,
+    "capacity_per_month": null,
+    "capacity_text": null,
+    "remarks": null,
+    "ocr_uncertain": false,
+    "source": {
+     "ref": "page 1 row 25",
+     "snippet": "17 Floor cleaner 1L x 12 shipper 410x310x290 5 36.15"
+    }
+   },
+   {
+    "line_key": "18",
+    "vendor_item_text": "Toilet cleaner 500ml x 24 shipper",
+    "length_mm": 420,
+    "width_mm": 280,
+    "height_mm": 260,
+    "dim_basis": "unknown",
+    "ply": 5,
+    "construction_text": null,
+    "vendor_layers_gsm": null,
+    "raw_price_text": "32.55",
+    "price": 32.55,
+    "unit": "per_box",
+    "currency": "INR",
+    "tiers": [],
+    "discounts": [],
+    "freight_basis": null,
+    "freight_value_inr_per_piece": null,
+    "capacity_per_month": null,
+    "capacity_text": null,
+    "remarks": null,
+    "ocr_uncertain": false,
+    "source": {
+     "ref": "page 1 row 26",
+     "snippet": "18 Toilet cleaner 500ml x 24 shipper 420x280x260 5 32.55"
+    }
+   },
+   {
+    "line_key": "19",
+    "vendor_item_text": "Edible oil 1L pouch x 16 carton",
+    "length_mm": 380,
+    "width_mm": 280,
+    "height_mm": 260,
+    "dim_basis": "unknown",
+    "ply": 5,
+    "construction_text": null,
+    "vendor_layers_gsm": null,
+    "raw_price_text": "33.02",
+    "price": 33.02,
+    "unit": "per_box",
+    "currency": "INR",
+    "tiers": [],
+    "discounts": [],
+    "freight_basis": null,
+    "freight_value_inr_per_piece": null,
+    "capacity_per_month": null,
+    "capacity_text": null,
+    "remarks": null,
+    "ocr_uncertain": false,
+    "source": {
+     "ref": "page 1 row 27",
+     "snippet": "19 Edible oil 1L pouch x 16 carton 380x280x260 5 33.02"
+    }
+   },
+   {
+    "line_key": "20",
+    "vendor_item_text": "Edible oil 1L bottle x 12 carton",
+    "length_mm": 360,
+    "width_mm": 270,
+    "height_mm": 300,
+    "dim_basis": "unknown",
+    "ply": 5,
+    "construction_text": null,
+    "vendor_layers_gsm": null,
+    "raw_price_text": "32.38",
+    "price": 32.38,
+    "unit": "per_box",
+    "currency": "INR",
+    "tiers": [],
+    "discounts": [],
+    "freight_basis": null,
+    "freight_value_inr_per_piece": null,
+    "capacity_per_month": null,
+    "capacity_text": null,
+    "remarks": null,
+    "ocr_uncertain": false,
+    "source": {
+     "ref": "page 1 row 28",
+     "snippet": "20 Edible oil 1L bottle x 12 carton 360x270x300 5 32.38"
+    }
+   },
+   {
+    "line_key": "21",
+    "vendor_item_text": "Ghee 500ml jar x 24 carton",
+    "length_mm": 400,
+    "width_mm": 270,
+    "height_mm": 220,
+    "dim_basis": "unknown",
+    "ply": 5,
+    "construction_text": null,
+    "vendor_layers_gsm": null,
+    "raw_price_text": "28.97",
+    "price": 28.97,
+    "unit": "per_box",
+    "currency": "INR",
+    "tiers": [],
+    "discounts": [],
+    "freight_basis": null,
+    "freight_value_inr_per_piece": null,
+    "capacity_per_month": null,
+    "capacity_text": null,
+    "remarks": null,
+    "ocr_uncertain": false,
+    "source": {
+     "ref": "page 1 row 29",
+     "snippet": "21 Ghee 500ml jar x 24 carton 400x270x220 5 28.97"
+    }
+   },
+   {
+    "line_key": "22",
+    "vendor_item_text": "Atta 5kg x 4 carton",
+    "length_mm": 460,
+    "width_mm": 330,
+    "height_mm": 300,
+    "dim_basis": "unknown",
+    "ply": 5,
+    "construction_text": null,
+    "vendor_layers_gsm": null,
+    "raw_price_text": "43.70",
+    "price": 43.7,
+    "unit": "per_box",
+    "currency": "INR",
+    "tiers": [],
+    "discounts": [],
+    "freight_basis": null,
+    "freight_value_inr_per_piece": null,
+    "capacity_per_month": null,
+    "capacity_text": null,
+    "remarks": null,
+    "ocr_uncertain": false,
+    "source": {
+     "ref": "page 1 row 30",
+     "snippet": "22 Atta 5kg x 4 carton 460x330x300 5 43.70"
+    }
+   },
+   {
+    "line_key": "23",
+    "vendor_item_text": "Sugar 1kg x 20 carton",
+    "length_mm": 440,
+    "width_mm": 300,
+    "height_mm": 280,
+    "dim_basis": "unknown",
+    "ply": 5,
+    "construction_text": null,
+    "vendor_layers_gsm": null,
+    "raw_price_text": "35.45",
+    "price": 35.45,
+    "unit": "per_box",
+    "currency": "INR",
+    "tiers": [],
+    "discounts": [],
+    "freight_basis": null,
+    "freight_value_inr_per_piece": null,
+    "capacity_per_month": null,
+    "capacity_text": null,
+    "remarks": null,
+    "ocr_uncertain": false,
+    "source": {
+     "ref": "page 1 row 31",
+     "snippet": "23 Sugar 1kg x 20 carton 440x300x280 5 35.45"
+    }
+   },
+   {
+    "line_key": "24",
+    "vendor_item_text": "Hand wash 250ml x 24 shipper",
+    "length_mm": 380,
+    "width_mm": 260,
+    "height_mm": 240,
+    "dim_basis": "unknown",
+    "ply": 5,
+    "construction_text": null,
+    "vendor_layers_gsm": null,
+    "raw_price_text": "27.94",
+    "price": 27.94,
+    "unit": "per_box",
+    "currency": "INR",
+    "tiers": [],
+    "discounts": [],
+    "freight_basis": null,
+    "freight_value_inr_per_piece": null,
+    "capacity_per_month": null,
+    "capacity_text": null,
+    "remarks": null,
+    "ocr_uncertain": false,
+    "source": {
+     "ref": "page 1 row 32",
+     "snippet": "24 Hand wash 250ml x 24 shipper 380x260x240 5 27.94"
+    }
+   },
+   {
+    "line_key": "25",
+    "vendor_item_text": "Mixed SKU e-commerce shipper",
+    "length_mm": 400,
+    "width_mm": 300,
+    "height_mm": 300,
+    "dim_basis": "unknown",
+    "ply": 5,
+    "construction_text": null,
+    "vendor_layers_gsm": null,
+    "raw_price_text": "34.12",
+    "price": 34.12,
+    "unit": "per_box",
+    "currency": "INR",
+    "tiers": [],
+    "discounts": [],
+    "freight_basis": null,
+    "freight_value_inr_per_piece": null,
+    "capacity_per_month": null,
+    "capacity_text": null,
+    "remarks": null,
+    "ocr_uncertain": false,
+    "source": {
+     "ref": "page 1 row 33",
+     "snippet": "25 Mixed SKU e-commerce shipper 400x300x300 5 34.12"
+    }
+   },
+   {
+    "line_key": "26",
+    "vendor_item_text": "Promo gift-pack outer",
+    "length_mm": 450,
+    "width_mm": 350,
+    "height_mm": 250,
+    "dim_basis": "unknown",
+    "ply": 5,
+    "construction_text": null,
+    "vendor_layers_gsm": null,
+    "raw_price_text": "40.80",
+    "price": 40.8,
+    "unit": "per_box",
+    "currency": "INR",
+    "tiers": [],
+    "discounts": [],
+    "freight_basis": null,
+    "freight_value_inr_per_piece": null,
+    "capacity_per_month": null,
+    "capacity_text": null,
+    "remarks": null,
+    "ocr_uncertain": false,
+    "source": {
+     "ref": "page 1 row 34",
+     "snippet": "26 Promo gift-pack outer 450x350x250 5 40.80"
+    }
+   },
+   {
+    "line_key": "27",
+    "vendor_item_text": "Export detergent 25kg bulk carton",
+    "length_mm": 600,
+    "width_mm": 400,
+    "height_mm": 400,
+    "dim_basis": "unknown",
+    "ply": 7,
+    "construction_text": null,
+    "vendor_layers_gsm": null,
+    "raw_price_text": "101.69",
+    "price": 101.69,
+    "unit": "per_box",
+    "currency": "INR",
+    "tiers": [],
+    "discounts": [],
+    "freight_basis": null,
+    "freight_value_inr_per_piece": null,
+    "capacity_per_month": null,
+    "capacity_text": null,
+    "remarks": null,
+    "ocr_uncertain": false,
+    "source": {
+     "ref": "page 1 row 35",
+     "snippet": "27 Export detergent 25kg bulk carton 600x400x400 7 101.69"
+    }
+   },
+   {
+    "line_key": "28",
+    "vendor_item_text": "Export edible oil 15L tin x 2 carton",
+    "length_mm": 620,
+    "width_mm": 330,
+    "height_mm": 400,
+    "dim_basis": "unknown",
+    "ply": 7,
+    "construction_text": null,
+    "vendor_layers_gsm": null,
+    "raw_price_text": "92.18",
+    "price": 92.18,
+    "unit": "per_box",
+    "currency": "INR",
+    "tiers": [],
+    "discounts": [],
+    "freight_basis": null,
+    "freight_value_inr_per_piece": null,
+    "capacity_per_month": null,
+    "capacity_text": null,
+    "remarks": null,
+    "ocr_uncertain": false,
+    "source": {
+     "ref": "page 1 row 36",
+     "snippet": "28 Export edible oil 15L tin x 2 carton 620x330x400 7 92.18"
+    }
+   },
+   {
+    "line_key": "29",
+    "vendor_item_text": "Pallet-load spice drum outer",
+    "length_mm": 580,
+    "width_mm": 400,
+    "height_mm": 450,
+    "dim_basis": "unknown",
+    "ply": 7,
+    "construction_text": null,
+    "vendor_layers_gsm": null,
+    "raw_price_text": "110.17",
+    "price": 110.17,
+    "unit": "per_box",
+    "currency": "INR",
+    "tiers": [],
+    "discounts": [],
+    "freight_basis": null,
+    "freight_value_inr_per_piece": null,
+    "capacity_per_month": null,
+    "capacity_text": null,
+    "remarks": null,
+    "ocr_uncertain": false,
+    "source": {
+     "ref": "page 1 row 37",
+     "snippet": "29 Pallet-load spice drum outer 580x400x450 7 110.17"
+    }
+   },
+   {
+    "line_key": "30",
+    "vendor_item_text": "Heavy-duty atta 25kg export carton",
+    "length_mm": 560,
+    "width_mm": 400,
+    "height_mm": 420,
+    "dim_basis": "unknown",
+    "ply": 7,
+    "construction_text": null,
+    "vendor_layers_gsm": null,
+    "raw_price_text": "103.50",
+    "price": 103.5,
+    "unit": "per_box",
+    "currency": "INR",
+    "tiers": [],
+    "discounts": [],
+    "freight_basis": null,
+    "freight_value_inr_per_piece": null,
+    "capacity_per_month": null,
+    "capacity_text": null,
+    "remarks": null,
+    "ocr_uncertain": false,
+    "source": {
+     "ref": "page 1 row 38",
+     "snippet": "30 Heavy-duty atta 25kg export carton 560x400x420 7 103.50"
+    }
+   }
+  ],
+  "answers": [
+   {
+    "q_code": "Q01_ISO9001",
+    "answer_text": "Yes. Certificate attached.",
+    "answer_value": "yes",
+    "document_attached": true,
+    "source": {
+     "ref": "page 2 row 1",
+     "snippet": "1. ISO 9001: Yes. Certificate attached."
+    }
+   },
+   {
+    "q_code": "Q02_BS_TEST",
+    "answer_text": "Yes, test report dated 05/10/2026 attached.",
+    "answer_value": "yes",
+    "document_attached": true,
+    "source": {
+     "ref": "page 2 row 2",
+     "snippet": "2. Bursting strength test report: Yes, test report dated 05/10/2026 attached."
+    }
+   },
+   {
+    "q_code": "Q03_REJECTION",
+    "answer_text": "Yes, subject to joint inspection at your end.",
+    "answer_value": "conditional",
+    "document_attached": false,
+    "source": {
+     "ref": "page 2 row 3",
+     "snippet": "3. Rejection & replacement: Yes, subject to joint inspection at your end."
+    }
+   },
+   {
+    "q_code": "Q04_CAPACITY",
+    "answer_text": "180 tonnes per month.",
+    "answer_value": "180",
+    "document_attached": false,
+    "source": {
+     "ref": "page 2 row 4",
+     "snippet": "4. Capacity: 180 tonnes per month."
+    }
+   },
+   {
+    "q_code": "Q05_FIRST_SUPPLY",
+    "answer_text": "12 days.",
+    "answer_value": "12",
+    "document_attached": false,
+    "source": {
+     "ref": "page 2 row 5",
+     "snippet": "5. First supply lead time: 12 days."
+    }
+   },
+   {
+    "q_code": "Q06_PAPER_SOURCE",
+    "answer_text": "Recycled kraft (Indian mills).",
+    "answer_value": "recycled",
+    "document_attached": false,
+    "source": {
+     "ref": "page 2 row 6",
+     "snippet": "6. Kraft paper source: Recycled kraft (Indian mills)."
+    }
+   },
+   {
+    "q_code": "Q07_FSC",
+    "answer_text": "No.",
+    "answer_value": "no",
+    "document_attached": false,
+    "source": {
+     "ref": "page 2 row 7",
+     "snippet": "7. FSC: No."
+    }
+   },
+   {
+    "q_code": "Q08_COMPLAINTS",
+    "answer_text": "2 nos.",
+    "answer_value": "2",
+    "document_attached": false,
+    "source": {
+     "ref": "page 2 row 8",
+     "snippet": "8. Complaints (12 months): 2 nos."
+    }
+   }
+  ]
+ }
+}

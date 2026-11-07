@@ -218,18 +218,44 @@ def _recompute(conn: sqlite3.Connection, quote_id: int, cfg: dict, cascade: bool
                 base_list /= 1 + g / 100
                 trace.append(f"Price included GST: divided by {1 + g / 100:.2f} to compare ex-GST")
 
-    # ---- D2: conditional discounts only when the buyer has toggled them on
-    base = base_list
+    # ---- D1 for percentage volume discounts ("4% off for release qty >= 20,000"): matched against the typical
+    # order quantity unless the vendor says annual; unclear basis = per order (higher price) + flag
     discounts = _j(q.get("discounts_json")) or []
-    applied_pct = sum(d.get("pct", 0) for d in discounts if d.get("applied"))
+    base = base_list
+    vol = [d for d in discounts if d.get("condition_type") == "volume_qty" and d.get("condition_value")]
+    met_vol = None
+    for d in vol:
+        basis = d.get("qty_basis") or "unclear"
+        qty = line["annual_qty"] if basis == "annual" else line["typical_order_qty"]
+        if basis == "unclear":
+            flags.append("TIER_BASIS_UNCLEAR")
+        if qty >= d["condition_value"]:
+            if met_vol is None or d["condition_value"] > met_vol[0]["condition_value"]:
+                met_vol = (d, qty, basis)
+        else:
+            if basis == "per_order":
+                flags.append("TIER_NOT_MET_PER_ORDER")
+            trace.append(f"Volume discount {d['pct']:g}% needs qty >= {d['condition_value']:,.0f} ({basis}): typical order is {qty:,} pcs, so it does NOT apply"
+                         + ("; higher price used (basis unclear, treated per order)" if basis == "unclear" else ""))
+    if met_vol and base is not None:
+        d, qty, basis = met_vol
+        before = base
+        base = base * (1 - d["pct"] / 100)
+        out.update(tier_applied=f"{d['pct']:g}% off for qty >= {d['condition_value']:,.0f} ({basis})", tier_qty_used=qty)
+        trace.append(f"Volume discount {d['pct']:g}% met on {basis} qty {qty:,}: INR {before:.4f} -> INR {base:.4f}")
+    base_list_after_tier = base
+
+    # ---- D2: conditional discounts only when the buyer has toggled them on (volume ones are handled above)
+    other = [d for d in discounts if d not in vol]
+    applied_pct = sum(d.get("pct", 0) for d in other if d.get("applied"))
     if base is not None:
         if applied_pct:
-            base = base_list * (1 - applied_pct / 100)
-            trace.append(f"Buyer-applied conditional discount(s) {applied_pct:g}%: INR {base_list:.4f} -> INR {base:.4f}")
-        if any(not d.get("applied") for d in discounts):
+            base = base_list_after_tier * (1 - applied_pct / 100)
+            trace.append(f"Buyer-applied conditional discount(s) {applied_pct:g}%: INR {base_list_after_tier:.4f} -> INR {base:.4f}")
+        if any(not d.get("applied") for d in other):
             flags.append("CONDITIONAL_DISCOUNT_AVAILABLE")
             trace.append("Conditional discount(s) offered but NOT applied (buyer has not toggled them on)")
-    out.update(discount_applied_pct=applied_pct if discounts else None)
+    out.update(discount_applied_pct=applied_pct if other else None)
 
     # ---- D4: freight
     freight: float | None = None

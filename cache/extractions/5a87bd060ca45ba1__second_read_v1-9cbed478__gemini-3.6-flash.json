@@ -1,0 +1,195 @@
+{
+ "sha256": "5a87bd060ca45ba1925bfcc136bed3a240c4cef3a3fe5f714ee7bf1937408564",
+ "prompt": "second_read",
+ "prompt_version": "v1-9cbed478",
+ "model": "gemini-3.6-flash",
+ "created_at": "2026-11-07T17:37:32+00:00",
+ "meta": {
+  "usage": {
+   "prompt_tokens": 1809,
+   "output_tokens": 1031
+  },
+  "file": "V4_OmSai_ratecard_photo.jpg",
+  "model": "gemini-3.6-flash"
+ },
+ "result": {
+  "lines": [
+   {
+    "line_key": "1",
+    "price": 7.7,
+    "unit": "per_piece",
+    "currency": "INR"
+   },
+   {
+    "line_key": "2",
+    "price": 12.65,
+    "unit": "per_piece",
+    "currency": "INR"
+   },
+   {
+    "line_key": "3",
+    "price": 12.0,
+    "unit": "per_piece",
+    "currency": "INR"
+   },
+   {
+    "line_key": "4",
+    "price": 12.05,
+    "unit": "per_piece",
+    "currency": "INR"
+   },
+   {
+    "line_key": "5",
+    "price": 14.3,
+    "unit": "per_piece",
+    "currency": "INR"
+   },
+   {
+    "line_key": "6",
+    "price": 5.85,
+    "unit": "per_piece",
+    "currency": "INR"
+   },
+   {
+    "line_key": "7",
+    "price": 10.1,
+    "unit": "per_piece",
+    "currency": "INR"
+   },
+   {
+    "line_key": "8",
+    "price": 8.95,
+    "unit": "per_piece",
+    "currency": "INR"
+   },
+   {
+    "line_key": "9",
+    "price": 16.0,
+    "unit": "per_piece",
+    "currency": "INR"
+   },
+   {
+    "line_key": "10",
+    "price": 17.55,
+    "unit": "per_piece",
+    "currency": "INR"
+   },
+   {
+    "line_key": "11",
+    "price": 15.0,
+    "unit": "per_piece",
+    "currency": "INR"
+   },
+   {
+    "line_key": "12",
+    "price": 11.3,
+    "unit": "per_piece",
+    "currency": "INR"
+   },
+   {
+    "line_key": "13",
+    "price": 34.3,
+    "unit": "per_piece",
+    "currency": "INR"
+   },
+   {
+    "line_key": "14",
+    "price": 34.8,
+    "unit": "per_piece",
+    "currency": "INR"
+   },
+   {
+    "line_key": "15",
+    "price": 31.0,
+    "unit": "per_piece",
+    "currency": "INR"
+   },
+   {
+    "line_key": "16",
+    "price": 30.2,
+    "unit": "per_piece",
+    "currency": "INR"
+   },
+   {
+    "line_key": "17",
+    "price": 32.25,
+    "unit": "per_piece",
+    "currency": "INR"
+   },
+   {
+    "line_key": "18",
+    "price": 29.15,
+    "unit": "per_piece",
+    "currency": "INR"
+   },
+   {
+    "line_key": "19",
+    "price": 29.75,
+    "unit": "per_piece",
+    "currency": "INR"
+   },
+   {
+    "line_key": "20",
+    "price": 30.3,
+    "unit": "per_piece",
+    "currency": "INR"
+   },
+   {
+    "line_key": "21",
+    "price": 26.65,
+    "unit": "per_piece",
+    "currency": "INR"
+   },
+   {
+    "line_key": "22",
+    "price": 41.6,
+    "unit": "per_piece",
+    "currency": "INR"
+   },
+   {
+    "line_key": "23",
+    "price": 32.8,
+    "unit": "per_piece",
+    "currency": "INR"
+   },
+   {
+    "line_key": "24",
+    "price": 25.55,
+    "unit": "per_piece",
+    "currency": "INR"
+   },
+   {
+    "line_key": "25",
+    "price": 32.4,
+    "unit": "per_piece",
+    "currency": "INR"
+   },
+   {
+    "line_key": "26",
+    "price": 93.6,
+    "unit": "per_piece",
+    "currency": "INR"
+   },
+   {
+    "line_key": "27",
+    "price": 97.05,
+    "unit": "per_piece",
+    "currency": "INR"
+   }
+  ],
+  "blanket_rules": [],
+  "freight_rules": [
+   {
+    "scope_ply": null,
+    "basis": "extra_unquoted",
+    "value_inr_per_piece": null
+   }
+  ],
+  "answers": [
+   {
+    "q_code": "Q05_FIRST_SUPPLY",
+    "answer_value": "7"
+   }
+  ]
+ }
+}

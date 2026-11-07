@@ -1,0 +1,241 @@
+{
+ "sha256": "64a8a0ba5e257523390750c07d5a0fd0851e5db7ef49bd59b9ce2edd4109e067",
+ "prompt": "second_read",
+ "prompt_version": "v1-9cbed478",
+ "model": "gemini-3.6-flash",
+ "created_at": "2026-11-07T17:34:52+00:00",
+ "meta": {
+  "usage": {
+   "prompt_tokens": 5019,
+   "output_tokens": 1927
+  },
+  "file": "V1_Deccan_Price_Offer_SCPL.xlsx",
+  "model": "gemini-3.6-flash"
+ },
+ "result": {
+  "lines": [
+   {
+    "line_key": "DCPL-C101",
+    "price": 10945.0,
+    "unit": "per_100",
+    "currency": "INR"
+   },
+   {
+    "line_key": "DCPL-C102",
+    "price": 9452.0,
+    "unit": "per_100",
+    "currency": "INR"
+   },
+   {
+    "line_key": "DCPL-C103",
+    "price": 11572.0,
+    "unit": "per_100",
+    "currency": "INR"
+   },
+   {
+    "line_key": "DCPL-C104",
+    "price": 10621.0,
+    "unit": "per_100",
+    "currency": "INR"
+   },
+   {
+    "line_key": "DCPL-C105",
+    "price": 4016.0,
+    "unit": "per_100",
+    "currency": "INR"
+   },
+   {
+    "line_key": "DCPL-C106",
+    "price": 3976.0,
+    "unit": "per_100",
+    "currency": "INR"
+   },
+   {
+    "line_key": "DCPL-C107",
+    "price": 3452.0,
+    "unit": "per_100",
+    "currency": "INR"
+   },
+   {
+    "line_key": "DCPL-C108",
+    "price": 3347.0,
+    "unit": "per_100",
+    "currency": "INR"
+   },
+   {
+    "line_key": "DCPL-C109",
+    "price": 3716.0,
+    "unit": "per_100",
+    "currency": "INR"
+   },
+   {
+    "line_key": "DCPL-C110",
+    "price": 3357.0,
+    "unit": "per_100",
+    "currency": "INR"
+   },
+   {
+    "line_key": "DCPL-C111",
+    "price": 3360.0,
+    "unit": "per_100",
+    "currency": "INR"
+   },
+   {
+    "line_key": "DCPL-C112",
+    "price": 3387.0,
+    "unit": "per_100",
+    "currency": "INR"
+   },
+   {
+    "line_key": "DCPL-C113",
+    "price": 2973.0,
+    "unit": "per_100",
+    "currency": "INR"
+   },
+   {
+    "line_key": "DCPL-C114",
+    "price": 4824.0,
+    "unit": "per_100",
+    "currency": "INR"
+   },
+   {
+    "line_key": "DCPL-C115",
+    "price": 3682.0,
+    "unit": "per_100",
+    "currency": "INR"
+   },
+   {
+    "line_key": "DCPL-C116",
+    "price": 2870.0,
+    "unit": "per_100",
+    "currency": "INR"
+   },
+   {
+    "line_key": "DCPL-C117",
+    "price": 2284.0,
+    "unit": "per_100",
+    "currency": "INR"
+   },
+   {
+    "line_key": "DCPL-C118",
+    "price": 4443.0,
+    "unit": "per_100",
+    "currency": "INR"
+   },
+   {
+    "line_key": "DCPL-C119",
+    "price": 887.0,
+    "unit": "per_100",
+    "currency": "INR"
+   },
+   {
+    "line_key": "DCPL-C120",
+    "price": 1416.0,
+    "unit": "per_100",
+    "currency": "INR"
+   },
+   {
+    "line_key": "DCPL-C121",
+    "price": 1393.0,
+    "unit": "per_100",
+    "currency": "INR"
+   },
+   {
+    "line_key": "DCPL-C122",
+    "price": 1319.0,
+    "unit": "per_100",
+    "currency": "INR"
+   },
+   {
+    "line_key": "DCPL-C123",
+    "price": 1701.0,
+    "unit": "per_100",
+    "currency": "INR"
+   },
+   {
+    "line_key": "DCPL-C124",
+    "price": 671.0,
+    "unit": "per_100",
+    "currency": "INR"
+   },
+   {
+    "line_key": "DCPL-C125",
+    "price": 1147.0,
+    "unit": "per_100",
+    "currency": "INR"
+   },
+   {
+    "line_key": "DCPL-C126",
+    "price": 987.0,
+    "unit": "per_100",
+    "currency": "INR"
+   },
+   {
+    "line_key": "DCPL-C127",
+    "price": 1772.0,
+    "unit": "per_100",
+    "currency": "INR"
+   },
+   {
+    "line_key": "DCPL-C128",
+    "price": 2097.0,
+    "unit": "per_100",
+    "currency": "INR"
+   },
+   {
+    "line_key": "DCPL-C129",
+    "price": 1726.0,
+    "unit": "per_100",
+    "currency": "INR"
+   },
+   {
+    "line_key": "DCPL-C130",
+    "price": 1325.0,
+    "unit": "per_100",
+    "currency": "INR"
+   }
+  ],
+  "blanket_rules": [],
+  "freight_rules": [
+   {
+    "scope_ply": null,
+    "basis": "included",
+    "value_inr_per_piece": null
+   }
+  ],
+  "answers": [
+   {
+    "q_code": "Q01_ISO9001",
+    "answer_value": "yes"
+   },
+   {
+    "q_code": "Q02_BS_TEST",
+    "answer_value": "yes"
+   },
+   {
+    "q_code": "Q03_REJECTION",
+    "answer_value": "yes"
+   },
+   {
+    "q_code": "Q04_CAPACITY",
+    "answer_value": "260"
+   },
+   {
+    "q_code": "Q05_FIRST_SUPPLY",
+    "answer_value": "10"
+   },
+   {
+    "q_code": "Q06_PAPER_SOURCE",
+    "answer_value": "mixed"
+   },
+   {
+    "q_code": "Q07_FSC",
+    "answer_value": "no"
+   },
+   {
+    "q_code": "Q08_COMPLAINTS",
+    "answer_value": "1"
+   }
+  ]
+ }
+}
