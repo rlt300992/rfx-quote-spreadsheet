@@ -1,6 +1,42 @@
 # DECISIONS.md
 
-<!-- MORNING SUMMARY goes here when P3-P5 are done -->
+## Morning summary (2026-11-08)
+
+**P3, P4 and P5 are built, tested, committed and pushed.** 172 tests pass (was 102). Nothing blocked. I did not touch secrets, `.streamlit/` or `CLAUDE.md`, and extraction stayed on `gemini-3.8-flash` (no extraction calls were made; everything ran from the committed cache).
+
+| Phase | Commit | What you now have |
+|---|---|---|
+| P3 | `5d8ffac` | Review & Reconcile (All / Needs review / Not quoted / Unmatched with counts, evidence, Confirm / Correct / Accept spec / Toggle discount, bulk confirm that warns but never blocks), Bid Analysis (landed vs evaluated toggle, winner highlight, strike-through for quotes that can't win, per-quote "how computed", totals, savings vs last year, qualification panel), shared plain-language explanation for every flag |
+| P4 | `c0e2eb0` | Analyst & Award: sandboxed `query_view`, `award_scenario` (incl. the 20,000-per-release what-if), `propose_award`, Gemini tool loop with tables and plotly charts, Award panel with **Confirm award** (reason required when not cheapest eligible, one audit row per line, shared batch id), Excel export (Award, Scenario, Audit trail, Assumptions), clarification emails with Mark sent (stub), 30-message session limit |
+| P5 | `9b6352d` | Create RFQ co-pilot: chat edits the terms, 30 lines and 8 questions through validated operations; Confirm RFQ; Send to 5 vendors (stub); warning when editing after send |
+
+### Please look at these first (in this order)
+1. **Review & Reconcile, vendor V2, Needs review:** the three "Rate/box" lines show UNIT_AMBIGUOUS with an explanation. Use **Correct -> Unit -> per_100** with a reason and watch the price fall to ₹6.20 and an audit row appear.
+2. **Bid Analysis:** ⚠ on V3's cells, the warning about ₹2.68 cr resting on not-firm prices, V5's line-1 detail ("Why it can't win"), and the qualification panel.
+3. **Analyst & Award:** ask your six questions. Then "propose the cheapest award among qualified vendors", press **Confirm award**, and download the Excel (it opens with 4 sheets; A1 of the Award sheet says whether it is a committed award or a draft).
+4. **Create RFQ:** "make payment 45 days", "drop the promo box" (it will be applied in the draft, and **Confirm RFQ will refuse to delete line 26** because five vendors quoted it; that is deliberate, see P5-4).
+
+### Things I want you to know (honest list)
+- **The analyst is not deterministic.** In my first live run it explained V1's/V3's price gap using payment terms and **swapped them** (V1 is 60 days, V3 is 30). The figures were right, the explanation was invented. I added a system-prompt rule and the second run was correct, but a rule is not a guarantee. My automated checks only confirm the right numbers appear; I also read the answers. Treat chat answers as a helper and confirm against the Bid Analysis grid. Full answers are in `docs/ANALYST_LIVE_CHECK.md`.
+- **Bugs the tests caught in my own code and I fixed:** NaN crashing `explain_reason`; NaN crashing `award_review` on lines with no winner; V2 totals swallowing the unresolved ₹620/₹944/₹1,229 lines (now left out and counted); a second-read comparison against corrected values (P2).
+- **Not verified:** I ran every screen headless (Streamlit AppTest) against the real extracted data, never in a browser, so layout, spacing and the feel of the 15-row pages are unchecked. The public Streamlit Cloud deployment is untested. The analyst chat and the RFQ co-pilot need `GEMINI_API_KEY` in the hosted secrets (I did not touch them).
+- **Gemini usage:** about 75 calls in P4 (two full runs of the six questions plus a smoke test) and about 9 in P5. Tier 1 billing was on throughout.
+- **Existing local `rfx.db`** is not tracked and was migrated in place (audit table). Tests use copies rebuilt from the cache, so they never touch it.
+
+### Decisions you may want to reverse (each is logged below with its reason)
+- P3-8: per-vendor totals leave out lines whose unit is still unresolved (`UNIT_AMBIGUOUS`).
+- P4-3: 6 analysis + 3 presentation tool calls per question.
+- P4-8: one shared reason + code for all non-cheapest-eligible lines (not one per line).
+- P5-4: a line vendors already quoted cannot be deleted from the RFQ. A proper "withdraw this line from evaluation" would be a schema change.
+- `PRICE_NOT_FIRM` remains a flag, not an exclusion (your earlier call); it is now shown in the grid, the award panel and the Excel.
+
+### Known gaps / suggested next steps (P6)
+- V5's Q03 ("Rejection ok") stays *unknown* (90% confidence, below the 95% knock-out minimum). It does not change V5's outcome.
+- No "withdraw line" feature; no per-line bypass reasons; Excel is not re-checked after you correct values (it is regenerated on each download).
+- P6: hardening, deploy, demo script. First thing I would do is open the app in a real browser and fix whatever looks wrong.
+
+---
+
 
 Decision log for the unattended P3 → P4 → P5 run (started 2026-11-08). Each entry: what was decided and why.
 Rules I was given: decide sensibly and log it; tests + commit + push after each phase; if blocked, log it and move on;
