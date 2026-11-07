@@ -319,3 +319,16 @@ Added in v1 because RFQ-level terms are buyer data, not config.
 - **Clarification loop:** the standard version (automatic reading of vendor replies) is phase 2.
 - **Multi-category support:** the spec columns are corrugated-specific by design, because typed columns give stricter validation, which builds trust. About 80% of the schema is category-agnostic. Phase 2 replaces the spec columns with `spec_json`, adds a per-category field list, and adds one `convert()` plug-in per category.
 - **Dual-sourcing percentage splits:** phase 2. Phase 1 has the chat suggest the L2 vendor as a backup per line, which is derived from the ranking and not stored.
+
+---
+
+## 8. P1 implementation notes (additions to v2; no column or table was removed)
+- **audit_log.action** also allows `discount_toggle` (D2: every toggle is audited).
+- **ineligible_reasons_json** also uses `spec_deviation`, `no_price`, `rejected` and `unmatched`. A deviation or substitute has `spec_match` = must_confirm until the buyer accepts it (`spec_accepted`).
+- **price_not_firm is a flag, not a hard exclusion**, unless `eligibility.block_price_not_firm: true` in config.yaml (default false). Reason: a raw-material-linked price (V3) is still comparable; the buyer sees `PRICE_NOT_FIRM` and the kraft-escalation formula is out of scope (§7).
+- **field_meta_json** layout: `extraction` (flags and per-field source, written by the extractor), `overrides` and `confirmed` (written by buyer actions), `rejected`, and `fields` / `flags` (derived, rewritten by `recompute_quote`). Buyer corrections are overrides applied on top of the raw columns, so raw stays immutable.
+- **Validation results** are `pass` / `fail` / `warn` / `skip`. Only `fail` caps confidence. A GST rate that differs from expected is a `warn` (it routes `gst_rate` to spot_check through its flag).
+- **Confidence** = config base for the source type + `confidence.check_bonus` (0.05) per passed supporting check, capped at `confidence.cap` (0.99); a failed check or must-confirm flag caps the field below the spot threshold.
+- **Freight** uses `raw_freight_value` as INR per piece. Imputation reads other vendors' effective raw freight (`extra_quoted` only), so it never depends on another quote's computed state.
+- **Second read** is stored as `{"<quote_id>": {raw_price, raw_unit, raw_currency, raw_freight_value}}` in `vendor_responses.second_read_json` and is compared to the vendor's raw extraction, not to a later buyer correction.
+- **award_scenario(include_accepted_substitutes=True)** is a what-if that also admits quotes whose only blocker is an unaccepted spec deviation or substitute.

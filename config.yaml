@@ -47,3 +47,8 @@ gemini:
   model: gemini-3.8-flash
   temperature: 0
   prompt_version: v1
+confidence:
+  check_bonus: 0.05      # added per passed relevant validation check (core fields)
+  cap: 0.99              # no field is ever 100% from signals alone
+eligibility:
+  block_price_not_firm: false   # PRICE_NOT_FIRM (rm-linked) is flagged, not a hard exclusion
