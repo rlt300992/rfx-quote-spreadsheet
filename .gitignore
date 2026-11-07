@@ -1,0 +1,9 @@
+.env
+.env.txt
+rfx.db
+__pycache__/
+.venv/
+.streamlit/secrets.toml
+*.pyc
+.pytest_cache/
+.claude/settings.local.json

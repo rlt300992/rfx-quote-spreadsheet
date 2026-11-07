@@ -1,0 +1,56 @@
+[
+  {
+    "vendor_code": "V5",
+    "received_at": "2026-11-09T19:42:11+05:30",
+    "channel": "email",
+    "from": "rajesh@krishnakraft.example",
+    "files": [
+      "V5_KrishnaKraft_email.eml",
+      "V5_KKP_ISO9001.pdf"
+    ]
+  },
+  {
+    "vendor_code": "V1",
+    "received_at": "2026-11-10T16:05:00+05:30",
+    "channel": "email",
+    "from": "sales@deccancorrugators.example",
+    "files": [
+      "V1_Deccan_Price_Offer_SCPL.xlsx",
+      "V1_ISO9001_certificate.pdf",
+      "V1_BS_test_report.pdf"
+    ]
+  },
+  {
+    "vendor_code": "V2",
+    "received_at": "2026-11-12T11:30:00+05:30",
+    "channel": "email",
+    "from": "quotes@shreeganeshpack.example",
+    "files": [
+      "V2_ShreeGanesh_Quotation_SGPI-Q-1127.pdf",
+      "V2_ISO9001_certificate.pdf",
+      "V2_BS_test_report.pdf"
+    ]
+  },
+  {
+    "vendor_code": "V3",
+    "received_at": "2026-11-13T18:20:00+05:30",
+    "channel": "email",
+    "from": "tenders@wicartons.example",
+    "files": [
+      "V3_WesternIndiaCartons_Offer_WICL-2611-044.docx",
+      "V3_ISO9001_certificate.pdf",
+      "V3_FSC_CoC_certificate.pdf",
+      "V3_BS_test_report.pdf"
+    ]
+  },
+  {
+    "vendor_code": "V4",
+    "received_at": "2026-11-17T09:10:00+05:30",
+    "channel": "whatsapp_forward",
+    "from": "omsaiboxworks@gmail.example",
+    "files": [
+      "V4_OmSai_ratecard_photo.jpg"
+    ],
+    "note": "Received after due date (16 Nov). No questionnaire response."
+  }
+]

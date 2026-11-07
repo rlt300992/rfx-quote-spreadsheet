@@ -1,0 +1,2 @@
+rfq_id,title,category,delivery_location,std_payment_terms_days,expected_gst_pct,baseline_period,response_due_date,award_reference_date,rfq_body,status,issued_at
+1,Corrugated boxes - FY2026-27 annual rate contract,Corrugated packaging,"Sahyadri Consumer Products Ltd, Plot B-14, Chakan MIDC Phase II, Pune 410501 (FOR destination)",60,18,FY2025-26,2026-11-16,2026-11-16,,issued,2026-11-07T11:00:00+05:30

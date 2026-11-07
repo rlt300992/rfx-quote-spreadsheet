@@ -1,0 +1,6 @@
+vendor_id,vendor_code,name,gstin,city,state,contact_email,msme_category,udyam_no,known_aliases
+1,V1,Deccan Corrugators Pvt Ltd,27AADCD4417K1Z9,"Chakan, Pune",Maharashtra,sales@deccancorrugators.example,medium,UDYAM-MH-26-0114782,"[""Deccan Corrugators"", ""DCPL"", ""Deccan Corr.""]"
+2,V2,Shree Ganesh Packaging Industries,27ABRFS2281M1ZQ,"Bhosari MIDC, Pune",Maharashtra,quotes@shreeganeshpack.example,small,UDYAM-MH-26-0458831,"[""Shree Ganesh Packaging"", ""SGPI"", ""Ganesh Packaging""]"
+3,V3,Western India Cartons Ltd,24AAACW7731P1Z2,Vapi,Gujarat,tenders@wicartons.example,none,,"[""WIC"", ""Western India Cartons"", ""WICL""]"
+4,V4,Om Sai Box Works,27BQXPK6624H1ZT,"Ranjangaon MIDC, Pune",Maharashtra,omsaiboxworks@gmail.example,micro,UDYAM-MH-26-0902216,"[""Om Sai Box"", ""OSBW"", ""Sai Box Works""]"
+5,V5,Krishna Kraft Packaging LLP,27AAOFK9045D1ZK,"Shirwal, Satara",Maharashtra,rajesh@krishnakraft.example,small,UDYAM-MH-31-0067395,"[""Krishna Kraft"", ""KKP"", ""Krishna Packaging""]"

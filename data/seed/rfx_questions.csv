@@ -1,0 +1,9 @@
+question_id,rfq_id,q_code,question_text,answer_type,rule_type,rule_params_json,is_knockout,required_doc_type
+1,1,Q01_ISO9001,Do you hold a valid ISO 9001 certificate for the manufacturing site? Attach a copy.,document,doc_valid_on,"{""doc_type"": ""ISO9001"", ""valid_on"": ""award_reference_date"", ""holder_must_match"": true}",1,ISO9001
+2,1,Q02_BS_TEST,Can you meet the specified bursting strength for every quoted line? Attach a recent (within 6 months) test report.,bool,equals,"{""value"": ""yes""}",1,test_report
+3,1,Q03_REJECTION,"Do you accept rejection and free replacement of lots failing incoming inspection, at your cost?",bool,equals,"{""value"": ""yes""}",1,
+4,1,Q04_CAPACITY,Monthly corrugation capacity available for this contract (tonnes/month)?,number,min,"{""min"": 150}",0,
+5,1,Q05_FIRST_SUPPLY,Lead time for first supply after PO and artwork approval (days)?,number,max,"{""max"": 15}",0,
+6,1,Q06_PAPER_SOURCE,"Kraft paper source for liners: virgin, recycled, or mixed?",text,in_set,"{""allowed"": [""virgin"", ""mixed""]}",0,
+7,1,Q07_FSC,Do you hold FSC chain-of-custody certification? Attach if yes.,document,doc_valid_on,"{""doc_type"": ""FSC"", ""valid_on"": ""award_reference_date""}",0,FSC
+8,1,Q08_COMPLAINTS,Number of quality complaints/rejections from FMCG customers in the last 12 months?,number,max,"{""max"": 3}",0,

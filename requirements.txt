@@ -1,0 +1,11 @@
+streamlit
+pandas
+openpyxl
+python-docx
+pypdf
+plotly
+pyyaml
+python-dotenv
+google-genai
+xlsxwriter
+pytest
