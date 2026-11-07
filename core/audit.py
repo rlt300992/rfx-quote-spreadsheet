@@ -38,6 +38,10 @@ def log(
     if isinstance(entity, str):
         etype, _, eid = entity.partition(":")
         entity = (etype, int(eid) if eid else None)
+    from core.db import AUDIT_ACTIONS
+
+    if action not in AUDIT_ACTIONS:
+        raise ValueError(f"unknown audit action '{action}'")
     if action in REASON_REQUIRED and not (reason or "").strip():
         raise ValueError(f"audit action '{action}' requires a reason")
     cur = conn.execute(

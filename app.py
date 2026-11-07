@@ -11,7 +11,7 @@ from core.db import connect, init_db
 from core.queries import pending_confirmation_count
 from core.seed import seed_if_empty
 from extract.gemini_client import get_secret, load_config, ping
-from ui import bid, responses, review
+from ui import analyst, bid, responses, review
 
 ROOT = Path(__file__).parent
 st.set_page_config(page_title="Kill the Quote Spreadsheet", layout="wide")
@@ -78,6 +78,8 @@ def main() -> None:
                 review.render(conn)
             elif name == "Bid Analysis":
                 bid.render(conn)
+            elif name == "Analyst & Award":
+                analyst.render(conn)
             else:
                 st.info(f"{name}: coming in a later phase.")
 

@@ -58,3 +58,5 @@ confidence:
   cap: 0.99              # no field is ever 100% from signals alone
 eligibility:
   block_price_not_firm: false   # PRICE_NOT_FIRM (rm-linked) is flagged, not a hard exclusion
+chat:
+  max_messages: 30       # analyst chat messages per browser session (protects the API key on the public app)

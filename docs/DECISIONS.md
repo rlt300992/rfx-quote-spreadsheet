@@ -26,3 +26,31 @@ do not touch secrets or Streamlit settings; keep Gemini calls minimal (cache fir
 
 **P3 blockers:** none.
 
+
+## P4: Analyst chat, award and export
+
+| # | Decision | Why |
+|---|---|---|
+| P4-1 | Removed the hard-coded `CHECK` on `audit_log.action` (the allowed list now lives in `core.db.AUDIT_ACTIONS` and `audit.log()` rejects unknown actions). `init_db` migrates an existing database in place: rename, recreate, copy rows, restore the append-only triggers (tested on a copy of the real `rfx.db`). | P4 and P5 need new actions (`clarification_sent_stub`, `rfq_confirm`, `rfq_send`). SQLite cannot alter a CHECK, so a table rebuild on every new action would be fragile. Validation moved to code. |
+| P4-2 | `query_view` runs against an **in-memory snapshot that contains only copies of the six views** (as tables), with `query_only` on, an authorizer that allows only SELECT/READ/FUNCTION, one statement, no comments, 500-row cap. | Stronger than regex-checking table names: base tables, the audit log and the answer key do not exist inside the sandbox, so no query trick can reach them. 11 attack-style queries are tested. |
+| P4-3 | Tool budget per question: **6 analysis calls** (`query_view`, `award_scenario`, `propose_award`) plus **3 presentation calls** (`render_table`, `render_chart`). Over-budget calls get an error telling the model to answer now. | The brief says max 6 tool calls. Charts/tables are presentation, not analysis, and counting them would starve the answers. If the loop never produces text, one final tool-less call forces an answer. |
+| P4-4 | Tables and charts are **built in Python** from a SELECT the model asks for (`render_table`, `render_chart` with kind/x/y/color). The model never writes plotting code. | Deterministic, safe, and the figure always matches the data shown. |
+| P4-5 | `order_qty_override` re-prices every line in a **throwaway in-memory copy** of the database (backup, set `typical_order_qty`, `recompute_all`), then discards it. | It re-matches volume tiers/discounts with the real pipeline instead of approximating. Nothing in the real DB changes (tested). |
+| P4-6 | The model has **no commit tool** (a test asserts the tool list). `propose_award` only stages a proposal in `st.session_state`; `commit_award` runs from the Confirm award button. | CLAUDE.md: the agent never commits. |
+| P4-7 | `commit_award` is all-or-nothing, re-checks every quote is still current/on its line/awardable (stale proposals are refused), and writes one audit row per line under one `batch_id` with the candidate list and exclusion reasons in `scenario_json`. | Brief + trust: a proposal made earlier must not silently commit a quote that has since become ineligible. |
+| P4-8 | `l1_quote_id` = cheapest current quote of any kind (even a disqualified vendor); `l1_eligible_quote_id` = cheapest awardable quote. Bypass = awarded != l1-eligible. One shared reason text + one reason code (default `buyer_judgment`) applies to all bypass lines in the panel. | Matches SCHEMA 2.3. A per-line reason form for up to 30 lines is clutter; the table lists exactly which lines need it. |
+| P4-9 | Added `unaward()` (reason required, one audit row per line). | A committed award with no way back is not usable; also needed for the tests. |
+| P4-10 | Excel shows, in priority order: the committed award, else the proposal, else the current best scenario, and **labels which one** in cell A1 (red if not committed). Sheets: Award, Scenario (every candidate with a plain-language exclusion reason), Audit trail, Assumptions (FX, cost of funds, thresholds, dates, model and prompt versions, out-of-scope list, flag glossary). It also lists open must-confirm values and not-firm / imputed-freight lines. | The brief names the four sheets; an export that could be mistaken for a final award while it is only a draft would be a trust problem. |
+| P4-11 | Session rate limit: 30 user messages, read from `config.yaml` (`chat.max_messages`), shown as "N of 30 left"; the input is disabled at 0. | Protects the API key on the public app; kept in config rather than hard-coded. |
+| P4-12 | Chat memory sent to the model = last 8 turns as plain text only (no old tool traces). | Keeps latency and cost down; each question re-queries the data so answers can't go stale. |
+| P4-13 | No "suggested question" chips in the UI. | You asked that the demo questions are not hard-coded anywhere; chips would look like they are. |
+| P4-14 | The analyst uses the configured model (`gemini-3.8-flash`) through the same fallback chain as extraction. | Rule: extraction/model stays on gemini-3.8-flash. |
+| P4-15 | "Mark sent (stub)" sets `clarification_status = sent_stub` and writes a `clarification_sent_stub` audit row; the expander lists only current (non-superseded) responses' drafts. | Found a duplicate draft from the earlier V4 re-run showing as "6 drafted" for 5 vendors. |
+
+**Bugs found by the P4 tests and fixed:** `explain_reason` crashed on NaN (pandas gives a float for "no reason"); `award_review` crashed on lines with no winner (NaN quote id).
+
+**Live check (real Gemini, `docs/ANALYST_LIVE_CHECK.md`):** all six acceptance questions answered; for each I computed the ground truth from the database and checked the figures appear in the answer (scenario total, per-vendor values, the 20,000-per-release total, the total excluding V3, the chart being produced). All pass. **Caveat on those checks:** they only test that the right numbers appear; I also read the answers. Reading found one real problem the checks could not: the first run explained V1/V3 price differences with payment terms and **swapped** them (said V1 30 days, V3 60; data says V1 60, V3 30). The numbers were right, the story was invented. Fix: a system-prompt rule not to state causes unless the column was queried, plus payment-term columns documented in the glossary. Re-run: correct. LLM answers vary run to run, so this is a check, not a guarantee; the analyst should still be treated as a helper whose figures the Bid Analysis tab can confirm.
+
+**Gemini calls spent in P4:** about 75 (one smoke test, then two full runs of the six questions at 3-8 calls each).
+
+**P4 blockers:** none.

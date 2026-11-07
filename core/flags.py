@@ -57,7 +57,7 @@ FIELD_LABELS = {"price": "Price", "unit": "Unit", "currency": "Currency", "freig
 
 def explain_reason(reason: str | None) -> str:
     """Human sentence for an exclusion_reason / ineligible reason code."""
-    if not reason:
+    if not isinstance(reason, str) or not reason:  # pandas hands NaN (a float) for "no reason"
         return ""
     if reason.startswith("open_must_confirm:"):
         f = reason.split(":", 1)[1]

@@ -197,9 +197,7 @@ CREATE UNIQUE INDEX IF NOT EXISTS ux_answers_current ON questionnaire_answers (v
 CREATE TABLE IF NOT EXISTS audit_log (
   audit_id INTEGER PRIMARY KEY,
   ts TEXT NOT NULL, actor TEXT NOT NULL, batch_id TEXT,
-  action TEXT NOT NULL CHECK (action IN ('extract_run','confirm','override','reject','spec_accept',
-     'clarification_drafted','clarification_resolved','response_superseded','award','unaward',
-     'discount_toggle')),
+  action TEXT NOT NULL,  -- see AUDIT_ACTIONS; not a CHECK so new actions never need a table rebuild
   entity_type TEXT, entity_id INTEGER,
   field_name TEXT, old_value TEXT, new_value TEXT,
   reason TEXT, evidence_json TEXT, scenario_json TEXT, chat_prompt TEXT
@@ -209,6 +207,9 @@ BEGIN SELECT RAISE(ABORT, 'audit_log is append-only'); END;
 CREATE TRIGGER IF NOT EXISTS audit_no_delete BEFORE DELETE ON audit_log
 BEGIN SELECT RAISE(ABORT, 'audit_log is append-only'); END;
 """
+
+AUDIT_ACTIONS = ("extract_run", "confirm", "override", "reject", "spec_accept", "clarification_drafted", "clarification_sent_stub",
+                 "clarification_resolved", "response_superseded", "award", "unaward", "discount_toggle", "rfq_confirm", "rfq_send")
 
 TABLES = ("rfqs", "vendors", "line_items", "rfx_questions", "last_year_prices",
           "vendor_responses", "quotes", "documents", "questionnaire_answers", "audit_log")
@@ -221,7 +222,24 @@ def create_views(conn: sqlite3.Connection) -> None:
     conn.executescript(VIEWS_SQL.read_text(encoding="utf-8"))
 
 
+def _migrate_audit_log(conn: sqlite3.Connection) -> None:
+    """Databases created before P4 have a CHECK on audit_log.action. Rebuild the table (rows kept, append-only
+    triggers restored) so newer actions can be logged."""
+    row = conn.execute("SELECT sql FROM sqlite_master WHERE type='table' AND name='audit_log'").fetchone()
+    if row is None or "CHECK (action IN" not in row[0]:
+        return
+    conn.executescript("""
+        DROP TRIGGER IF EXISTS audit_no_update;
+        DROP TRIGGER IF EXISTS audit_no_delete;
+        ALTER TABLE audit_log RENAME TO audit_log_old;
+    """)
+    conn.executescript(DDL)  # recreates audit_log (no CHECK) and its triggers; other tables already exist
+    conn.execute("INSERT INTO audit_log SELECT * FROM audit_log_old")
+    conn.execute("DROP TABLE audit_log_old")
+
+
 def init_db(conn: sqlite3.Connection) -> None:
+    _migrate_audit_log(conn)
     conn.executescript(DDL)
     create_views(conn)
     conn.commit()
