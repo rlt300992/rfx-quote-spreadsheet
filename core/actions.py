@@ -90,3 +90,27 @@ def toggle_discount(conn: sqlite3.Connection, quote_id: int, index: int, applied
               new=bool(applied), evidence={"discount": discounts[index]}, actor=actor)
     conn.execute("UPDATE quotes SET discounts_json=? WHERE quote_id=?", (json.dumps(discounts), quote_id))
     recompute_quote(conn, quote_id)
+
+
+def match_unmatched(conn: sqlite3.Connection, quote_id: int, line_no: int, reason: str, actor: str = "buyer") -> None:
+    """Attach an unmatched vendor line to one of our lines (reason required, audited). A layer-0 `not_quoted`
+    placeholder on that line is superseded; a real quote on it blocks the match."""
+    if not (reason or "").strip():
+        raise ValueError("a reason is required to match a vendor line")
+    q = conn.execute("SELECT * FROM quotes WHERE quote_id=?", (quote_id,)).fetchone()
+    if q is None or q["quote_status"] != "unmatched":
+        raise ValueError("only an unmatched quote can be matched")
+    line = conn.execute("SELECT line_id FROM line_items WHERE line_no=?", (line_no,)).fetchone()
+    if line is None:
+        raise ValueError(f"no such line {line_no}")
+    cur = conn.execute("SELECT quote_id, quote_status FROM quotes WHERE vendor_id=? AND line_id=? AND is_current=1",
+                       (q["vendor_id"], line["line_id"])).fetchone()
+    if cur is not None and cur["quote_status"] != "not_quoted":
+        raise ValueError(f"this vendor already has a quote on line {line_no}")
+    audit.log(conn, "override", ("quote", quote_id), field="line_id", old=None, new=line["line_id"], reason=reason, actor=actor,
+              evidence={"vendor_line_ref": q["vendor_line_ref"], "replaced_placeholder": cur["quote_id"] if cur else None})
+    if cur is not None:
+        conn.execute("UPDATE quotes SET is_current=0 WHERE quote_id=?", (cur["quote_id"],))
+    conn.execute("UPDATE quotes SET line_id=?, quote_status='quoted', supersedes_quote_id=? WHERE quote_id=?",
+                 (line["line_id"], cur["quote_id"] if cur else None, quote_id))
+    recompute_quote(conn, quote_id)
