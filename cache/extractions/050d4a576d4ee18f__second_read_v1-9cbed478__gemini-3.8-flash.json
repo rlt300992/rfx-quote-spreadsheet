@@ -2,15 +2,15 @@
  "sha256": "050d4a576d4ee18ff4441d5917ef960142827a1e186efbc2b0b54c775a87c8b1",
  "prompt": "second_read",
  "prompt_version": "v1-9cbed478",
- "model": "gemini-3.6-flash",
- "created_at": "2026-11-07T17:34:51+00:00",
+ "model": "gemini-3.8-flash",
+ "created_at": "2026-11-07T17:59:01+00:00",
  "meta": {
   "usage": {
    "prompt_tokens": 2552,
    "output_tokens": 1442
   },
   "file": "V3_WesternIndiaCartons_Offer_WICL-2611-044.docx",
-  "model": "gemini-3.6-flash"
+  "model": "gemini-3.8-flash"
  },
  "result": {
   "lines": [

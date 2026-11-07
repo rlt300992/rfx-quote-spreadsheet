@@ -70,10 +70,10 @@ def responses_tab(conn) -> None:
     """One card per vendor: format, received time (late flagged), files, extraction status, lines quoted."""
     manifest = load_manifest()
     top = st.columns([1, 3])
-    if top[0].button("Extract all", type="primary", help="Uses the cache when present; calls Gemini only for files not cached."):
+    if top[0].button("Extract all", type="primary", help="Extracts vendors that have no current extraction (cache first, Gemini only for uncached files). Vendors already extracted are left alone; use Re-run on a vendor to refresh it."):
         with st.status("Extracting all vendor replies ...", expanded=True) as status:
             try:
-                for r in ingest_all(conn, progress=st.write):
+                for r in ingest_all(conn, progress=st.write, only_missing=True):
                     c = r["calls"]
                     st.write(f"{r['vendor']}: {r['quotes']} lines, {c['api']} Gemini calls, {c['cache']} from cache")
                 status.update(label="Extraction complete", state="complete")

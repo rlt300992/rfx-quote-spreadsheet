@@ -2,15 +2,15 @@
  "sha256": "c9f554f183c2368db843f33e968744d1b6fb0c2df35f2fffcfdbf85779dd2d41",
  "prompt": "doc_extract",
  "prompt_version": "v1-66187e51",
- "model": "gemini-3.5-flash",
- "created_at": "2026-11-07T17:32:38+00:00",
+ "model": "gemini-3.8-flash",
+ "created_at": "2026-11-07T17:58:17+00:00",
  "meta": {
   "usage": {
    "prompt_tokens": 845,
-   "output_tokens": 137
+   "output_tokens": 213
   },
   "file": "V1_ISO9001_certificate.pdf",
-  "model": "gemini-3.5-flash"
+  "model": "gemini-3.8-flash"
  },
  "result": {
   "doc_type": "ISO9001",
@@ -24,7 +24,7 @@
   "covers_text": null,
   "source": {
    "ref": "page 1",
-   "snippet": "Certified organisation Deccan Corrugators Pvt Ltd"
+   "snippet": "Certified organisation Deccan Corrugators Pvt Ltd ... Issue date 12 Aug 2024 Expiry date 11 Aug 2027"
   }
  }
 }

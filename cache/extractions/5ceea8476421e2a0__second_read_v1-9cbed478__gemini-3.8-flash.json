@@ -2,15 +2,15 @@
  "sha256": "5ceea8476421e2a0ed905faa7b149ad40044fda4e3cdaaa2c01d0a2e03424f70",
  "prompt": "second_read",
  "prompt_version": "v1-9cbed478",
- "model": "gemini-3.6-flash",
- "created_at": "2026-11-07T17:34:00+00:00",
+ "model": "gemini-3.8-flash",
+ "created_at": "2026-11-07T17:58:31+00:00",
  "meta": {
   "usage": {
    "prompt_tokens": 877,
-   "output_tokens": 181
+   "output_tokens": 160
   },
   "file": "V5_KrishnaKraft_email.eml",
-  "model": "gemini-3.6-flash"
+  "model": "gemini-3.8-flash"
  },
  "result": {
   "lines": [],

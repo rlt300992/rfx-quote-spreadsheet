@@ -44,12 +44,9 @@ thresholds:
     - payment_terms
   knockout_answer_min: 0.95
 gemini:
-  model: gemini-3.6-flash   # was gemini-3.8-flash: its free-tier daily quota (20 requests) ran out on 2026-11-07 (gemini-3.7-flash is an alias of it)
-  task_models:              # optional per-prompt override; spreads calls over separate per-model daily quotas
-    doc_extract: gemini-3.5-flash
-  fallback_models:          # tried in order when a model's daily quota is exhausted (cache is checked for all of them)
-    - gemini-3.5-flash
-    - gemini-3.1-flash-lite   # smaller model: last resort, recorded per result in extraction_model
+  model: gemini-3.8-flash   # restored now that billing (Tier 1) is on; the free tier's 20 requests/day had forced a temporary switch
+  fallback_models:          # tried in order only if a model's quota is exhausted (the cache is checked for all of them)
+    - gemini-3.6-flash
   temperature: 0
   prompt_version: v1        # default for every prompt
   prompt_versions:          # per-prompt override: bump ONLY the prompt you changed

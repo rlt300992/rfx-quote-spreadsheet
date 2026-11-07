@@ -2,19 +2,19 @@
  "sha256": "18e755bb5d28239d57971bb61bd5f210a00b44daea3f46f158d0c1bdfd878207",
  "prompt": "doc_extract",
  "prompt_version": "v1-66187e51",
- "model": "gemini-3.5-flash",
- "created_at": "2026-11-07T17:32:34+00:00",
+ "model": "gemini-3.8-flash",
+ "created_at": "2026-11-07T17:58:21+00:00",
  "meta": {
   "usage": {
    "prompt_tokens": 1377,
-   "output_tokens": 130
+   "output_tokens": 186
   },
   "file": "V2_ShreeGanesh_Quotation_SGPI-Q-1127.pdf",
-  "model": "gemini-3.5-flash"
+  "model": "gemini-3.8-flash"
  },
  "result": {
   "doc_type": "quotation",
-  "issuer": "SHREE GANESH PACKAGING INDUSTRIES",
+  "issuer": null,
   "doc_number": "SGPI/Q/1127",
   "issue_date": "2026-11-12",
   "expiry_date": null,
@@ -24,7 +24,7 @@
   "covers_text": null,
   "source": {
    "ref": "page 1",
-   "snippet": "To, The Purchase Manager, Sahyadri Consumer Products Ltd, Chakan MIDC, Pune Date: 12/11/2026"
+   "snippet": "Ref: SGPI/Q/1127 Date: 12/11/2026\nTo, The Purchase Manager, Sahyadri Consumer Products Ltd, Chakan MIDC, Pune"
   }
  }
 }

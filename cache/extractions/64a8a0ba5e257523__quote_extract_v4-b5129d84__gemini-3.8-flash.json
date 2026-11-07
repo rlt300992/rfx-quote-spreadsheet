@@ -2,42 +2,42 @@
  "sha256": "64a8a0ba5e257523390750c07d5a0fd0851e5db7ef49bd59b9ce2edd4109e067",
  "prompt": "quote_extract",
  "prompt_version": "v4-b5129d84",
- "model": "gemini-3.1-flash-lite",
- "created_at": "2026-11-07T17:45:52+00:00",
+ "model": "gemini-3.8-flash",
+ "created_at": "2026-11-07T18:00:00+00:00",
  "meta": {
   "usage": {
    "prompt_tokens": 6824,
-   "output_tokens": 11381
+   "output_tokens": 14305
   },
   "file": "V1_Deccan_Price_Offer_SCPL.xlsx",
-  "model": "gemini-3.1-flash-lite"
+  "model": "gemini-3.8-flash"
  },
  "result": {
   "header": {
    "vendor_name": "DECCAN CORRUGATORS PVT LTD",
    "quote_ref_no": "DCPL/SCPL/26-27/118",
    "quote_date": "2026-11-10",
-   "validity_text": "Offer valid for 30 days",
+   "validity_text": "Offer valid for 30 days. Prices firm for 6 months from PO.",
    "validity_date": "2026-12-10",
    "price_basis": "firm",
    "rm_clause_text": null,
    "gst_rate_pct": 18.0,
    "tax_basis": "ex_gst",
    "payment_terms_days": 60,
-   "payment_terms_text": "60 days from date of invoice",
+   "payment_terms_text": "60 days from date of invoice.",
    "lead_time_days": 10,
    "moq_qty": 2000,
-   "moq_text": "MOQ 2,000 nos per size",
+   "moq_text": "MOQ 2,000 nos per size.",
    "declared_msme_category": null,
    "freight_rules": [
     {
      "scope_ply": null,
      "basis": "included",
      "value_inr_per_piece": null,
-     "text": "Above rates are FOR your Chakan plant, i.e. inclusive of freight.",
+     "text": "1. Above rates are FOR your Chakan plant, i.e. inclusive of freight.",
      "source": {
       "ref": "Price Offer!A41",
-      "snippet": "Above rates are FOR your Chakan plant, i.e. inclusive of freight."
+      "snippet": "1. Above rates are FOR your Chakan plant, i.e. inclusive of freight."
      }
     }
    ],
@@ -60,7 +60,7 @@
      "field": "quote_ref_no",
      "source": {
       "ref": "Price Offer!A3",
-      "snippet": "Ref DCPL/SCPL/26-27/118"
+      "snippet": "COMMERCIAL OFFER - Ref DCPL/SCPL/26-27/118 dt 10.11.2026"
      }
     },
     {
@@ -74,49 +74,70 @@
      "field": "validity_text",
      "source": {
       "ref": "Price Offer!A45",
-      "snippet": "Offer valid for 30 days"
+      "snippet": "5. Offer valid for 30 days. Prices firm for 6 months from PO."
      }
     },
     {
      "field": "price_basis",
      "source": {
       "ref": "Price Offer!A45",
-      "snippet": "Prices firm for 6 months from PO"
+      "snippet": "Prices firm for 6 months from PO."
      }
     },
     {
      "field": "gst_rate_pct",
      "source": {
       "ref": "Price Offer!A42",
-      "snippet": "GST @ 18% extra"
+      "snippet": "2. GST @ 18% extra as applicable."
      }
     },
     {
      "field": "tax_basis",
      "source": {
       "ref": "Price Offer!A42",
-      "snippet": "GST @ 18% extra"
+      "snippet": "GST @ 18% extra as applicable."
      }
     },
     {
      "field": "payment_terms_days",
      "source": {
       "ref": "Price Offer!A43",
-      "snippet": "Payment: 60 days from date of invoice"
+      "snippet": "3. Payment: 60 days from date of invoice."
+     }
+    },
+    {
+     "field": "payment_terms_text",
+     "source": {
+      "ref": "Price Offer!A43",
+      "snippet": "3. Payment: 60 days from date of invoice."
      }
     },
     {
      "field": "lead_time_days",
      "source": {
       "ref": "Price Offer!A44",
-      "snippet": "Lead time: 10 days"
+      "snippet": "4. Lead time: 10 days from PO + artwork approval."
      }
     },
     {
      "field": "moq_qty",
      "source": {
       "ref": "Price Offer!A44",
-      "snippet": "MOQ 2,000 nos per size"
+      "snippet": "MOQ 2,000 nos per size."
+     }
+    },
+    {
+     "field": "moq_text",
+     "source": {
+      "ref": "Price Offer!A44",
+      "snippet": "MOQ 2,000 nos per size."
+     }
+    },
+    {
+     "field": "attached_documents",
+     "source": {
+      "ref": "Price Offer!A46",
+      "snippet": "6. ISO 9001 certificate and BS test report attached."
      }
     }
    ],
@@ -154,8 +175,8 @@
     "remarks": null,
     "ocr_uncertain": false,
     "source": {
-     "ref": "Price Offer!A7",
-     "snippet": "DCPL-C101 | EXPORT DETERGENT 25KG BULK BOX | 600 x 400 x 400 | 7 Ply 200/150/150/150/150/150/200 | 10945"
+     "ref": "Price Offer!A7:G7",
+     "snippet": "DCPL-C101 | EXPORT DETERGENT 25KG BULK BOX | 600 x 400 x 400 | 7 Ply 200/150/150/150/150/150/200 | 10945 | FOR Chakan"
     }
    },
    {
@@ -189,8 +210,8 @@
     "remarks": null,
     "ocr_uncertain": false,
     "source": {
-     "ref": "Price Offer!A8",
-     "snippet": "DCPL-C102 | EXPORT EDIBLE OIL 15L TIN X 2 BOX | 620 x 330 x 400 | 7 Ply 200/150/150/150/150/150/200 | 9452"
+     "ref": "Price Offer!A8:G8",
+     "snippet": "DCPL-C102 | EXPORT EDIBLE OIL 15L TIN X 2 BOX | 620 x 330 x 400 | 7 Ply 200/150/150/150/150/150/200 | 9452 | FOR Chakan"
     }
    },
    {
@@ -224,8 +245,8 @@
     "remarks": null,
     "ocr_uncertain": false,
     "source": {
-     "ref": "Price Offer!A9",
-     "snippet": "DCPL-C103 | PALLET-LOAD SPICE DRUM OUTER | 580 x 400 x 450 | 7 Ply 200/150/150/150/150/150/200 | 11572"
+     "ref": "Price Offer!A9:G9",
+     "snippet": "DCPL-C103 | PALLET-LOAD SPICE DRUM OUTER | 580 x 400 x 450 | 7 Ply 200/150/150/150/150/150/200 | 11572 | FOR Chakan"
     }
    },
    {
@@ -259,8 +280,8 @@
     "remarks": null,
     "ocr_uncertain": false,
     "source": {
-     "ref": "Price Offer!A10",
-     "snippet": "DCPL-C104 | HEAVY-DUTY ATTA 25KG EXPORT BOX | 560 x 400 x 420 | 7 Ply 200/150/150/150/150/150/200 | 10621"
+     "ref": "Price Offer!A10:G10",
+     "snippet": "DCPL-C104 | HEAVY-DUTY ATTA 25KG EXPORT BOX | 560 x 400 x 420 | 7 Ply 200/150/150/150/150/150/200 | 10621 | FOR Chakan"
     }
    },
    {
@@ -292,8 +313,8 @@
     "remarks": null,
     "ocr_uncertain": false,
     "source": {
-     "ref": "Price Offer!A12",
-     "snippet": "DCPL-C105 | DETERGENT POWDER 1KG X 20 MASTER | 450 x 300 x 300 | 5 Ply 180/120/150/120/180 | 4016"
+     "ref": "Price Offer!A12:G12",
+     "snippet": "DCPL-C105 | DETERGENT POWDER 1KG X 20 MASTER | 450 x 300 x 300 | 5 Ply 180/120/150/120/180 | 4016 | FOR Chakan"
     }
    },
    {
@@ -325,8 +346,8 @@
     "remarks": null,
     "ocr_uncertain": false,
     "source": {
-     "ref": "Price Offer!A13",
-     "snippet": "DCPL-C106 | DETERGENT POWDER 500G X 40 MASTER | 430 x 320 x 280 | 5 Ply 180/120/150/120/180 | 3976"
+     "ref": "Price Offer!A13:G13",
+     "snippet": "DCPL-C106 | DETERGENT POWDER 500G X 40 MASTER | 430 x 320 x 280 | 5 Ply 180/120/150/120/180 | 3976 | FOR Chakan"
     }
    },
    {
@@ -358,8 +379,8 @@
     "remarks": null,
     "ocr_uncertain": false,
     "source": {
-     "ref": "Price Offer!A14",
-     "snippet": "DCPL-C107 | LIQUID DETERGENT 1L X 12 SHIPPER BOX | 400 x 300 x 270 | 5 Ply 180/120/150/120/180 | 3452"
+     "ref": "Price Offer!A14:G14",
+     "snippet": "DCPL-C107 | LIQUID DETERGENT 1L X 12 SHIPPER BOX | 400 x 300 x 270 | 5 Ply 180/120/150/120/180 | 3452 | FOR Chakan"
     }
    },
    {
@@ -391,8 +412,8 @@
     "remarks": "Offered in 150 GSM outer liner - meets BS",
     "ocr_uncertain": false,
     "source": {
-     "ref": "Price Offer!A15",
-     "snippet": "DCPL-C108 | DISHWASH BAR 200G X 100 BOX | 420 x 300 x 250 | 5 Ply 150/120/150/120/150 | 3347 | Offered in 150 GSM outer liner - meets BS"
+     "ref": "Price Offer!A15:G15",
+     "snippet": "DCPL-C108 | DISHWASH BAR 200G X 100 BOX | 420 x 300 x 250 | 5 Ply 150/120/150/120/150 | 3347 | FOR Chakan | Offered in 150 GSM outer liner - meets BS"
     }
    },
    {
@@ -424,8 +445,8 @@
     "remarks": null,
     "ocr_uncertain": false,
     "source": {
-     "ref": "Price Offer!A16",
-     "snippet": "DCPL-C109 | FLOOR CLEANER 1L X 12 SHIPPER BOX | 410 x 310 x 290 | 5 Ply 180/120/150/120/180 | 3716"
+     "ref": "Price Offer!A16:G16",
+     "snippet": "DCPL-C109 | FLOOR CLEANER 1L X 12 SHIPPER BOX | 410 x 310 x 290 | 5 Ply 180/120/150/120/180 | 3716 | FOR Chakan"
     }
    },
    {
@@ -457,8 +478,8 @@
     "remarks": null,
     "ocr_uncertain": false,
     "source": {
-     "ref": "Price Offer!A17",
-     "snippet": "DCPL-C110 | TOILET CLEANER 500ML X 24 SHIPPER BOX | 420 x 280 x 260 | 5 Ply 180/120/150/120/180 | 3357"
+     "ref": "Price Offer!A17:G17",
+     "snippet": "DCPL-C110 | TOILET CLEANER 500ML X 24 SHIPPER BOX | 420 x 280 x 260 | 5 Ply 180/120/150/120/180 | 3357 | FOR Chakan"
     }
    },
    {
@@ -500,11 +521,11 @@
     "freight_value_inr_per_piece": null,
     "capacity_per_month": null,
     "capacity_text": null,
-    "remarks": null,
+    "remarks": "3% volume discount above 50,000 nos",
     "ocr_uncertain": false,
     "source": {
-     "ref": "Price Offer!A18",
-     "snippet": "DCPL-C111 | EDIBLE OIL 1L POUCH X 16 BOX | 380 x 280 x 260 | 5 Ply 200/120/180/120/200 | 3360 | 3% volume discount above 50,000 nos"
+     "ref": "Price Offer!A18:G18",
+     "snippet": "DCPL-C111 | EDIBLE OIL 1L POUCH X 16 BOX | 380 x 280 x 260 | 5 Ply 200/120/180/120/200 | 3360 | FOR Chakan | 3% volume discount above 50,000 nos"
     }
    },
    {
@@ -536,8 +557,8 @@
     "remarks": null,
     "ocr_uncertain": false,
     "source": {
-     "ref": "Price Offer!A19",
-     "snippet": "DCPL-C112 | EDIBLE OIL 1L BOTTLE X 12 BOX | 360 x 270 x 300 | 5 Ply 200/120/180/120/200 | 3387"
+     "ref": "Price Offer!A19:G19",
+     "snippet": "DCPL-C112 | EDIBLE OIL 1L BOTTLE X 12 BOX | 360 x 270 x 300 | 5 Ply 200/120/180/120/200 | 3387 | FOR Chakan"
     }
    },
    {
@@ -569,8 +590,8 @@
     "remarks": null,
     "ocr_uncertain": false,
     "source": {
-     "ref": "Price Offer!A20",
-     "snippet": "DCPL-C113 | GHEE 500ML JAR X 24 BOX | 400 x 270 x 220 | 5 Ply 180/120/150/120/180 | 2973"
+     "ref": "Price Offer!A20:G20",
+     "snippet": "DCPL-C113 | GHEE 500ML JAR X 24 BOX | 400 x 270 x 220 | 5 Ply 180/120/150/120/180 | 2973 | FOR Chakan"
     }
    },
    {
@@ -602,8 +623,8 @@
     "remarks": null,
     "ocr_uncertain": false,
     "source": {
-     "ref": "Price Offer!A21",
-     "snippet": "DCPL-C114 | ATTA 5KG X 4 BOX | 460 x 330 x 300 | 5 Ply 200/120/180/120/200 | 4824"
+     "ref": "Price Offer!A21:G21",
+     "snippet": "DCPL-C114 | ATTA 5KG X 4 BOX | 460 x 330 x 300 | 5 Ply 200/120/180/120/200 | 4824 | FOR Chakan"
     }
    },
    {
@@ -635,8 +656,8 @@
     "remarks": null,
     "ocr_uncertain": false,
     "source": {
-     "ref": "Price Offer!A22",
-     "snippet": "DCPL-C115 | SUGAR 1KG X 20 BOX | 440 x 300 x 280 | 5 Ply 180/120/150/120/180 | 3682"
+     "ref": "Price Offer!A22:G22",
+     "snippet": "DCPL-C115 | SUGAR 1KG X 20 BOX | 440 x 300 x 280 | 5 Ply 180/120/150/120/180 | 3682 | FOR Chakan"
     }
    },
    {
@@ -668,8 +689,8 @@
     "remarks": null,
     "ocr_uncertain": false,
     "source": {
-     "ref": "Price Offer!A23",
-     "snippet": "DCPL-C116 | HAND WASH 250ML X 24 SHIPPER BOX | 380 x 260 x 240 | 5 Ply 180/120/150/120/180 | 2870"
+     "ref": "Price Offer!A23:G23",
+     "snippet": "DCPL-C116 | HAND WASH 250ML X 24 SHIPPER BOX | 380 x 260 x 240 | 5 Ply 180/120/150/120/180 | 2870 | FOR Chakan"
     }
    },
    {
@@ -699,8 +720,8 @@
     "remarks": "We suggest 3 ply heavy duty 200/150/200 - cost effective alternative",
     "ocr_uncertain": false,
     "source": {
-     "ref": "Price Offer!A24",
-     "snippet": "DCPL-C117 | MIXED SKU E-COMMERCE SHIPPER BOX | 400 x 300 x 300 | 3 Ply 200/150/200 | 2284 | We suggest 3 ply heavy duty 200/150/200 - cost effective alternative"
+     "ref": "Price Offer!A24:G24",
+     "snippet": "DCPL-C117 | MIXED SKU E-COMMERCE SHIPPER BOX | 400 x 300 x 300 | 3 Ply 200/150/200 | 2284 | FOR Chakan | We suggest 3 ply heavy duty 200/150/200 - cost effective alternative"
     }
    },
    {
@@ -732,8 +753,8 @@
     "remarks": null,
     "ocr_uncertain": false,
     "source": {
-     "ref": "Price Offer!A25",
-     "snippet": "DCPL-C118 | PROMO GIFT-PACK OUTER | 450 x 350 x 250 | 5 Ply 180/120/150/120/180 | 4443"
+     "ref": "Price Offer!A25:G25",
+     "snippet": "DCPL-C118 | PROMO GIFT-PACK OUTER | 450 x 350 x 250 | 5 Ply 180/120/150/120/180 | 4443 | FOR Chakan"
     }
    },
    {
@@ -773,11 +794,11 @@
     "freight_value_inr_per_piece": null,
     "capacity_per_month": null,
     "capacity_text": null,
-    "remarks": null,
+    "remarks": "* Addl 4% off for release qty >= 20,000 nos",
     "ocr_uncertain": false,
     "source": {
-     "ref": "Price Offer!A27",
-     "snippet": "DCPL-C119 | SHAMPOO 180ML BOTTLE SHIPPER BOX (24S) | 300 x 200 x 150 | 3 Ply 150/120/150 | 887 | * Addl 4% off for release qty >= 20,000 nos"
+     "ref": "Price Offer!A27:G27",
+     "snippet": "DCPL-C119 | SHAMPOO 180ML BOTTLE SHIPPER BOX (24S) | 300 x 200 x 150 | 3 Ply 150/120/150 | 887 | FOR Chakan | * Addl 4% off for release qty >= 20,000 nos"
     }
    },
    {
@@ -807,8 +828,8 @@
     "remarks": null,
     "ocr_uncertain": false,
     "source": {
-     "ref": "Price Offer!A28",
-     "snippet": "DCPL-C120 | SHAMPOO SACHET MASTER (960S) | 380 x 250 x 200 | 3 Ply 150/120/150 | 1416"
+     "ref": "Price Offer!A28:G28",
+     "snippet": "DCPL-C120 | SHAMPOO SACHET MASTER (960S) | 380 x 250 x 200 | 3 Ply 150/120/150 | 1416 | FOR Chakan"
     }
    },
    {
@@ -848,11 +869,11 @@
     "freight_value_inr_per_piece": null,
     "capacity_per_month": null,
     "capacity_text": null,
-    "remarks": null,
+    "remarks": "* Addl 4% off for release qty >= 20,000 nos",
     "ocr_uncertain": false,
     "source": {
-     "ref": "Price Offer!A29",
-     "snippet": "DCPL-C121 | BATHING SOAP 75G X 144 BOX | 360 x 240 x 180 | 3 Ply 180/120/150 | 1393 | * Addl 4% off for release qty >= 20,000 nos"
+     "ref": "Price Offer!A29:G29",
+     "snippet": "DCPL-C121 | BATHING SOAP 75G X 144 BOX | 360 x 240 x 180 | 3 Ply 180/120/150 | 1393 | FOR Chakan | * Addl 4% off for release qty >= 20,000 nos"
     }
    },
    {
@@ -882,8 +903,8 @@
     "remarks": null,
     "ocr_uncertain": false,
     "source": {
-     "ref": "Price Offer!A30",
-     "snippet": "DCPL-C122 | BATHING SOAP 125G X 72 BOX | 340 x 260 x 160 | 3 Ply 180/120/150 | 1319"
+     "ref": "Price Offer!A30:G30",
+     "snippet": "DCPL-C122 | BATHING SOAP 125G X 72 BOX | 340 x 260 x 160 | 3 Ply 180/120/150 | 1319 | FOR Chakan"
     }
    },
    {
@@ -913,8 +934,8 @@
     "remarks": null,
     "ocr_uncertain": false,
     "source": {
-     "ref": "Price Offer!A31",
-     "snippet": "DCPL-C123 | TOOTHPASTE 150G X 72 SHIPPER BOX | 420 x 280 x 190 | 3 Ply 150/120/150 | 1701"
+     "ref": "Price Offer!A31:G31",
+     "snippet": "DCPL-C123 | TOOTHPASTE 150G X 72 SHIPPER BOX | 420 x 280 x 190 | 3 Ply 150/120/150 | 1701 | FOR Chakan"
     }
    },
    {
@@ -944,8 +965,8 @@
     "remarks": null,
     "ocr_uncertain": false,
     "source": {
-     "ref": "Price Offer!A32",
-     "snippet": "DCPL-C124 | TOOTHBRUSH RETAIL DISPLAY (INNER) | 250 x 180 x 120 | 3 Ply 120/100/120 | 671"
+     "ref": "Price Offer!A32:G32",
+     "snippet": "DCPL-C124 | TOOTHBRUSH RETAIL DISPLAY (INNER) | 250 x 180 x 120 | 3 Ply 120/100/120 | 671 | FOR Chakan"
     }
    },
    {
@@ -975,8 +996,8 @@
     "remarks": null,
     "ocr_uncertain": false,
     "source": {
-     "ref": "Price Offer!A33",
-     "snippet": "DCPL-C125 | HAIR OIL 100ML X 48 SHIPPER BOX | 320 x 240 x 170 | 3 Ply 150/120/150 | 1147"
+     "ref": "Price Offer!A33:G33",
+     "snippet": "DCPL-C125 | HAIR OIL 100ML X 48 SHIPPER BOX | 320 x 240 x 170 | 3 Ply 150/120/150 | 1147 | FOR Chakan"
     }
    },
    {
@@ -1006,8 +1027,8 @@
     "remarks": null,
     "ocr_uncertain": false,
     "source": {
-     "ref": "Price Offer!A34",
-     "snippet": "DCPL-C126 | FACE CREAM 50G X 96 SHIPPER BOX | 300 x 220 x 140 | 3 Ply 150/120/150 | 987"
+     "ref": "Price Offer!A34:G34",
+     "snippet": "DCPL-C126 | FACE CREAM 50G X 96 SHIPPER BOX | 300 x 220 x 140 | 3 Ply 150/120/150 | 987 | FOR Chakan"
     }
    },
    {
@@ -1047,11 +1068,11 @@
     "freight_value_inr_per_piece": null,
     "capacity_per_month": null,
     "capacity_text": null,
-    "remarks": null,
+    "remarks": "* Addl 4% off for release qty >= 20,000 nos",
     "ocr_uncertain": false,
     "source": {
-     "ref": "Price Offer!A35",
-     "snippet": "DCPL-C127 | BISCUIT 75G X 60 BOX | 400 x 300 x 220 | 3 Ply 150/120/150 | 1772 | * Addl 4% off for release qty >= 20,000 nos"
+     "ref": "Price Offer!A35:G35",
+     "snippet": "DCPL-C127 | BISCUIT 75G X 60 BOX | 400 x 300 x 220 | 3 Ply 150/120/150 | 1772 | FOR Chakan | * Addl 4% off for release qty >= 20,000 nos"
     }
    },
    {
@@ -1081,8 +1102,8 @@
     "remarks": null,
     "ocr_uncertain": false,
     "source": {
-     "ref": "Price Offer!A36",
-     "snippet": "DCPL-C128 | NOODLES 70G X 96 BOX | 420 x 320 x 250 | 3 Ply 150/120/150 | 2097"
+     "ref": "Price Offer!A36:G36",
+     "snippet": "DCPL-C128 | NOODLES 70G X 96 BOX | 420 x 320 x 250 | 3 Ply 150/120/150 | 2097 | FOR Chakan"
     }
    },
    {
@@ -1112,8 +1133,8 @@
     "remarks": null,
     "ocr_uncertain": false,
     "source": {
-     "ref": "Price Offer!A37",
-     "snippet": "DCPL-C129 | TEA 250G X 40 BOX | 360 x 280 x 230 | 3 Ply 180/120/150 | 1726"
+     "ref": "Price Offer!A37:G37",
+     "snippet": "DCPL-C129 | TEA 250G X 40 BOX | 360 x 280 x 230 | 3 Ply 180/120/150 | 1726 | FOR Chakan"
     }
    },
    {
@@ -1143,8 +1164,8 @@
     "remarks": null,
     "ocr_uncertain": false,
     "source": {
-     "ref": "Price Offer!A38",
-     "snippet": "DCPL-C130 | SPICES 100G X 120 BOX | 330 x 250 x 200 | 3 Ply 150/120/150 | 1325"
+     "ref": "Price Offer!A38:G38",
+     "snippet": "DCPL-C130 | SPICES 100G X 120 BOX | 330 x 250 x 200 | 3 Ply 150/120/150 | 1325 | FOR Chakan"
     }
    }
   ],

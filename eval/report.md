@@ -4,13 +4,13 @@ Run 2026-11-07. Compared with `data/answer_key` (eval only; the app never reads 
 
 Pipeline that produced each vendor's current values (from `vendor_responses.extraction_model`):
 
-- V1: `xlsx→celltext→gemini-3.1-flash-lite@prompt_v4`
-- V2: `pdf→native→gemini-3.1-flash-lite@prompt_v4`
-- V3: `docx→markdown→gemini-3.1-flash-lite@prompt_v4`
-- V4: `jpg→native→gemini-3.1-flash-lite@prompt_v4`
-- V5: `eml→text→gemini-3.1-flash-lite@prompt_v4`
+- V1: `xlsx→celltext→gemini-3.8-flash@prompt_v4`
+- V2: `pdf→native→gemini-3.8-flash@prompt_v4`
+- V3: `docx→markdown→gemini-3.8-flash@prompt_v4`
+- V4: `jpg→native→gemini-3.8-flash@prompt_v4`
+- V5: `eml→text→gemini-3.8-flash@prompt_v4`
 
-Configured default model `gemini-3.6-flash`; fallbacks used when a model's daily quota is exhausted: `gemini-3.5-flash`, `gemini-3.1-flash-lite`.
+Configured default model `gemini-3.8-flash`; fallbacks used when a model's daily quota is exhausted: `gemini-3.6-flash`.
 
 ## Summary
 

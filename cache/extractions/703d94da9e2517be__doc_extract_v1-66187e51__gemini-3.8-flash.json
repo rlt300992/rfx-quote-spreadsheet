@@ -2,15 +2,15 @@
  "sha256": "703d94da9e2517be49d4713cfb9308df08fb4be94a8e540c0fa7f817cfea80cc",
  "prompt": "doc_extract",
  "prompt_version": "v1-66187e51",
- "model": "gemini-3.5-flash",
- "created_at": "2026-11-07T17:32:30+00:00",
+ "model": "gemini-3.8-flash",
+ "created_at": "2026-11-07T17:58:12+00:00",
  "meta": {
   "usage": {
    "prompt_tokens": 845,
-   "output_tokens": 126
+   "output_tokens": 151
   },
   "file": "V5_KKP_ISO9001.pdf",
-  "model": "gemini-3.5-flash"
+  "model": "gemini-3.8-flash"
  },
  "result": {
   "doc_type": "ISO9001",
@@ -24,7 +24,7 @@
   "covers_text": null,
   "source": {
    "ref": "page 1",
-   "snippet": "Certified organisation Krishna Kraft Packaging LLP"
+   "snippet": "Certified organisation Krishna Kraft Packaging LLP | Issue date 01 Apr 2023 | Expiry date 31 Mar 2026"
   }
  }
 }

@@ -343,3 +343,17 @@ def test_volume_discount_qty_basis_survives_into_the_database(fresh_db, monkeypa
     assert json.loads(q["discounts_json"])[0]["qty_basis"] == "per_order"
     flags = json.loads(q["field_meta_json"])["flags"]
     assert "TIER_NOT_MET_PER_ORDER" in flags and "TIER_BASIS_UNCLEAR" not in flags   # typical order 10,000 < 20,000
+
+
+def test_extract_all_skips_vendors_that_already_have_current_quotes(fresh_db, stub_gemini, tmp_path):
+    entry, inbox = _entry(tmp_path)
+    (inbox / "manifest.json").write_text(json.dumps([entry]), encoding="utf-8")
+    first = ex.ingest_all(fresh_db, inbox=inbox, draft=False, only_missing=True)
+    assert [r["vendor"] for r in first] == ["V5"]
+    fresh_db.execute("UPDATE quotes SET spec_accepted=1 WHERE is_current=1 AND line_id=(SELECT line_id FROM line_items WHERE line_no=1)")
+    fresh_db.commit()
+    msgs = []
+    again = ex.ingest_all(fresh_db, inbox=inbox, draft=False, only_missing=True, progress=msgs.append)
+    assert again == [] and any("already extracted" in m for m in msgs)
+    assert fresh_db.execute("SELECT COUNT(*) FROM quotes WHERE is_current=0").fetchone()[0] == 0   # nothing superseded
+    assert fresh_db.execute("SELECT spec_accepted FROM quotes q JOIN line_items l USING (line_id) WHERE l.line_no=1 AND q.is_current=1").fetchone()[0] == 1

@@ -2,21 +2,21 @@
  "sha256": "5ceea8476421e2a0ed905faa7b149ad40044fda4e3cdaaa2c01d0a2e03424f70",
  "prompt": "quote_extract",
  "prompt_version": "v4-b5129d84",
- "model": "gemini-3.1-flash-lite",
- "created_at": "2026-11-07T17:45:33+00:00",
+ "model": "gemini-3.8-flash",
+ "created_at": "2026-11-07T17:58:41+00:00",
  "meta": {
   "usage": {
    "prompt_tokens": 2682,
-   "output_tokens": 864
+   "output_tokens": 690
   },
   "file": "V5_KrishnaKraft_email.eml",
-  "model": "gemini-3.1-flash-lite"
+  "model": "gemini-3.8-flash"
  },
  "result": {
   "header": {
    "vendor_name": "Krishna Kraft Packaging LLP",
    "quote_ref_no": null,
-   "quote_date": null,
+   "quote_date": "2026-11-09",
    "validity_text": null,
    "validity_date": null,
    "price_basis": "unspecified",
@@ -24,7 +24,7 @@
    "gst_rate_pct": null,
    "tax_basis": "unspecified",
    "payment_terms_days": null,
-   "payment_terms_text": "as before",
+   "payment_terms_text": "Payment terms as before.",
    "lead_time_days": null,
    "moq_qty": null,
    "moq_text": null,
@@ -36,7 +36,7 @@
      "value_inr_per_piece": null,
      "text": "freight extra",
      "source": {
-      "ref": "email body",
+      "ref": "email body paragraph 1",
       "snippet": "freight extra"
      }
     }
@@ -52,7 +52,7 @@
      "currency": "INR",
      "text": "₹42/kg for the 5-ply",
      "source": {
-      "ref": "email body",
+      "ref": "email body paragraph 1",
       "snippet": "₹42/kg for the 5-ply"
      }
     },
@@ -64,7 +64,7 @@
      "currency": "INR",
      "text": "38 for the 3-ply",
      "source": {
-      "ref": "email body",
+      "ref": "email body paragraph 1",
       "snippet": "38 for the 3-ply"
      }
     },
@@ -76,7 +76,7 @@
      "currency": "INR",
      "text": "rest same as last year",
      "source": {
-      "ref": "email body",
+      "ref": "email body paragraph 1",
       "snippet": "rest same as last year"
      }
     }
@@ -88,22 +88,29 @@
     {
      "field": "vendor_name",
      "source": {
-      "ref": "email body",
-      "snippet": "Krishna Kraft Packaging LLP"
+      "ref": "email signature",
+      "snippet": "Krishna Kraft Packaging LLP, Shirwal"
      }
     },
     {
-     "field": "declared_msme_category",
+     "field": "quote_date",
      "source": {
-      "ref": "email body",
-      "snippet": "(Udyam: Small)"
+      "ref": "email header",
+      "snippet": "Date: Mon, 09 Nov 2026 19:42:11 +0530"
      }
     },
     {
      "field": "payment_terms_text",
      "source": {
-      "ref": "email body",
-      "snippet": "Payment terms as before"
+      "ref": "email body paragraph 2",
+      "snippet": "Payment terms as before."
+     }
+    },
+    {
+     "field": "declared_msme_category",
+     "source": {
+      "ref": "email signature",
+      "snippet": "(Udyam: Small)"
      }
     }
    ],
@@ -117,7 +124,7 @@
     "answer_value": "yes",
     "document_attached": true,
     "source": {
-     "ref": "email body",
+     "ref": "email body paragraph 3",
      "snippet": "ISO copy attached."
     }
    },
@@ -127,7 +134,7 @@
     "answer_value": "yes",
     "document_attached": false,
     "source": {
-     "ref": "email body",
+     "ref": "email body paragraph 3",
      "snippet": "Rejection ok."
     }
    },
@@ -137,7 +144,7 @@
     "answer_value": "180",
     "document_attached": false,
     "source": {
-     "ref": "email body",
+     "ref": "email body paragraph 3",
      "snippet": "Capacity approx 180 T/month."
     }
    }

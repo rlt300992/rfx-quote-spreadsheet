@@ -526,10 +526,20 @@ def load_manifest(inbox: Path = INBOX) -> list[dict]:
 
 
 def ingest_all(conn: sqlite3.Connection, force: bool = False, progress: Callable[[str], None] | None = None,
-               inbox: Path = INBOX, draft: bool = True) -> list[dict]:
+               inbox: Path = INBOX, draft: bool = True, only_missing: bool = False) -> list[dict]:
+    """Extract every manifest entry. With only_missing, vendors that already have current quotes are left alone,
+    so nothing the buyer has confirmed or corrected is superseded by accident (re-running a vendor is explicit)."""
     cfg = load_config()
     out = []
     entries = load_manifest(inbox)
+    if only_missing:
+        done = {r[0] for r in conn.execute(
+            "SELECT DISTINCT v.vendor_code FROM quotes q JOIN vendors v USING (vendor_id) WHERE q.is_current=1")}
+        entries = [e for e in entries if e["vendor_code"] not in done]
+        if not entries:
+            if progress:
+                progress("All vendors are already extracted; use 'Re-run extraction' on a vendor to refresh it.")
+            return []
     pre = prefetch(conn, entries, cfg, force=force, inbox=inbox, progress=progress)
     for entry in entries:
         if progress:
