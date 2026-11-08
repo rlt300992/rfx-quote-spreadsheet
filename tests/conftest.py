@@ -12,6 +12,9 @@ from tests.fixtures_from_answer_key import build_dev_db
 
 @pytest.fixture(scope="session")
 def dev_db_path(tmp_path_factory):
+    from tests.fixtures_from_answer_key import KEY
+    if not (KEY / "quotes_answer_key.csv").exists():
+        pytest.skip("the answer key is private and not in this checkout (set ANSWER_KEY_DIR); tests built on it are skipped")
     path = tmp_path_factory.mktemp("db") / "dev.db"
     conn = connect(path)
     build_dev_db(conn)

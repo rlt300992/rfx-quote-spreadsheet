@@ -16,7 +16,7 @@ pip install -r requirements.txt
 echo GEMINI_API_KEY=... > .env && echo APP_PASSCODE=... >> .env     # on Streamlit Cloud: st.secrets
 streamlit run app.py          # first start builds rfx.db from the seed and the committed extraction cache: 0 API calls, about 7 s
 pytest                        # 269 tests, no API key needed
-python -m eval.eval_extraction   # compares with data/answer_key (eval only; the app never reads it)
+python -m eval.eval_extraction   # needs the private answer key: set ANSWER_KEY_DIR (the app never reads it)
 ```
 
 ## How it works
@@ -61,6 +61,8 @@ flowchart LR
 | Questionnaire cells correct | 39/40 |
 | Items to review | 22 (from 495 open values) |
 
+The answer key is kept private so the extraction can't be tuned to it; results above were measured against it.
+
 ## Left out (phase 2)
 Percentage dual-sourcing within a line; a kraft-paper escalation formula; reading vendor clarification replies automatically; multi-category specs; supply terms (palletisation, tolerances, LDs); real email sending and rate-contract/PO creation; vendor-side portal.
 
@@ -73,6 +75,6 @@ extract/          preprocess, gemini_client, cache, extract, match, prompts/, cl
 agent/            tools (query_view, award_scenario, commit_award), analyst (Gemini tool loop)
 copilot/          RFQ co-pilots (edit-ops validated in Python)
 export/           Excel workbook, RFQ workbook, award memo (PDF)
-eval/             eval_extraction.py, report.md      data/  seed, inbox, answer_key (eval only)
+eval/             eval_extraction.py, report.md      data/  seed, inbox (answer key is private)
 cache/extractions committed Gemini results           tests/ 269 tests      docs/ SCHEMA, DECISIONS, mockups
 ```

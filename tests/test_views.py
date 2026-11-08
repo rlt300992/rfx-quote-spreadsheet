@@ -13,7 +13,8 @@ from core.rules import judge
 from tests.conftest import get_quote
 
 ROOT = Path(__file__).resolve().parent.parent
-KEY = ROOT / "data" / "answer_key"
+import os
+KEY = Path(os.environ.get("ANSWER_KEY_DIR") or ROOT / "data" / "answer_key")
 
 
 # ------------------------------------------------------------------ qualification (tri-state)
@@ -23,6 +24,8 @@ def test_expected_qualification_tristate(ro):
 
 
 def test_rule_engine_matches_every_questionnaire_cell_of_the_answer_key(ro):
+    if not (KEY / "questionnaire_answer_key.csv").exists():
+        pytest.skip("the answer key is private (set ANSWER_KEY_DIR)")
     key = pd.read_csv(KEY / "questionnaire_answer_key.csv").set_index("vendor_code")
     for code in key.index:
         for qcode in [c for c in key.columns if c.startswith("Q")]:

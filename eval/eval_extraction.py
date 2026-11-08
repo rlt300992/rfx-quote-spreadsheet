@@ -5,6 +5,7 @@
 from __future__ import annotations
 
 import json
+import os
 import sqlite3
 from collections import Counter, defaultdict
 from datetime import date
@@ -16,7 +17,7 @@ from core.config import load_config
 from core.db import connect
 
 ROOT = Path(__file__).resolve().parent.parent
-KEY = ROOT / "data" / "answer_key"
+KEY = Path(os.environ.get("ANSWER_KEY_DIR") or ROOT / "data" / "answer_key")   # kept private: the app never needs it
 REPORT = Path(__file__).resolve().parent / "report.md"
 UNIT_EQ = {"per_box": "per_piece"}  # "per box" and "per piece" are the same unit for a box buyer
 
@@ -191,6 +192,9 @@ def render(res: dict, cfg: dict) -> str:
 
 
 def main() -> None:
+    if not (KEY / "quotes_answer_key.csv").exists():
+        raise SystemExit(f"The answer key was not found in {KEY}. It is kept private (not in this repo). Set ANSWER_KEY_DIR to the folder that holds "
+                         "quotes_answer_key.csv and questionnaire_answer_key.csv, then run `python -m eval.eval_extraction` again.")
     conn = connect()
     res = evaluate(conn)
     REPORT.write_text(render(res, load_config()), encoding="utf-8")

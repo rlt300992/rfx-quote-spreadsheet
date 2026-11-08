@@ -23,7 +23,8 @@ from core.seed import seed
 from core.validate import ensure_completeness
 
 ROOT = Path(__file__).resolve().parent.parent
-KEY = ROOT / "data" / "answer_key"
+import os
+KEY = Path(os.environ.get("ANSWER_KEY_DIR") or ROOT / "data" / "answer_key")
 MANIFEST = ROOT / "data" / "inbox" / "manifest.json"
 
 SOURCE_TYPE = {"V1": "excel", "V2": "pdf", "V3": "word", "V4": "photo", "V5": "email_text"}
