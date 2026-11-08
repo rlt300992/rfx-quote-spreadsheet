@@ -229,7 +229,7 @@ BEGIN SELECT RAISE(ABORT, 'audit_log is append-only'); END;
 """
 
 AUDIT_ACTIONS = ("extract_run", "confirm", "override", "reject", "spec_accept", "clarification_drafted", "clarification_sent_stub",
-                 "clarification_resolved", "response_superseded", "award", "unaward", "discount_toggle", "rfq_confirm", "rfq_send", "rfq_draft_publish", "review_undo")
+                 "clarification_resolved", "response_superseded", "award", "unaward", "discount_toggle", "rfq_confirm", "rfq_send", "rfq_draft_publish", "review_undo", "award_notify_stub", "award_approval_stub")
 
 TABLES = ("rfqs", "vendors", "line_items", "rfx_questions", "last_year_prices",
           "vendor_responses", "quotes", "documents", "questionnaire_answers", "audit_log")

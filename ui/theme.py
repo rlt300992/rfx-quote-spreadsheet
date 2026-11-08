@@ -72,6 +72,32 @@ section[data-testid="stSidebar"] > div:first-child { width: 210px !important; }
 .rr-xl tr.hl td{background:#fff3b0;outline:2px solid #e07800}
 .rr-doc{padding:14px 16px;color:#111;font-family:Arial,sans-serif;font-size:13.5px;line-height:1.6}
 .rr-doc mark{background:#fff3b0;outline:2px solid #e07800}
+
+/* ---- Analyst & Award */
+.aa-hd{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:2px 2px 8px;border-bottom:1px solid var(--rr-line);margin-bottom:10px;font-size:14px}
+.aa-card{background:var(--rr-card);border:1px solid var(--rr-line);border-radius:10px;padding:12px 14px;font-size:14px;margin-bottom:6px}
+.aa-user{margin:8px 0 8px auto;max-width:90%;width:fit-content;background:#1d4f91;color:#fff;border-radius:12px;padding:9px 14px;font-size:14px}
+.aa-head{font-weight:700;font-size:15px;line-height:1.4}.aa-ctx{margin-top:2px;font-size:13.5px;color:var(--rr-mut)}
+.aa-badges{display:flex;gap:8px;flex-wrap:wrap;margin:6px 0 2px}
+.aa-how{font-size:13px;line-height:1.7}.aa-how code{background:var(--rr-sel);padding:0 5px;border-radius:4px;font-size:12px}
+.aa-steps{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:2px 0 10px}
+.aa-step{padding:7px 4px;text-align:center;border-radius:8px;font-size:12.8px;background:var(--rr-card2);color:var(--rr-dim);border:1px solid transparent}
+.aa-step.done{background:var(--rr-greenbg);color:var(--rr-green)}.aa-step.cur{background:var(--rr-sel);font-weight:700;color:inherit}
+.aa-hint{font-size:14px;color:var(--rr-mut);line-height:1.5;margin-bottom:8px}.aa-meta{font-size:12.5px;color:var(--rr-mut);margin-bottom:6px}
+.aa-grp{font-size:12px;color:var(--rr-mut);font-weight:700;text-transform:uppercase;letter-spacing:.5px;margin:12px 0 6px}
+.aa-kv{display:grid;grid-template-columns:minmax(150px,1fr) auto;gap:5px 14px;font-size:13.5px}.aa-kv .k{color:var(--rr-mut)}.aa-kv .v{text-align:right}
+.aa-bar{display:grid;grid-template-columns:110px 1fr 70px;gap:8px;align-items:center;font-size:13px;margin:4px 0}.aa-bar i{display:block;height:9px;background:var(--rr-track);border-radius:5px}
+.aa-bar b{display:block;height:9px;background:var(--rr-okline);border-radius:5px}.aa-bar .r{text-align:right;font-weight:600}
+.aa-risk{font-size:13.5px;margin:3px 0}.aa-why{font-size:13.5px;line-height:1.45;margin-bottom:6px}
+.aa-mail{background:var(--rr-card2);border:1px solid var(--rr-line);border-radius:8px;padding:10px 12px;font-size:13px;line-height:1.5}
+[class*="st-key-aa_chat"]{border:1px solid var(--rr-line);border-radius:12px;padding:14px 16px;gap:.5rem}
+[class*="st-key-aa_award"]{border:1px solid var(--rr-line);border-radius:12px;padding:14px 16px;gap:.5rem}
+[data-testid="stColumn"]:has([class*="st-key-aa_award"]){position:sticky;top:12px;align-self:flex-start}
+[class*="st-key-aa_ans_"]{border:1px solid var(--rr-line);border-radius:10px;background:var(--rr-card);padding:12px 14px;gap:.4rem}
+[class*="st-key-aa_need_"]{border:1px solid var(--rr-ambersel);border-radius:8px;padding:8px 10px;background:var(--rr-amberbg);gap:.3rem}
+[class*="st-key-aa_btns_"] button, [class*="st-key-aa_fu_"] button, [class*="st-key-aa_starters"] button, [class*="st-key-aa_actions"] button{padding:4px 10px;min-height:0;font-size:12.5px;border-radius:999px;line-height:1.3}
+[class*="st-key-aa_actions"] button{border-radius:8px}
+[class*="st-key-aa_btns_"] button p, [class*="st-key-aa_fu_"] button p, [class*="st-key-aa_starters"] button p, [class*="st-key-aa_actions"] button p{font-size:12.5px}
 </style>
 """
 

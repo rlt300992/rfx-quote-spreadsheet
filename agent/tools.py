@@ -130,6 +130,25 @@ def _scenario_from_grid(g: pd.DataFrame, basis: str, exclude_vendors: list[str] 
     return df
 
 
+def totals_from_rows(rows: list[dict], basis: str = "evaluated") -> dict:
+    """The same totals _scenario_from_grid attaches to a scenario, recomputed from (possibly edited) proposal rows."""
+    df = pd.DataFrame(rows)
+    won = df[df["vendor_code"].notna()]
+    ly = float((won["ly_landed_inr_pc"] * won["annual_qty"]).sum())
+    sav = float(((won["ly_landed_inr_pc"] - won["landed_inr_pc"]) * won["annual_qty"]).sum())
+    return {"basis": basis, "lines_awarded": int(len(won)), "lines_without_winner": int(len(df) - len(won)),
+            "total_value_inr": float(won["annual_value_inr"].sum()),
+            "by_vendor": won.groupby("vendor_code")["annual_value_inr"].sum().round(2).to_dict(),
+            "lines_by_vendor": won.groupby("vendor_code").size().to_dict(),
+            "ly_value_inr": ly, "total_landed_inr": float((won["landed_inr_pc"] * won["annual_qty"]).sum()),
+            "saving_vs_ly_inr": sav, "saving_vs_ly_pct": sav / ly * 100 if ly else 0.0,
+            "lines_on_not_firm_prices": int(won["price_not_firm"].astype(bool).sum()),
+            "value_on_not_firm_prices_inr": float(won.loc[won["price_not_firm"].astype(bool), "annual_value_inr"].sum()),
+            "not_firm_vendors": sorted(won.loc[won["price_not_firm"].astype(bool), "vendor_code"].unique().tolist()),
+            "lines_with_imputed_freight": int((won["freight_imputed"].fillna(0) > 0).sum()),
+            "lines_with_open_spot_checks": int((won["review_state"] == "spot_check").sum())}
+
+
 def award_scenario(conn: sqlite3.Connection, basis: str = "evaluated", exclude_vendors: list[str] | None = None,
                    require_qualified: bool = True, include_pending: bool = False,
                    include_accepted_substitutes: bool = False, order_qty_override: int | None = None) -> pd.DataFrame:
@@ -193,6 +212,38 @@ def propose_award(ctx: ToolContext, chat_prompt: str = "", **params: Any) -> dic
     return ctx.proposal
 
 
+def override_line(conn: sqlite3.Connection, proposal: dict | None, line_no: int, vendor_code: str) -> dict:
+    """Give one line of the STAGED proposal to another vendor. Only quotes that are awardable (eligible and from a qualified vendor) are allowed;
+    anything else is refused with the plain reason. Edits the proposal only: nothing is written to the database. Returns what changed."""
+    if not proposal:
+        raise ValueError("there is no proposed award to edit; ask me to propose one first")
+    vendor_code = (vendor_code or "").upper().strip()
+    g = pd.read_sql_query("SELECT * FROM v_comparison_grid WHERE line_no=?", conn, params=(int(line_no),))
+    if g.empty:
+        raise ValueError(f"there is no line {line_no}")
+    mine = g[g["vendor_code"] == vendor_code]
+    if mine.empty:
+        raise ValueError(f"{vendor_code} is not a vendor on this RFQ")
+    q = mine.iloc[0]
+    if q["quote_status"] != "quoted" or pd.isna(q["evaluated_inr_pc"]):
+        raise ValueError(f"{vendor_code} did not quote line {line_no}, so it cannot be awarded to them")
+    if int(q["is_awardable"]) != 1:
+        raise ValueError(f"{vendor_code} cannot win line {line_no}: {explain_reason(q['exclusion_reason'])}")
+    row = next((r for r in proposal["rows"] if int(r["line_no"]) == int(line_no)), None)
+    if row is None:
+        raise ValueError(f"line {line_no} is not in the proposal")
+    old = row["vendor_code"]
+    others = g[(g["is_awardable"] == 1) & (g["vendor_code"] != vendor_code)].sort_values(["evaluated_inr_pc", "vendor_code"])
+    row.update(vendor_code=vendor_code, quote_id=int(q["quote_id"]), price_inr_pc=float(q["evaluated_inr_pc"]), landed_inr_pc=float(q["landed_inr_pc"]),
+               annual_value_inr=float(q["evaluated_inr_pc"] * q["annual_qty"]), price_not_firm=bool(q["price_not_firm"]),
+               freight_imputed=int(q["freight_imputed"] or 0), review_state=q["review_state"],
+               backup_vendor=others.iloc[0]["vendor_code"] if len(others) else None,
+               backup_price_inr_pc=float(others.iloc[0]["evaluated_inr_pc"]) if len(others) else None, no_winner_reason=None)
+    proposal["totals"] = totals_from_rows(proposal["rows"], proposal["totals"].get("basis", "evaluated"))
+    proposal.setdefault("overrides", []).append({"line_no": int(line_no), "from": old, "to": vendor_code})
+    return {"line_no": int(line_no), "from": old, "to": vendor_code, "totals": proposal["totals"]}
+
+
 def award_review(conn: sqlite3.Connection, proposal: dict) -> pd.DataFrame:
     """Each proposed line next to the L1 (cheapest current quote, eligible or not) and the L1-eligible quote.
     `bypass` is True where the proposed award is not the cheapest eligible one, which needs a recorded reason."""
@@ -223,7 +274,7 @@ def _candidates(g: pd.DataFrame, line_no: int) -> list[dict]:
 
 
 def commit_award(conn: sqlite3.Connection, proposal: dict, chat_prompt: str | None = None, reason: str | None = None,
-                 bypass_code: str | None = None, actor: str = "buyer") -> dict:
+                 bypass_code: str | None = None, actor: str = "buyer", line_reasons: dict | None = None) -> dict:
     """Write the proposed award. Called ONLY from the Confirm award button.
 
     Re-checks every quote (still current, on the right line, still awardable). Wherever the award is not the
@@ -243,23 +294,30 @@ def commit_award(conn: sqlite3.Connection, proposal: dict, chat_prompt: str | No
     if bad:
         raise ValueError(f"these lines changed since the proposal and can no longer be awarded as proposed: {bad}. Re-run the scenario.")
     bypass = won[won["bypass"]]
-    if len(bypass):
-        if not (reason or "").strip():
-            raise ValueError(f"a reason is required for lines where the award is not the cheapest eligible quote: {sorted(bypass['line_no'].astype(int))}")
-        if bypass_code not in BYPASS_CODES:
-            raise ValueError(f"choose a bypass reason code from {BYPASS_CODES}")
+    lr = {int(k): v for k, v in (line_reasons or {}).items()}   # {line_no: (code, reason)}: one reason per exception line
+
+    def reason_for(ln: int) -> tuple[str | None, str | None]:
+        code, why = lr.get(ln, (bypass_code, reason))
+        return code, why
+
+    for ln in sorted(bypass["line_no"].astype(int)):
+        code, why = reason_for(ln)
+        if not (why or "").strip():
+            raise ValueError(f"a reason is required for lines where the award is not the cheapest eligible quote: line {ln}")
+        if code not in BYPASS_CODES:
+            raise ValueError(f"choose a bypass reason code from {BYPASS_CODES} for line {ln}")
     batch = audit.new_batch_id()
     now = datetime.now(timezone.utc).isoformat(timespec="seconds")
     basis = json.dumps(proposal.get("params") or {}, sort_keys=True)
     try:
         for _, r in won.iterrows():
             ln = int(r["line_no"])
-            code = bypass_code if r["bypass"] else None
+            code, why = reason_for(ln) if r["bypass"] else (None, None)
             conn.execute("""UPDATE line_items SET awarded_quote_id=?, award_basis=?, l1_quote_id=?, l1_eligible_quote_id=?,
                             bypass_reason_code=?, awarded_at=? WHERE line_no=?""",
                          (int(r["awarded_quote_id"]), f"scenario {basis}", r["l1_quote_id"], r["l1_eligible_quote_id"], code, now, ln))
             audit.log(conn, "award", ("line_item", ln), field="awarded_quote_id", new=int(r["awarded_quote_id"]),
-                      reason=reason if r["bypass"] else None, actor=actor, batch_id=batch, chat_prompt=chat_prompt or proposal.get("chat_prompt"),
+                      reason=why, actor=actor, batch_id=batch, chat_prompt=chat_prompt or proposal.get("chat_prompt"),
                       evidence={"awarded_vendor": r["awarded_vendor"], "l1_vendor": r["l1_vendor"], "l1_eligible_vendor": r["l1_eligible_vendor"],
                                 "bypass": bool(r["bypass"]), "bypass_reason_code": code},
                       scenario={"params": proposal.get("params"), "candidates": _candidates(g, ln)})
@@ -307,6 +365,8 @@ TOOL_SPECS: list[dict] = [
      "parameters": {"type": "object", "properties": SCENARIO_PROPS}},
     {"name": "propose_award", "description": "Stage a scenario as the PROPOSED award for the buyer to review. Same parameters as award_scenario. Use only when the buyer asks to propose or prepare an award. It cannot commit anything: the buyer must click Confirm award in the app.",
      "parameters": {"type": "object", "properties": SCENARIO_PROPS}},
+    {"name": "override_proposal_line", "description": "Give ONE line of the currently PROPOSED award to another vendor (for example 'give line 28 to V3'). Only awardable quotes are accepted; otherwise you get the reason it is refused. It edits the proposal only; the buyer must still give a reason for the line and press Confirm award. Use it only when a proposal exists.",
+     "parameters": {"type": "object", "properties": {"line_no": {"type": "integer"}, "vendor_code": {"type": "string"}}, "required": ["line_no", "vendor_code"]}},
     {"name": "render_table", "description": "Show the result of a SELECT over the views to the buyer as a table in the chat. Use for lists the buyer should see (e.g. unconfirmed values). Prefer few, readable columns.",
      "parameters": {"type": "object", "properties": {"sql": {"type": "string"}, "title": {"type": "string"}}, "required": ["sql", "title"]}},
     {"name": "render_chart", "description": "Show a chart to the buyer. The data comes from a SELECT over the views. Suggest a chart when it helps (comparisons across vendors or lines).",

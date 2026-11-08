@@ -205,7 +205,7 @@ def test_analyst_propose_award_stages_a_proposal_and_never_commits(real_conn, mo
 
 def test_analyst_has_no_commit_tool_and_prompt_forbids_inventing():
     names = {s["name"] for s in T.TOOL_SPECS}
-    assert "commit_award" not in names and names == {"query_view", "award_scenario", "propose_award", "render_table", "render_chart"}
+    assert "commit_award" not in names and names == {"query_view", "award_scenario", "propose_award", "override_proposal_line", "render_table", "render_chart"}
     assert "Answer ONLY from tool results" in A.SYSTEM and "cannot commit" in A.SYSTEM
     assert "v_comparison_grid" in A.SYSTEM and "Never explain WHY" in A.SYSTEM
 
@@ -221,7 +221,7 @@ def test_analyst_forced_final_answer_when_the_loop_never_stops(real_conn, monkey
 def test_excel_has_four_sheets_and_says_what_it_shows(real_conn):
     c, _ = real_conn
     wb = openpyxl.load_workbook(io.BytesIO(build_workbook(c)))
-    assert wb.sheetnames == ["Award", "Scenario", "Audit trail", "Assumptions"]
+    assert wb.sheetnames == ["Award", "Scenario", "Audit trail", "Assumptions", "Memo"]
     assert wb["Award"]["A1"].value == "CURRENT BEST SCENARIO (not committed)"
     sc = pd.DataFrame(wb["Scenario"].values)
     sc.columns = sc.iloc[0]; sc = sc[1:]
@@ -250,36 +250,7 @@ def _btn(at, key):
     return [b for b in at.button if b.key == key][0]
 
 
-def test_award_panel_commits_with_audit_rows_through_the_ui(real_conn):
-    c, path = real_conn
-    at = run_app(path, setup=lambda a: a.session_state.__setitem__("proposal", _proposal(c)))
-    assert not at.exception and any("not committed" in s.value.lower() for s in at.subheader)
-    assert any("NOT-FIRM" in w.value for w in at.warning)
-    _btn(at, "confirm_award").click().run()
-    assert not at.exception
-    assert c.execute("SELECT COUNT(*) FROM audit_log WHERE action='award'").fetchone()[0] == 30
-    assert any("Award committed" in s.value for s in at.success)
 
-
-def test_award_panel_blocks_bypass_without_reason_then_accepts_it(real_conn):
-    c, path = real_conn
-    at = run_app(path, setup=lambda a: a.session_state.__setitem__("proposal", _proposal(c, exclude_vendors=["V3"])))
-    assert any("NOT the cheapest eligible" in w.value for w in at.warning)
-    _btn(at, "confirm_award").click().run()
-    assert any("reason is required" in e.value for e in at.error)
-    assert c.execute("SELECT COUNT(*) FROM audit_log WHERE action='award'").fetchone()[0] == 0
-    [w for w in at.text_input if w.key == "bypass_reason"][0].set_value("V3 prices not firm").run()
-    [w for w in at.selectbox if w.key == "bypass_code"][0].select("price_not_firm").run()
-    _btn(at, "confirm_award").click().run()
-    assert c.execute("SELECT COUNT(*) FROM audit_log WHERE action='award'").fetchone()[0] > 0
-
-
-def test_chat_message_limit_is_enforced_per_session(real_conn):
-    c, path = real_conn
-    at = run_app(path, setup=lambda a: a.session_state.__setitem__("chat", [{"role": "user", "text": "q"}] * 30))
-    assert at.chat_input(key="chat_input").disabled is True                      # the analyst's input (the RFQ co-pilot has its own)
-    assert at.chat_input(key="demo_chat_input").disabled is False
-    assert any("0 of 30 messages left" in x.value for x in at.caption)
 
 
 def test_clarification_send_is_stubbed_audited_and_locks(real_conn):

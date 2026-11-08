@@ -124,17 +124,23 @@ def grid_model(g: pd.DataFrame, params: dict, basis: str = "evaluated", metric: 
     col = {"evaluated": "evaluated_inr_pc", "landed": "landed_inr_pc"}[basis]
     ok = scenario_eligibility(g, basis, params.get("exclude_vendors"), True, params.get("include_pending", False), params.get("include_accepted_substitutes", False))
     g = g.assign(_ok=ok.values)
-    vendors = sorted(g["vendor_code"].unique())
+    recs = g.to_dict("records")                       # plain dicts: per-row pandas indexing was the slow part of this tab
+    vendors = sorted({r["vendor_code"] for r in recs})
+    by_line: dict[int, list[dict]] = {}
+    for r in recs:
+        by_line.setdefault(int(r["line_no"]), []).append(r)
     rows, texts, csss, meta = [], [], [], []
-    for ln, grp in g.groupby("line_no"):
-        first = grp.iloc[0]
-        elig = grp[grp["_ok"]].sort_values([col, "vendor_code"])
-        win = elig.iloc[0] if len(elig) else None
-        back = elig.iloc[1] if len(elig) > 1 else None
-        hi = elig[col].max() if len(elig) > 1 else None
+    for ln in sorted(by_line):
+        grp = by_line[ln]
+        first = grp[0]
+        elig = sorted([r for r in grp if r["_ok"]], key=lambda r: (r[col], r["vendor_code"]))
+        win = elig[0] if elig else None
+        back = elig[1] if len(elig) > 1 else None
+        hi = max(r[col] for r in elig) if len(elig) > 1 else None
+        byv = {r["vendor_code"]: r for r in grp}
         text, css = {}, {}
         for v in vendors:
-            r = grp[grp["vendor_code"] == v].iloc[0]
+            r = byv[v]
             tag = _tag(r)
             if r["quote_status"] != "quoted" or pd.isna(r[col]):
                 text[v], css[v] = "Not quoted", "color:#8b949e;font-style:italic"

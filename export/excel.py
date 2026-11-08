@@ -53,7 +53,7 @@ def _award_frame(conn: sqlite3.Connection, proposal: dict | None) -> tuple[pd.Da
     return out, label
 
 
-def build_workbook(conn: sqlite3.Connection, proposal: dict | None = None) -> bytes:
+def build_workbook(conn: sqlite3.Connection, proposal: dict | None = None, pinned: list[dict] | None = None) -> bytes:
     cfg = load_config()
     buf = io.BytesIO()
     wb = xlsxwriter.Workbook(buf, {"in_memory": True})
@@ -162,5 +162,13 @@ def build_workbook(conn: sqlite3.Connection, proposal: dict | None = None) -> by
     for i, (k, v) in enumerate(FLAG_HELP.items(), start=r0 + 1):
         ws4.write(i, 0, k)
         ws4.write(i, 1, v, wrap)
+    from export.memo import memo_data, memo_rows
+
+    wsm = wb.add_worksheet("Memo")
+    wsm.set_column(0, 0, 18)
+    wsm.set_column(1, 1, 120)
+    for i, (k, v) in enumerate(memo_rows(memo_data(conn, proposal, pinned or []))):
+        wsm.write(i, 0, k, bold)
+        wsm.write(i, 1, v, wrap)
     wb.close()
     return buf.getvalue()

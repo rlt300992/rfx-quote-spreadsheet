@@ -21,7 +21,7 @@ from extract.gemini_client import generate, model_chain, is_daily_quota_error
 MAX_DATA_CALLS = 6      # query_view / award_scenario / propose_award per question
 MAX_RENDER_CALLS = 3    # render_table / render_chart per question (presentation, not analysis)
 MAX_TURNS = 12
-DATA_TOOLS = {"query_view", "award_scenario", "propose_award"}
+DATA_TOOLS = {"query_view", "award_scenario", "propose_award", "override_proposal_line"}
 
 GLOSSARY = """KEY COLUMNS (v_comparison_grid is one row per line x vendor, current quotes only):
 - line_no, catalog_sku, description, annual_qty, typical_order_qty; vendor_code (V1..V5), vendor_name, msme_category
@@ -53,7 +53,16 @@ RULES
 6. A vendor that is pending or disqualified cannot win, even if cheapest. Explain why using ko_issues / exclusion_reason. Do not suggest overriding qualification as if it were routine.
 7. You cannot commit an award. propose_award only stages a proposal that the buyer must confirm in the app; use it only if asked to propose/prepare an award, and then tell the buyer to review the Award panel and press Confirm award.
 8. Backup (L2) vendors come from the scenario tool; do not propose percentage splits within a line.
-9. Be concise: lead with the answer, then the supporting numbers, then caveats. Use plain text and short lists; Indian formatting (lakh/crore) is fine alongside full rupee figures.
+9. Be concise. Indian formatting (lakh/crore) is fine alongside full rupee figures.
+10. If the buyer asks to change a line of the proposed award ("give line 28 to V3"), call override_proposal_line; if it is refused, say why. It edits the proposal only; the buyer still gives a reason and confirms.
+
+ANSWER FORMAT (always):
+- First line: a bold headline of at most two lines with the key numbers, e.g. **V1 wins 14 lines and V3 wins 16, for ₹4.90 cr a year: ₹1.9 L (0.4%) below last year.**
+- Then one short context line (who qualified, what the basis is).
+- Use render_table / render_chart for lists and charts instead of writing tables in the text; keep any other text short.
+- Do not use markdown headings (#). After the context line add at most four short bullets, only if they add something. In tables round prices to 2 decimals and give columns readable names (ROUND(x, 2) AS "Evaluated ₹/pc").
+- Mention caveats that come from the data you used (not-firm prices, unconfirmed values, estimated freight, pending or disqualified vendors).
+- The LAST line of your answer must be: FOLLOWUPS: <follow-up question 1> | <follow-up question 2> | <follow-up question 3> (short questions the buyer could ask next; at most 3).
 
 """ + GLOSSARY
 
@@ -67,6 +76,10 @@ class AnalystResult:
     proposal: dict | None = None
     data_calls: int = 0
     model: str = ""
+    headline: str = ""
+    context: str = ""
+    followups: list[str] = field(default_factory=list)
+    scenario: dict | None = None      # the last scenario/proposal tool call: {"tool", "params", "totals"}
 
 
 def schema_text(conn: sqlite3.Connection) -> str:
@@ -119,6 +132,10 @@ def run_tool(ctx: T.ToolContext, name: str, args: dict, user_text: str = "") -> 
             return df_json(T.query_view(ctx.conn, args["sql"], snapshot=ctx.snapshot()))
         if name == "award_scenario":
             return scenario_json(T.award_scenario(ctx.conn, **_scenario_args(args)))
+        if name == "override_proposal_line":
+            if ctx.proposal is None:
+                return {"error": "there is no proposed award to edit; propose one first (propose_award)"}
+            return T.override_line(ctx.conn, ctx.proposal, int(args["line_no"]), str(args["vendor_code"]))
         if name == "propose_award":
             p = T.propose_award(ctx, chat_prompt=user_text, **_scenario_args(args))
             df = pd.DataFrame(p["rows"]); df.attrs["totals"] = p["totals"]
@@ -156,13 +173,16 @@ def _declarations():
         types.FunctionDeclaration(name=s["name"], description=s["description"], parameters_json_schema=s["parameters"]) for s in T.TOOL_SPECS])]
 
 
-def ask(conn: sqlite3.Connection, question: str, history: list[tuple[str, str]] | None = None) -> AnalystResult:
+def ask(conn: sqlite3.Connection, question: str, history: list[tuple[str, str]] | None = None, proposal: dict | None = None) -> AnalystResult:
     """Answer one question. `history` is prior (role, text) turns, role 'user' or 'assistant'."""
     from google.genai import types
 
     cfg = load_config()
     chain = model_chain("analyst", cfg)
     ctx = T.ToolContext(conn)
+    if proposal:
+        import copy
+        ctx.proposal = copy.deepcopy(proposal)        # the staged proposal the buyer is looking at; only override_proposal_line may edit this copy
     contents: list[Any] = []
     for role, text in (history or [])[-8:]:
         contents.append(types.Content(role="user" if role == "user" else "model", parts=[types.Part.from_text(text=text)]))
@@ -213,4 +233,26 @@ def ask(conn: sqlite3.Connection, question: str, history: list[tuple[str, str]] 
     finally:
         ctx.close()
     res.tables, res.figures, res.proposal, res.data_calls = ctx.tables, ctx.figures, ctx.proposal, data_calls
+    split_answer(res)
+    for t in res.trace:
+        if t["tool"] in ("award_scenario", "propose_award") and t["ok"]:
+            res.scenario = {"tool": t["tool"], "params": {k: v for k, v in t["args"].items() if k in T.SCENARIO_PROPS}}
     return res
+
+
+def split_answer(res: AnalystResult) -> None:
+    """headline / context / follow-ups out of the model's text (the FOLLOWUPS line is the model's own output; no extra call)."""
+    lines = [ln.rstrip() for ln in (res.text or "").splitlines()]
+    keep = []
+    for ln in lines:
+        if ln.strip().upper().startswith("FOLLOWUPS:"):
+            res.followups = [x.strip(" -•") for x in ln.split(":", 1)[1].split("|") if x.strip()][:3]
+        else:
+            keep.append(ln)
+    body = [ln for ln in keep]
+    while body and not body[0].strip():
+        body.pop(0)
+    res.text = "\n".join(body).strip()
+    first = body[0].strip() if body else ""
+    res.headline = first.replace("**", "").strip() if first else ""
+    res.context = "\n".join(body[1:]).strip()
