@@ -3,7 +3,9 @@
 Page code only. Decisions go through core.review_items -> core.actions (audit + recompute); nothing here edits a value directly."""
 from __future__ import annotations
 
+import html
 import io
+import re
 
 import pandas as pd
 import streamlit as st
@@ -71,6 +73,17 @@ def _close_form() -> None:
 
 
 # ------------------------------------------------------------------ item card
+def _h(text: str) -> str:
+    """Escape for HTML, then turn **bold** into <b>."""
+    return re.sub(r"\*\*(.+?)\*\*", r"<b>\1</b>", html.escape(text or "", quote=False))
+
+
+def _toggle_ev(iid: str) -> None:
+    s = set(st.session_state.get("rr_ev", set()))
+    s ^= {iid}
+    st.session_state["rr_ev"] = s
+
+
 def _evidence(conn, it: dict, r: dict, d: dict) -> None:
     val = r["validation"] or []
     bad = [c for c in val if c["result"] in ("fail", "warn")]
@@ -78,7 +91,7 @@ def _evidence(conn, it: dict, r: dict, d: dict) -> None:
     if bad:
         st.dataframe([{"Check": c["check"].replace("_", " ").capitalize(), "Result": "✕ Fail" if c["result"] == "fail" else "! Warn", "Detail": c["detail"]} for c in bad],
                      hide_index=True, width="stretch")
-    with st.expander(f"{passed} of {len(val)} checks passed · show all"):
+    with st.expander(f"{passed} of {len(val)} passed · show all"):
         st.dataframe([{"Check": c["check"].replace("_", " ").capitalize(), "Result": c["result"], "Detail": c["detail"]} for c in val], hide_index=True, width="stretch")
     if r["trace"]:
         st.markdown("**How computed:** " + " → ".join(t.rstrip(".") for t in r["trace"][-4:]))
@@ -91,7 +104,7 @@ def _correct_form(conn, it: dict, r: dict, vendor_items: list[dict]) -> None:
     units = list(UNIT_LABEL)
     cur = r["raw_unit"] if r["raw_unit"] in units else "per_piece"
     start = sug or cur
-    with st.container(border=True, key=f"rvform_{it['id']}"):
+    with st.container(key=f"rr_form_{it['id'].replace(':', '_')}"):
         c = st.columns([1.3, 1.1, 1.8])
         unit = c[0].selectbox("Unit", units, index=units.index(start), format_func=lambda u: UNIT_LABEL[u], key=f"rvu_{it['id']}")
         if sug and unit == sug:
@@ -117,7 +130,7 @@ def _correct_form(conn, it: dict, r: dict, vendor_items: list[dict]) -> None:
 
 
 def _reason_form(conn, it: dict, action: str, label: str, default: str, numeric: str | None = None) -> None:
-    with st.container(border=True, key=f"rvform_{it['id']}"):
+    with st.container(key=f"rr_form_{it['id'].replace(':', '_')}_{action}"):
         val = None
         if numeric:
             val = st.number_input(numeric, min_value=0.0, value=0.0, format="%.2f", key=f"rvn_{it['id']}")
@@ -128,55 +141,76 @@ def _reason_form(conn, it: dict, action: str, label: str, default: str, numeric:
         b[1].button("Cancel", key=f"rvcancel_{it['id']}_{action}", on_click=_close_form)
 
 
-def _item_card(conn, it: dict, rows: list[dict], vendor_items: list[dict], selected: bool) -> None:
-    r = it["first_row"]
+def _issue_html(conn, it: dict, rows: list[dict], label: str | None) -> str:
     d = RI.describe(conn, it, rows)
-    scope = (f"all {len(it['quotes'])} {'quoted ' if it['vendor'] and False else ''}lines" if it["scope"] == "vendor" and len(it["quotes"]) > 1
-             else f"line {it['line_nos'][0]}" if it["line_nos"] else "")
-    if it["scope"] == "line":
-        head = f"**Line {it['line_nos'][0]}** · {r['description']} · {it['title'].lower()}"
+    out = f"<div class='rr-sub'>{html.escape(label)}</div>" if label else ""
+    if d["wrote"] or d["read"]:
+        out += "<div class='rr-kv'>" + (f"<span class='k'>Vendor wrote</span><span>{_h(d['wrote'])}</span>" if d["wrote"] else "") \
+               + (f"<span class='k'>Read as</span><span>{_h(d['read'])}</span>" if d["read"] else "") + "</div>"
+    if d["why"]:
+        out += f"<div class='rr-why'>{_h(d['why'])}</div>"
+    return out
+
+
+def _item_card(conn, card: dict, rows: list[dict], vendor_items: list[dict], selected: bool) -> None:
+    it = card["primary"]
+    r = card["first_row"]
+    issues = card["issues"]
+    if card["scope"] == "line":
+        field = f"{html.escape(r['description'])} · {html.escape(card['title'])}"
+        title = f"Line {card['line_nos'][0]}"
     else:
-        head = f"**{it['title']}** · {scope}" + (f" ({', '.join(map(str, it['line_nos']))})" if it["kind"] == "same_ly" else "")
-    with st.container(border=True, key=f"rvitem_{'sel_' if selected else ''}{it['id'].replace(':', '_')}"):
-        h = st.columns([6, 1.4], vertical_alignment="center")
-        chips = ""
-        if it["could_change"] and it["state"] == "open":
-            chips += " :red-badge[Could change the award]"
-        if it["qual_status"] == "disqualified":
-            chips += " :gray-badge[Can't win: disqualified]"
-        if it["state"] == "asked":
-            chips += " :orange-badge[✉ Asked vendor · waiting]"
-        h[0].markdown(f"{DOT[it['severity']]} {head}{chips}")
-        h[1].button("Show source", key=f"rvs_{it['id']}", type="tertiary", on_click=_select, args=(it["id"],))
-        for lab, txt in (("Vendor wrote", d["wrote"]), ("Read as", d["read"])):
-            if txt:
-                lc = st.columns([1, 4.2])
-                lc[0].markdown(f":gray[{lab}]")
-                lc[1].markdown(txt)
-        if d["why"]:
-            st.markdown(d["why"])
-        if it["state"] == "asked":
+        n = len(card["quotes"])
+        title = html.escape(card["title"])
+        field = f"all {n} lines" if n > 1 else f"line {card['line_nos'][0]}"
+        if card["kind"] == "same_ly":
+            field += f" ({', '.join(map(str, card['line_nos']))})"
+    chips = ""
+    if card["could_change"] and card["state"] == "open" and card["scope"] == "line":
+        chips += "<span class='rr-chip red'>Could change the award</span>"
+    if card["qual_status"] == "disqualified":
+        chips += "<span class='rr-chip grey'>Can't win: disqualified</span>"
+    state = ("<span class='rr-chip amber'>✉ Asked vendor · waiting</span>" if card["state"] == "asked"
+             else "<span class='rr-chip green'>✓ Reviewed</span>" if card["state"] == "done" else "")
+    open_issues = [i for i in issues if i["state"] != "done"] or issues
+    body = ""
+    for i in open_issues:
+        body += _issue_html(conn, i, rows, i["title"] if len(open_issues) > 1 else None)
+    done_issues = [i for i in issues if i["state"] == "done" and i not in open_issues]
+    if done_issues:
+        body += "<div class='rr-why' style='color:var(--rr-mut)'>" + " · ".join(f"✓ {html.escape(i['title'])} reviewed" for i in done_issues) + "</div>"
+    key = card["card_id"].replace(":", "_")
+    with st.container(key=f"rr_card_{'sel_' if selected else ''}{key}"):
+        st.html(f"<div class='rr-r1'><span class='rr-dot {card['severity']}'></span><span class='rr-ttl'>{title}</span><span class='rr-fld'>· {field}</span>{chips}"
+                f"<span style='margin-left:auto'>{state}</span></div>{body}")
+        form = st.session_state.get("rv_form")
+        iid = it["id"]
+        if card["state"] == "asked":
             c = st.columns([5, 1.6, 1.8], vertical_alignment="center")
             c[0].caption(f"Added to {it['vendor']}'s clarification email in Responses. The value stays out of the award until they answer.")
             if it["kind"] in ("price", "ocr"):
-                c[1].button("✎ Correct now", key=f"rvcn_{it['id']}", on_click=_open_form, args=(it["id"], "correct"))
-        elif it["state"] == "open":
+                c[1].button("✎ Correct now", key=f"rvcn_{iid}", on_click=_open_form, args=(iid, "correct"))
+        elif card["state"] == "open":
             acts = RI.actions_for(it)
-            cols = st.columns([max(1.2, len(l) / 9) for _, l in acts] + [0.5], vertical_alignment="center")
-            for i, (a, label) in enumerate(acts):
-                if cols[i].button(label, key=f"rvb_{it['id']}_{a}", on_click=_select, args=(it["id"],)):
-                    if a in ("correct", "accept", "reject", "enter_freight"):
-                        _open_form(it["id"], a)
-                        st.rerun()
-                    elif a == "apply":
-                        pct = next((x.get("pct") for x in r["discounts"] if x.get("condition_type") != "volume_qty"), "")
-                        _do(conn, it, "apply", f"Apply the {pct:g}% discount")
-                    elif a == "tier_year":
-                        _do(conn, it, a, "Buyer reads the discount as per year")
-                    else:
-                        _do(conn, it, a)
-        form = st.session_state.get("rv_form")
-        if form and form[0] == it["id"]:
+            with st.container(horizontal=True, gap="small", key=f"rr_acts_{key}"):
+                for a, label in acts:
+                    if st.button(label, key=f"rvb_{iid}_{a}", on_click=_select, args=(card["card_id"],)):
+                        if a in ("correct", "accept", "reject", "enter_freight"):
+                            _open_form(iid, a)
+                            st.rerun()
+                        elif a == "apply":
+                            pct = next((x.get("pct") for x in r["discounts"] if x.get("condition_type") != "volume_qty"), "")
+                            _do(conn, it, "apply", f"Apply the {pct:g}% discount")
+                        elif a == "tier_year":
+                            _do(conn, it, a, "Buyer reads the discount as per year")
+                        else:
+                            _do(conn, it, a)
+                with st.container(key=f"rr_linkA_{key}"):
+                    st.button("View source", key=f"rvs_{iid}", type="tertiary", on_click=_select, args=(card["card_id"],))
+                open_ev = card["card_id"] in st.session_state.get("rr_ev", set())
+                with st.container(key=f"rr_linkB_{key}"):
+                    st.button(("▾" if open_ev else "▸") + " Evidence & checks", key=f"rvev_{iid}", type="tertiary", on_click=_toggle_ev, args=(card["card_id"],))
+        if form and form[0] == iid:
             if form[1] == "correct":
                 _correct_form(conn, it, r, vendor_items)
             elif form[1] == "accept":
@@ -185,8 +219,9 @@ def _item_card(conn, it: dict, rows: list[dict], vendor_items: list[dict], selec
                 _reason_form(conn, it, "reject", "Reject", f"{it['title']} not acceptable for this line")
             elif form[1] == "enter_freight":
                 _reason_form(conn, it, "enter_freight", "Save freight", "Freight confirmed with the vendor", numeric="Freight ₹ per piece (all these lines)")
-        with st.expander("Evidence & checks"):
-            _evidence(conn, it, r, d)
+        if card["card_id"] in st.session_state.get("rr_ev", set()):
+            with st.container(key=f"rr_box_{key}"):
+                _evidence(conn, it, r, RI.describe(conn, it, rows))
 
 
 # ------------------------------------------------------------------ dialogs
@@ -334,6 +369,11 @@ def _all_done(conn) -> None:
 
 
 # ------------------------------------------------------------------ the tab
+def _pick_vendor(code: str) -> None:
+    st.session_state["rv_vendor"] = code
+    st.session_state["rv_sel"] = None
+
+
 def render(conn) -> None:
     inject()
     rows = review_rows(conn)
@@ -341,15 +381,22 @@ def render(conn) -> None:
         st.info("No vendor quotes yet. Extract the replies on the Responses tab first.")
         return
     items = RI.build_items(conn, rows)
+    cards_all = RI.build_cards(items)
     order = sorted({r["vendor_code"] for r in rows})
     names = {r["vendor_code"]: r["vendor_name"] for r in rows}
-    n_open = {v: sum(i["vendor"] == v and i["state"] == "open" for i in items) for v in order}
+    n_open = {v: sum(c["vendor"] == v and c["state"] == "open" for c in cards_all) for v in order}
     if st.session_state.get("rv_vendor") not in order:
         st.session_state["rv_vendor"] = next((v for v in order if n_open[v]), order[0])
-    st.pills("Vendor", order, key="rv_vendor", selection_mode="single",
-             format_func=lambda v: f"{v} · {short_name(names[v])}  " + (f"({n_open[v]})" if n_open[v] else "✓"))
-    vendor = st.session_state.get("rv_vendor") or order[0]
+    vendor = st.session_state["rv_vendor"]
+
+    with st.container(horizontal=True, gap="small", vertical_alignment="center", key="rr_pills"):
+        st.markdown(":gray[Vendor]")
+        for v in order:
+            lab = f"{v} · {short_name(names[v])} " + (f":orange-badge[{n_open[v]}]" if n_open[v] else ":green-badge[✓]")
+            with st.container(key=f"rr_pill_{'sel_' if v == vendor else ''}{v}"):
+                st.button(lab, key=f"rvpill_{v}", on_click=_pick_vendor, args=(v,))
     vitems = [i for i in items if i["vendor"] == vendor]
+    vcards = [c for c in cards_all if c["vendor"] == vendor]
     vrows = [r for r in rows if r["vendor_code"] == vendor]
     done, total = RI.vendor_progress(items, vendor)
     n_lines = conn.execute("SELECT COUNT(*) FROM line_items").fetchone()[0]
@@ -362,18 +409,20 @@ def render(conn) -> None:
         st.info(f"{vendor} is disqualified, so it can't win. Its items are listed last; review them only if you want a clean record.", icon="ℹ️")
 
     clean, excl, skip = RI.clean_lines(conn, vendor, rows, items)
-    head = st.columns([3.2, 2.2, 1.8], vertical_alignment="center")
-    head[0].markdown(f"**{vendor} · {names[vendor]}** :gray[· {done} of {total} reviewed]")
-    view = head[1].segmented_control("View", ["Needs review", f"All {n_lines} lines"], default="Needs review", key="rv_view", label_visibility="collapsed") or "Needs review"
-    head[2].button(f"✓ Confirm {len(clean)} clean lines", key="rv_bulk", disabled=not clean, width="stretch", on_click=_set_dialog, args=("bulk", vendor, len(clean)))
-    st.progress(done / total if total else 1.0)
+    head = st.columns([3.1, 3], vertical_alignment="center")
+    head[0].html(f"<span class='rr-title'>{html.escape(vendor)} · {html.escape(names[vendor])}</span> <span class='rr-meta'>· {done} of {total} reviewed</span>")
+    with head[1].container(horizontal=True, gap="small", vertical_alignment="center", horizontal_alignment="right", key="rr_view_bar"):
+        view = st.segmented_control("View", ["Needs review", f"All {n_lines} lines"], default="Needs review", key="rv_view", label_visibility="collapsed") or "Needs review"
+        with st.container(key="rr_clean"):
+            st.button(f"✓ Confirm {len(clean)} clean lines", key="rv_bulk", disabled=not clean, on_click=_set_dialog, args=("bulk", vendor, len(clean)))
+    st.html(f"<div class='rr-prog'><i style='width:{round(done / total * 100) if total else 100}%'></i></div>")
 
-    left, right = st.columns([3, 2])
-    open_items = [i for i in vitems if i["state"] == "open"]
+    left, right = st.columns([1.25, 1], gap="medium")
+    open_cards = [c for c in vcards if c["state"] == "open"]
     sel = st.session_state.get("rv_sel")
-    pool = [i["id"] for i in vitems]
+    pool = [c["card_id"] for c in vcards] + [i["id"] for i in vitems]
     if sel not in pool and not (isinstance(sel, str) and sel.startswith("line:")):
-        sel = open_items[0]["id"] if open_items else None
+        sel = open_cards[0]["card_id"] if open_cards else None
         st.session_state["rv_sel"] = sel
 
     with left:
@@ -384,48 +433,49 @@ def render(conn) -> None:
             if last["id"]:
                 c[1].button("Undo", key="rv_undo", on_click=_undo, args=(conn, last["id"]))
         if view == "Needs review":
-            if not open_items and not any(i["state"] == "asked" for i in vitems):
+            if not open_cards and not any(c["state"] == "asked" for c in vcards):
                 if not any(n_open.values()):
                     _all_done(conn)
                 else:
-                    _vendor_done(conn, vendor, order, items, names)
-            vt = [i for i in vitems if i["scope"] == "vendor" and i["state"] != "done"]
-            ln = [i for i in vitems if i["scope"] == "line" and i["state"] != "done"]
+                    _vendor_done(conn, vendor, order, cards_all, names)
+            vt = [c for c in vcards if c["scope"] == "vendor" and c["state"] != "done"]
+            ln = [c for c in vcards if c["scope"] == "line" and c["state"] != "done"]
             if vt:
-                st.caption(f"VENDOR TERMS · APPLY TO MANY LINES")
-                for i in vt:
-                    _item_card(conn, i, rows, vitems, i["id"] == sel)
+                st.html(f"<div class='rr-grp'><span>Vendor terms · apply to {'all ' + str(len(vt[0]['quotes'])) + ' lines' if len(vt[0]['quotes']) > 1 else 'a line'}</span></div>")
+                for c in vt:
+                    _item_card(conn, c, rows, vitems, c["card_id"] == sel)
             if ln:
-                st.caption(f"LINES · {sum(i['state'] == 'open' for i in ln)} TO REVIEW" + ("      sorted: could change the award first" if len(ln) > 1 else ""))
-                for i in ln:
-                    _item_card(conn, i, rows, vitems, i["id"] == sel)
-            reviewed = [i for i in vitems if i["state"] == "done"]
+                n_ln = sum(c["state"] == "open" for c in ln)
+                st.html(f"<div class='rr-grp'><span>Lines · {n_ln} to review</span><span style='text-transform:none;font-weight:400;color:var(--rr-dim)'>sorted: could change the award first</span></div>")
+                for c in ln:
+                    _item_card(conn, c, rows, vitems, c["card_id"] == sel)
+            reviewed = [c for c in vcards if c["state"] == "done"]
             if reviewed:
                 with st.expander(f"Reviewed ({len(reviewed)})"):
-                    for i in reviewed:
-                        dd = i["decision"]
-                        c = st.columns([5, 1.4], vertical_alignment="center")
-                        c[0].markdown(f"🟢 **{i['title']}** · {'all ' + str(len(i['quotes'])) + ' lines' if i['scope'] == 'vendor' else 'line ' + str(i['line_nos'][0])}"
-                                      f" :gray[· {DONE_TEXT.get(dd['action'], dd['action']) if dd else 'Confirmed'}]")
+                    for c in reviewed:
+                        dd = c["primary"]["decision"]
+                        cc = st.columns([5, 1.4], vertical_alignment="center")
+                        cc[0].markdown(f"🟢 **{c['title'].capitalize()}** · {'all ' + str(len(c['quotes'])) + ' lines' if c['scope'] == 'vendor' else 'line ' + str(c['line_nos'][0])}"
+                                       f" :gray[· {DONE_TEXT.get(dd['action'], dd['action']) if dd else 'Confirmed'}]")
                         if dd:
-                            c[1].button("Undo", key=f"rvun_{i['id']}", on_click=_undo, args=(conn, dd["decision_id"]))
+                            cc[1].button("Undo", key=f"rvun_{c['card_id']}", on_click=_undo, args=(conn, dd["decision_id"]))
             _not_quoted(conn, vendor, rows)
             _unmatched(conn, vendor, rows)
         else:
             _all_lines(conn, vendor, rows, items)
 
     with right:
-        with st.container(key="rv_viewer", border=True):
-            it = next((i for i in vitems if i["id"] == sel), None)
+        with st.container(key="rr_pane_r"):
+            it = next((i for i in vitems if i["id"] == sel), None) or next((c["primary"] for c in vcards if c["card_id"] == sel), None)
             if it is not None:
                 d = RI.describe(conn, it, rows)
                 render_source(it["first_row"], (d["source"] or {}).get("ref"), (d["source"] or {}).get("snippet"))
             elif isinstance(sel, str) and sel.startswith("line:"):
                 r = next((x for x in vrows if f"line:{x['quote_id']}" == sel), None)
-                s = (r or {}).get("fields", {}).get("price", {}).get("source") or {}
-                render_source(r, s.get("ref"), s.get("snippet"))
+                s_ = (r or {}).get("fields", {}).get("price", {}).get("source") or {}
+                render_source(r, s_.get("ref"), s_.get("snippet"))
             else:
                 src = vrows[0] if vrows else None
-                s = (src or {}).get("fields", {}).get("price", {}).get("source") or {}
-                render_source(src, s.get("ref"), s.get("snippet"))
+                s_ = (src or {}).get("fields", {}).get("price", {}).get("source") or {}
+                render_source(src, s_.get("ref"), s_.get("snippet"))
     _show_dialog(conn)

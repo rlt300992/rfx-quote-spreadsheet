@@ -179,14 +179,42 @@ def build_items(conn: sqlite3.Connection, rows: list[dict] | None = None) -> lis
     return out
 
 
+KIND_RANK = ["ocr", "price", "freight_unknown", "spec", "ly_spec", "ly_missing", "tier"]
+
+
+def build_cards(items: list[dict]) -> list[dict]:
+    """ONE card per vendor-term item and ONE card per line: several issues on the same line (price + spec) are merged. The card's
+    id is that of its first open issue (the most important one), whose actions the card offers; resolved issues stay listed."""
+    cards: list[dict] = []
+    by_line: dict[tuple, list[dict]] = {}
+    for it in items:
+        if it["scope"] == "line" and it["line_nos"]:
+            by_line.setdefault((it["vendor"], it["line_nos"][0]), []).append(it)
+        else:
+            cards.append({**it, "issues": [it], "primary": it, "card_id": it["id"]})
+    for (_v, _ln), grp in by_line.items():
+        grp.sort(key=lambda i: KIND_RANK.index(i["kind"]) if i["kind"] in KIND_RANK else 99)
+        open_ = [i for i in grp if i["state"] == "open"]
+        asked = [i for i in grp if i["state"] == "asked"]
+        prim = (open_ or asked or grp)[0]
+        state = "open" if open_ else "asked" if asked else "done"
+        sev = "red" if any(i["severity"] == "red" for i in grp if i["state"] != "done") else ("yellow" if open_ or asked else "green")
+        cards.append({**prim, "issues": grp, "primary": prim, "card_id": prim["id"], "state": state, "severity": sev,
+                      "could_change": any(i["could_change"] for i in grp), "title": " + ".join(dict.fromkeys(i["title"].lower() for i in grp))})
+    vorder = ["payment", "cash_discount", "freight", "kg_basis", "fx", "gst", "tax_basis", "price_firm", "same_ly", "msme_cat", "terms_read"]
+    cards.sort(key=lambda c: (c["qual_status"] == "disqualified", c["scope"] != "vendor", not c["could_change"] if c["scope"] == "line" else False,
+                              vorder.index(c["kind"]) if c["kind"] in vorder else 50, c["severity"] != "red", c["line_nos"][0] if c["line_nos"] else 0, c["kind"]))
+    return cards
+
+
 def open_item_count(conn: sqlite3.Connection, rows: list[dict] | None = None) -> int:
-    """'N items awaiting review': open items across all vendors (an item waiting on a vendor reply counts as handled)."""
-    return sum(i["state"] == "open" for i in build_items(conn, rows))
+    """'N items awaiting review': open cards across all vendors, after merging issues on the same line (a card waiting on a vendor reply counts as handled)."""
+    return sum(c["state"] == "open" for c in build_cards(build_items(conn, rows)))
 
 
 def vendor_progress(items: list[dict], vendor: str) -> tuple[int, int]:
-    mine = [i for i in items if i["vendor"] == vendor]
-    return sum(i["state"] != "open" for i in mine), len(mine)
+    mine = [c for c in build_cards([i for i in items if i["vendor"] == vendor])]
+    return sum(c["state"] != "open" for c in mine), len(mine)
 
 
 # ------------------------------------------------------------------ clean lines
@@ -238,6 +266,46 @@ def suggested_unit(r: dict) -> str | None:
     return None
 
 
+def _vendor_line(conn: sqlite3.Connection, r: dict) -> dict:
+    """The vendor's own line as extracted (verbatim texts: construction, remarks), found by the cited source reference."""
+    row = conn.execute("SELECT vr.raw_extraction_json FROM quotes q JOIN vendor_responses vr USING (response_id) WHERE q.quote_id=?", (r["quote_id"],)).fetchone()
+    if not row or not row[0]:
+        return {}
+    ref = (r["fields"].get("price", {}).get("source") or {}).get("ref")
+    for ln in json.loads(row[0]).get("lines", []):
+        if (ln.get("source") or {}).get("ref") == ref or ln.get("raw_price_text") == r["raw_price_text"] and ln.get("vendor_item_text", "")[:8] == (r["vendor_line_ref"] or "")[-8:]:
+            return ln
+    return {}
+
+
+def vs_peers(price: float, median: float, cause: str = "") -> str:
+    """'104× the other vendors' / '35% below the other vendors (median ₹x/pc)'. Never '1×'."""
+    ratio = price / median if median else 0
+    if ratio >= 2:
+        body = f"**{ratio:,.0f}× the other vendors**"
+    elif ratio >= 1.05:
+        body = f"**{(ratio - 1) * 100:.0f}% above the other vendors**"
+    elif ratio <= 0.95:
+        body = f"**{(1 - ratio) * 100:.0f}% below the other vendors**"
+    else:
+        body = "**in line with the other vendors**"
+    return f"This is {body} (median {_money(median)}/pc){cause}."
+
+
+def spec_read(r: dict) -> str:
+    """'Deviation: 150 GSM outer liner vs 180 specified (layers 1 and 5)' / 'Substitute: 3-ply offered, RFQ asks for 5-ply'."""
+    note = r["spec_deviation_note"] or ""
+    kind = "Substitute" if r["spec_match"] == "substitute" else "Deviation"
+    pairs = re.findall(r"layer (\d+): (\d+) GSM offered vs (\d+) specified", note)
+    if pairs and len({(o, sp) for _, o, sp in pairs}) == 1:
+        layers = [int(x[0]) for x in pairs]
+        o, sp = pairs[0][1], pairs[0][2]
+        what = "outer liner" if layers[0] == 1 and len(layers) > 1 else "layer"
+        lt = " and ".join(map(str, layers)) if len(layers) <= 2 else ", ".join(map(str, layers[:-1])) + f" and {layers[-1]}"
+        return f"**{kind}**: {o} GSM {what} vs {sp} specified (layer{'s' if len(layers) > 1 else ''} {lt})"
+    return f"**{kind}**: {note}"
+
+
 def describe(conn: sqlite3.Connection, it: dict, all_rows: list[dict] | None = None) -> dict:
     """{'wrote': str, 'read': str, 'why': str, 'source': {...} | None} in plain language, from the quote data (no flag codes)."""
     r = it["first_row"]
@@ -263,6 +331,8 @@ def describe(conn: sqlite3.Connection, it: dict, all_rows: list[dict] | None = N
         d = next((x for x in r["discounts"] if x.get("condition_type") != "volume_qty"), r["discounts"][0] if r["discounts"] else {})
         wrote = f"“{d.get('condition_text', '')}”"
         read = f"{d.get('pct', 0):g}% · **{'applied' if d.get('applied') else 'not applied'}** (conditional)"
+        if d.get("source"):
+            src = {"ref": d["source"], "snippet": d.get("condition_text", ""), "field": "discount"}
         why = "Conditional discounts are never applied automatically. Turn it on only if you will meet the condition."
     elif k in ("freight", "freight_unknown"):
         by_ply: dict[int, list[float]] = {}
@@ -308,7 +378,9 @@ def describe(conn: sqlite3.Connection, it: dict, all_rows: list[dict] | None = N
         m = re.search(r"median INR ([\d.,]+)", peers)
         if m and r["base_inr_pc"]:
             med = float(m.group(1).replace(",", ""))
-            why = f"This is **{r['base_inr_pc'] / med:,.0f}× the other vendors** (median {_money(med)}/pc)."
+            sub_ply = re.search(r"(\d)-ply offered", r["spec_deviation_note"] or "")
+            cause = f", because it's a {sub_ply.group(1)}-ply substitute" if r["spec_match"] == "substitute" and sub_ply else ""
+            why = vs_peers(r["base_inr_pc"], med, cause)
         else:
             why = ". ".join(d.rstrip(".") for d in failed) + "." if failed else FLAG_HELP.get(next((f for f in r["flags"] if f in LINE_FLAGS), ""), "")
         su = suggested_unit(r)
@@ -318,9 +390,11 @@ def describe(conn: sqlite3.Connection, it: dict, all_rows: list[dict] | None = N
         if k == "ocr":
             why = FLAG_HELP["LOW_CONFIDENCE_OCR"] + (" " + " ".join(failed) if failed else "") + " Until confirmed, this value cannot be used in the award."
     elif k == "spec":
-        wrote = f"“{r['spec_deviation_note'] or ''}”"
+        vl = _vendor_line(conn, r)
+        said = [f"“{t}”" for t in (vl.get("construction_text"), vl.get("remarks")) if t]
+        wrote = " · ".join(said) if said else f"“{(src or {}).get('snippet', '').split('|')[-1].strip()}”"
         kind = "Substitute" if r["spec_match"] == "substitute" else "Deviation"
-        read = f"**{kind}**: {r['spec_deviation_note']}"
+        read = spec_read(r)
         why = (f"A {kind.lower()} can't win until you accept it. If accepted, {_money(r['evaluated_inr_pc'])}/pc becomes eligible for this line.")
     elif k == "tier":
         t = next((x for x in r["discounts"] if x.get("condition_type") == "volume_qty"), {})

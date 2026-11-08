@@ -162,3 +162,8 @@ do not touch secrets or Streamlit settings; keep Gemini calls minimal (cache fir
 - **B5-2** `agent.tools.scenario_eligibility` is the old eligibility rule pulled out of `_scenario_from_grid` unchanged, so the grid can grey out quotes that cannot win in the selected scenario.
 - **B5-3** The grid is a native `st.dataframe` with cell selection: clicking a price opens the build-up dialog. Vendor headers (qualification chip, lines quoted, payment terms, not firm, ☆ star) sit in a strip of cards above the grid because a dataframe header cannot hold chips. Tags on cells are plain text ("Unconfirmed" means the price or unit itself is a must-confirm value).
 - **B5-4** "Ask about this line" puts the question in the analyst chat box with a few lines of JavaScript (`st.chat_input` has no default value).
+
+## UI batch 4.1 (Review & Reconcile polish + shared layout)
+- **B41-1** `ui/theme.py` injects the shared CSS once from app.py: sidebar 210px, main padding 1.5rem (top 3.5rem, because 2rem put the page title under Streamlit's fixed header), and the mockup tokens as CSS variables. Light and dark values follow the browser/Streamlit theme. Blocks are styled only through `st.container(key=...)` classes.
+- **B41-2** One card per line: issues on the same line (price + spec) are merged by `review_items.build_cards`; the card offers the actions of its first open issue and stays until every issue is decided. Pills and the banner count cards (22 on the demo data, down from 23 items).
+- **B41-3** "Vendor wrote" is the verbatim source text (price text, construction and remarks cells, payment sentence, discount footnote); our reading is only in "Read as". Peer comparison wording never says "1×" and gives the cause (for example "because it's a 3-ply substitute").

@@ -12,7 +12,7 @@ from core.db import connect, init_db
 from core import stage
 from core.seed import seed_if_empty
 from extract.gemini_client import get_secret, load_config, ping
-from ui import analyst, bid, responses, review, rfq
+from ui import analyst, bid, responses, review, rfq, theme
 
 ROOT = Path(__file__).parent
 log = logging.getLogger("rfx.app")
@@ -112,6 +112,7 @@ def banner(st_stats: dict | None) -> None:
 def main() -> None:
     if not gate():
         return
+    theme.inject()
     cfg = load_config()
     conn = get_conn()
     rfq_row = conn.execute("SELECT * FROM rfqs ORDER BY rfq_id LIMIT 1").fetchone()

@@ -44,10 +44,10 @@ def test_item_count_is_far_smaller_than_the_value_count_and_matches_the_pills(re
     from core.queries import pending_confirmation_count
     items = _items(c)
     n_open = RI.open_item_count(c)
-    assert n_open == sum(i["state"] == "open" for i in items)
+    assert n_open == sum(i["state"] == "open" for i in RI.build_cards(items))
     assert 0 < n_open < pending_confirmation_count(c) / 4
     per_vendor = sum(RI.vendor_progress(items, v)[1] - RI.vendor_progress(items, v)[0] for v in ("V1", "V2", "V3", "V4", "V5"))
-    assert per_vendor == n_open
+    assert per_vendor == n_open                                          # pills and banner both count cards (one per line)
 
 
 def test_banner_counts_items(real_conn):
@@ -238,3 +238,43 @@ def test_late_and_disqualified_notes(real_conn):
     assert any("after the due date" in i.value for i in at.info)
     at = run_app(path, setup=lambda a: a.session_state.__setitem__("rv_vendor", "V5"))
     assert any("disqualified" in i.value for i in at.info)
+
+
+# ------------------------------------------------------------------ UI batch 4.1: one card per line, verbatim "Vendor wrote", wording
+def test_issues_on_one_line_are_one_card(real_conn):
+    c, _ = real_conn
+    items = RI.build_items(c)
+    cards = RI.build_cards(items)
+    v1_25 = [x for x in cards if x["vendor"] == "V1" and x["line_nos"] == [25]]
+    assert len(v1_25) == 1 and {i["kind"] for i in v1_25[0]["issues"]} == {"price", "spec"}
+    assert v1_25[0]["primary"]["kind"] == "price"                                   # the more important issue's actions are offered
+    assert len(cards) < len(items) and RI.open_item_count(c) == sum(x["state"] == "open" for x in cards)
+    RI.act(c, v1_25[0]["primary"], "confirm", "ok")
+    again = [x for x in RI.build_cards(RI.build_items(c)) if x["vendor"] == "V1" and x["line_nos"] == [25]][0]
+    assert again["state"] == "open" and again["primary"]["kind"] == "spec"          # the card stays until the spec issue is decided too
+
+
+def test_vendor_wrote_is_verbatim_and_read_as_is_our_interpretation(real_conn):
+    c, _ = real_conn
+    spec16 = _item(c, "V1", "spec", 16)
+    d = RI.describe(c, spec16)
+    assert "Offered in 150 GSM outer liner - meets BS" in d["wrote"]
+    assert d["read"] == "**Deviation**: 150 GSM outer liner vs 180 specified (layers 1 and 5)"
+    d6 = RI.describe(c, _item(c, "V2", "price", 6))
+    assert d6["wrote"].startswith("“620.00”")
+
+
+def test_comparison_wording_never_says_1x():
+    assert "1×" not in RI.vs_peers(6.0, 5.98) and "in line with" in RI.vs_peers(6.0, 5.98)
+    assert "104× the other vendors" in RI.vs_peers(620, 5.98)
+    assert "31% below the other vendors" in RI.vs_peers(22.84, 33.27, ", because it's a 3-ply substitute")
+    assert "because it's a 3-ply substitute" in RI.vs_peers(22.84, 33.27, ", because it's a 3-ply substitute")
+
+
+def test_tab_has_one_card_per_line_and_pills_count_cards(real_conn):
+    c, path = real_conn
+    at = run_app(path, setup=lambda a: a.session_state.__setitem__("rv_vendor", "V1"))
+    assert not at.exception
+    assert not any(b.key == "rvb_V1:spec:25_accept" for b in at.button)             # line 25 shows the price actions (one card)
+    assert "rvb_V1:price:25_confirm" in {b.key for b in at.button}
+    assert any(b.key == "rvpill_V1" and ":orange-badge[3]" in b.label for b in at.button)
