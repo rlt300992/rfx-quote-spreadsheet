@@ -9,7 +9,7 @@ from pathlib import Path
 import streamlit as st
 
 from core.db import connect, init_db
-from core.queries import pending_confirmation_count
+from core import stage
 from core.seed import seed_if_empty
 from extract.gemini_client import get_secret, load_config, ping
 from ui import analyst, bid, responses, review, rfq
@@ -93,22 +93,17 @@ def sidebar(cfg: dict, rfq) -> None:
                 st.error(f"Gemini failed: {e}")
 
 
-def status_label(status: str | None) -> str:
-    """DB status -> chip text: draft is Draft, anything issued onwards is Published."""
-    return "Draft" if (status or "draft") == "draft" else "Published"
-
-
-def event_header(rfq) -> None:
+def event_header(rfq, st_stats: dict | None) -> None:
     st.markdown(f"<h2 style='margin-bottom:0'>{rfq['title']}</h2>", unsafe_allow_html=True)
-    chip = status_label(rfq["status"])
-    st.caption(f"Response due {rfq['response_due_date']}  ·  :{'green' if chip == 'Published' else 'orange'}-badge[{chip}]")
+    label, colour = stage.chip(st_stats) if st_stats else (("Draft", "gray") if rfq["status"] == "draft" else ("Published", "blue"))
+    st.caption(f"RFQ · Response due {stage.fmt_date(rfq['response_due_date'])} · :{colour}-badge[{label}]")
 
 
-def banner(n: int) -> None:
-    if n > 0:
-        st.warning(f"**{n} values awaiting confirmation.** These could change the award. Review them in Review & Reconcile.", icon="⚠️")
-    else:
-        st.success("All values confirmed, ready to award.")
+def banner(st_stats: dict | None) -> None:
+    if not st_stats:
+        return
+    level, text = stage.banner(st_stats)
+    {"error": st.error, "info": st.info, "warning": st.warning, "success": st.success}[level](text)
 
 
 def main() -> None:
@@ -118,16 +113,16 @@ def main() -> None:
     conn = get_conn()
     rfq_row = conn.execute("SELECT * FROM rfqs ORDER BY rfq_id LIMIT 1").fetchone()
     sidebar(cfg, rfq_row)
-    event_header(rfq_row)
     try:
-        n = pending_confirmation_count(conn)
+        st_stats = stage.stats(conn, proposal_open=bool(st.session_state.get("proposal")))
     except Exception:
-        log.exception("pending count failed")
-        n = 0
-    banner(n)
+        log.exception("stage stats failed")
+        st_stats = None
+    event_header(rfq_row, st_stats)
+    banner(st_stats)
     renderers = {"Create RFQ": rfq.render, "Responses": responses.render, "Review & Reconcile": review.render,
                  "Bid Analysis": bid.render, "Analyst & Award": analyst.render}
-    for tab, name in zip(st.tabs(TABS), TABS):
+    for tab, name in zip(st.tabs(TABS, key="main_tab"), TABS):
         with tab:
             try:
                 renderers[name](conn)

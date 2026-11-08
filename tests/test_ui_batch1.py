@@ -10,7 +10,7 @@ def test_header_banner_sidebar(real_db_path, real_conn):
     assert len([w for w in at.warning if "awaiting confirmation" in w.value]) + len(at.success) >= 1
     assert sum("awaiting confirmation" in w.value for w in at.warning) <= 1
     n = c.execute("SELECT COUNT(*) FROM v_review_queue WHERE status='must_confirm'").fetchone()[0]
-    assert any("Response due" in x.value and "Published" in x.value for x in at.caption)
+    assert any("Response due" in x.value and "Evaluating" in x.value for x in at.caption)
     assert any(e.label == "Evaluation settings" for e in at.sidebar.expander)
     assert not any("Corrugated boxes" in m.value for m in at.sidebar.markdown)
     assert [w for w in at.number_input if w.key.startswith("rfq_pay_")][0].value == 60

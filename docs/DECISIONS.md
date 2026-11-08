@@ -120,3 +120,14 @@ do not touch secrets or Streamlit settings; keep Gemini calls minimal (cache fir
 | H-2 | `build_workbook`/`_award_frame` return an empty "NO AWARD PROPOSED YET" sheet when there are no scenario rows. The Excel is built only when the download is clicked (callable `data`); with no quotes the button is disabled with a note. | Empty frame raised KeyError in `_award_frame`. |
 | H-3 | Each tab render and the banner count are wrapped in try/except; failure logs the traceback and shows a warning in that tab only. | One broken tab must not take down the others. |
 | H-4 | Python: developed and tested on 3.13.12 (175 tests pass). **3.14 could not be run locally (not installed)**; requirements are unpinned so the cloud resolves 3.14 wheels. Only pure-Python/wheel deps are used. If a package fails on 3.14, set Python 3.13 in the Streamlit Cloud advanced settings. | Honest: 3.14 is unverified here. |
+
+## UI batch 2: header, banner, Responses
+
+| # | Decision | Why |
+|---|---|---|
+| B2-1 | Header chip is derived (`core/stage.py`): Awarded if any line has a committed award, Evaluating if any vendor's reply is extracted, else Draft/Published from `rfqs.status`. | Demo loads as Evaluating. |
+| B2-2 | One banner, most urgent first: failed > responses missing > N awaiting confirmation > award confirmed > award proposed > all confirmed. | Awarded with open values still warns. The "enter values manually in Responses" wording was replaced because no such feature exists; the banner points to Re-extract and to Review & Reconcile. |
+| B2-3 | "Re-extract all" and the per-card ↻ call the existing `ingest_all/ingest_vendor(force=True)`: fresh Gemini calls, old quotes superseded, so confirmations and corrections on them are lost (verified in `_supersede`). The old "Extract all" only filled gaps and never wiped; the new one does what the dialog says. | Wording matches behaviour. |
+| B2-4 | Dialog open state lives in session_state (cleared on dismiss) so dialogs work in a full rerun. | Also testable headless. |
+| B2-5 | "Review extracted values →" sets the Review vendor filter and selects the tab through the tabs `key`; a toast says "Filter set to V1. Open Review & Reconcile ↑" as the fallback. `bind="query-params"` not used because it makes non-selected tabs lazy. | Keeps every tab rendering eagerly. |
+| B2-6 | Clarification emails moved to the Responses card (editable, Send (stub) writes the final text to the audit log and locks it); removed from Analyst & Award. | One place for it. |

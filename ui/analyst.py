@@ -1,4 +1,4 @@
-"""Analyst & Award tab: chat over the views, the Award panel (Confirm award), Excel export, clarification emails."""
+"""Analyst & Award tab: chat over the views, the Award panel (Confirm award), Excel export."""
 from __future__ import annotations
 
 import pandas as pd
@@ -89,27 +89,6 @@ def _award_panel(conn) -> None:
         st.rerun()
 
 
-def _clarifications(conn) -> None:
-    rows = conn.execute("""SELECT vr.response_id, v.vendor_code, v.name, vr.clarification_draft, vr.clarification_status
-                           FROM vendor_responses vr JOIN vendors v USING (vendor_id)
-                           WHERE vr.clarification_draft IS NOT NULL
-                             AND NOT EXISTS (SELECT 1 FROM vendor_responses n WHERE n.supersedes_response_id = vr.response_id)
-                           ORDER BY v.vendor_id""").fetchall()
-    with st.expander(f"Clarification emails ({len(rows)} drafted)"):
-        if not rows:
-            st.caption("No clarification drafts yet. They are created when the replies are extracted.")
-        for r in rows:
-            st.markdown(f"**{r['vendor_code']} · {r['name']}**  ·  status: `{r['clarification_status']}`")
-            st.text(r["clarification_draft"])
-            if r["clarification_status"] != "sent_stub" and st.button(
-                    "Mark sent (stub)", key=f"sent_{r['response_id']}", help="Sending is stubbed: this only records that the email was sent."):
-                conn.execute("UPDATE vendor_responses SET clarification_status='sent_stub' WHERE response_id=?", (r["response_id"],))
-                audit.log(conn, "clarification_sent_stub", ("response", r["response_id"]), new="sent_stub")
-                conn.commit()
-                st.rerun()
-            st.divider()
-
-
 def render(conn) -> None:
     st.session_state.setdefault("chat", [])
     st.session_state.setdefault("proposal", None)
@@ -128,7 +107,6 @@ def render(conn) -> None:
                              file_name="award_workbook.xlsx", mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", key="dl_xlsx",
                              help="Award, Scenario (all candidates and exclusion reasons), Audit trail and Assumptions sheets.")
         c[1].caption("The workbook shows the committed award if there is one, otherwise the proposal or the current best scenario, and says which.")
-    _clarifications(conn)
 
     st.divider()
     st.subheader("Ask the analyst")

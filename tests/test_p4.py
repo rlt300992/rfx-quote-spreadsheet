@@ -282,11 +282,15 @@ def test_chat_message_limit_is_enforced_per_session(real_conn):
     assert any("0 of 30 messages left" in x.value for x in at.caption)
 
 
-def test_clarification_mark_sent_is_stubbed_and_audited(real_conn):
+def test_clarification_send_is_stubbed_audited_and_locks(real_conn):
     c, path = real_conn
     at = run_app(path)
-    assert any(e.label.startswith("Clarification emails (5 drafted)") for e in at.expander)
-    b = [b for b in at.button if b.key and b.key.startswith("sent_")][0]
-    b.click().run()
-    assert c.execute("SELECT COUNT(*) FROM audit_log WHERE action='clarification_sent_stub'").fetchone()[0] == 1
+    assert not any(e.label.startswith("Clarification emails") for e in at.expander)   # moved out of Analyst & Award
+    ta = at.text_area(key="clar_V1")
+    ta.set_value(ta.value + " Edited by buyer.").run()
+    [b for b in at.button if b.key == "clar_send_V1"][0].click().run()
+    row = c.execute("SELECT new_value FROM audit_log WHERE action='clarification_sent_stub'").fetchall()
+    assert len(row) == 1 and row[0][0].endswith("Edited by buyer.")
     assert c.execute("SELECT COUNT(*) FROM vendor_responses WHERE clarification_status='sent_stub'").fetchone()[0] == 1
+    assert at.text_area(key="clar_V1").disabled is True
+    assert any(e.label.startswith("Clarification sent ·") for e in at.expander)
