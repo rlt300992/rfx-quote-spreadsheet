@@ -105,4 +105,4 @@ def test_review_button_sets_vendor_filter_and_tab(real_conn):
     _btn(at, "goto_review_V1").click().run()
     assert not at.exception
     assert at.session_state["rv_vendor"] == "V1" and at.session_state["main_tab"] == "Review & Reconcile"
-    assert at.selectbox(key="rv_vendor").value == "V1"
+    assert any(x.value.startswith("**V1 ·") for x in at.markdown)           # the Review tab opens on V1

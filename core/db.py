@@ -88,6 +88,12 @@ CREATE TABLE IF NOT EXISTS last_year_prices (
   UNIQUE (vendor_id, catalog_sku, period)
 );
 
+CREATE TABLE IF NOT EXISTS review_decisions (
+  decision_id INTEGER PRIMARY KEY,
+  item_id TEXT NOT NULL, vendor_code TEXT, kind TEXT, action TEXT NOT NULL,
+  reason TEXT, detail TEXT, ts TEXT, undo_json TEXT, undone INTEGER DEFAULT 0, batch TEXT
+);
+
 CREATE TABLE IF NOT EXISTS rfq_drafts (
   draft_id INTEGER PRIMARY KEY,
   state_json TEXT NOT NULL,
@@ -223,7 +229,7 @@ BEGIN SELECT RAISE(ABORT, 'audit_log is append-only'); END;
 """
 
 AUDIT_ACTIONS = ("extract_run", "confirm", "override", "reject", "spec_accept", "clarification_drafted", "clarification_sent_stub",
-                 "clarification_resolved", "response_superseded", "award", "unaward", "discount_toggle", "rfq_confirm", "rfq_send", "rfq_draft_publish")
+                 "clarification_resolved", "response_superseded", "award", "unaward", "discount_toggle", "rfq_confirm", "rfq_send", "rfq_draft_publish", "review_undo")
 
 TABLES = ("rfqs", "vendors", "line_items", "rfx_questions", "last_year_prices",
           "vendor_responses", "quotes", "documents", "questionnaire_answers", "audit_log")
@@ -255,5 +261,8 @@ def _migrate_audit_log(conn: sqlite3.Connection) -> None:
 def init_db(conn: sqlite3.Connection) -> None:
     _migrate_audit_log(conn)
     conn.executescript(DDL)
+    cols = [r[1] for r in conn.execute("PRAGMA table_info(review_decisions)")]
+    if "batch" not in cols:                       # tables made by an earlier build of this batch
+        conn.execute("ALTER TABLE review_decisions ADD COLUMN batch TEXT")
     create_views(conn)
     conn.commit()

@@ -4,7 +4,8 @@ from __future__ import annotations
 import sqlite3
 from datetime import date
 
-from core.queries import pending_confirmation_count
+from core.queries import review_rows
+from core.review_items import open_item_count
 
 
 def fmt_date(s: str | None, month_year: bool = False) -> str:
@@ -32,7 +33,7 @@ def stats(conn: sqlite3.Connection, proposal_open: bool = False) -> dict:
     awarded_at = conn.execute("SELECT MAX(awarded_at) FROM line_items WHERE awarded_quote_id IS NOT NULL").fetchone()[0]
     return {"rfq_status": rfq["status"] if rfq else "draft", "due": rfq["response_due_date"] if rfq else None,
             "total": len(vendors), "received": received, "failed": failed,
-            "pending": pending_confirmation_count(conn), "awarded_at": awarded_at, "proposal_open": bool(proposal_open)}
+            "pending": open_item_count(conn), "awarded_at": awarded_at, "proposal_open": bool(proposal_open)}
 
 
 def chip(s: dict) -> tuple[str, str]:
@@ -55,9 +56,9 @@ def banner(s: dict) -> tuple[str, str]:
     if len(s["received"]) < s["total"]:
         return "info", f"**{len(s['received'])} of {s['total']} responses received.** Response due {due}."
     if s["pending"] > 0:
-        return "warning", f"**{s['pending']} values awaiting confirmation.** These could change the award. Review them in Review & Reconcile."
+        return "warning", f"**{s['pending']} item{'s' if s['pending'] != 1 else ''} awaiting review.** These could change the award. Review them in Review & Reconcile."
     if s["awarded_at"]:
         return "success", f"**Award confirmed on {fmt_date(s['awarded_at'])}.** Download it in Analyst & Award."
     if s["proposal_open"]:
         return "info", "**Award proposed, awaiting your confirmation** in Analyst & Award."
-    return "success", "**All values confirmed.** Ready to award in Analyst & Award."
+    return "success", "**All items reviewed.** Ready to award in Analyst & Award."

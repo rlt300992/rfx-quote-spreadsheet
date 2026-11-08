@@ -30,8 +30,8 @@ def test_banner_priority_order():
     lvl, txt = stage.banner(s(received=["V1", "V2", "V3"], pending=4))
     assert lvl == "info" and txt == "**3 of 5 responses received.** Response due 16 Nov 2026."
     lvl, txt = stage.banner(s(pending=7))
-    assert lvl == "warning" and txt.startswith("**7 values awaiting confirmation.**")
-    assert stage.banner(s()) == ("success", "**All values confirmed.** Ready to award in Analyst & Award.")
+    assert lvl == "warning" and txt.startswith("**7 items awaiting review.**")
+    assert stage.banner(s()) == ("success", "**All items reviewed.** Ready to award in Analyst & Award.")
     assert stage.banner(s(proposal_open=True)) == ("info", "**Award proposed, awaiting your confirmation** in Analyst & Award.")
     lvl, txt = stage.banner(s(awarded_at="2026-11-20T10:00:00", proposal_open=True))
     assert lvl == "success" and txt == "**Award confirmed on 20 Nov 2026.** Download it in Analyst & Award."
@@ -42,7 +42,7 @@ def test_demo_shows_evaluating_and_one_banner(real_conn):
     at = run_app(path)
     assert not at.exception
     assert any("Evaluating" in x.value and "16 Nov 2026" in x.value for x in at.caption)
-    banners = list(at.error) + list(at.info) + [w for w in at.warning if "awaiting confirmation" in w.value] + list(at.success)
+    banners = list(at.error) + list(at.info) + [w for w in at.warning if "awaiting review" in w.value] + list(at.success)
     assert len([b for b in banners if "awaiting" in b.value or "Ready to award" in b.value or "responses received" in b.value
                 or "couldn't be read" in b.value]) == 1
 

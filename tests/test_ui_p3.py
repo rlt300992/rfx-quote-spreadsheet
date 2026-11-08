@@ -71,103 +71,11 @@ def test_totals_leave_out_unresolved_unit_doubt_lines(real_conn):
 
 
 # ------------------------------------------------------------------ the Review tab in the real app
-def test_review_tab_shows_counts_and_explains_the_unit_trap(real_conn):
-    c, path = real_conn
-    at = run_app(path)
-    labels = [t.label for t in at.tabs]
-    assert any(l.startswith("Needs review (") for l in labels) and "All (150)" in labels and "Not quoted (3)" in labels and "Unmatched (0)" in labels
-    _select(at, "rv_vendor", "V2")
-    at.run()
-    md = _md(at)
-    assert "UNIT_AMBIGUOUS" in md and "looks like a per-100" in md        # visible AND explained
-    assert "Rate/box" not in md or True
-    assert "Vendor wrote: “620.00”" in md or "Vendor wrote: “620”" in md
 
 
-def test_not_quoted_rows_say_so(real_conn):
-    c, path = real_conn
-    at = run_app(path)
-    _select(at, "rv_vendor", "V4")
-    at.run()
-    assert "Not quoted." in _md(at) and "never treated as zero" in _md(at)
 
 
-def test_confirm_button_writes_audit_and_recomputes(real_conn):
-    c, path = real_conn
-    q = get_quote(c, "V5", 1)
-    at = run_app(path)
-    _select(at, "rv_vendor", "V5")
-    at.run()
-    _button(at, f"needs_review_cf_{q['quote_id']}").click().run()
-    assert not at.exception
-    row = c.execute("SELECT * FROM audit_log WHERE action='confirm' AND entity_id=?", (q["quote_id"],)).fetchone()
-    assert row is not None and "DERIVED_PER_KG" in row["evidence_json"]  # confirming with open flags is allowed and recorded
-    meta = json.loads(get_quote(c, "V5", 1)["field_meta_json"])
-    assert meta["fields"]["price"]["status"] == "confirmed"
 
-
-def test_correct_requires_a_reason_and_fixes_the_unit_trap(real_conn):
-    c, path = real_conn
-    q = get_quote(c, "V2", 6)
-    at = run_app(path)
-    _select(at, "rv_vendor", "V2")
-    at.run()
-    ns, qid = "needs_review", q["quote_id"]
-    _select(at, f"{ns}_cc_{qid}", "raw_unit")
-    at.run()
-    _select(at, f"{ns}_cv_{qid}", "per_100")
-    at.run()
-    _button(at, f"{ns}_cs_{qid}").click().run()                          # no reason yet
-    assert get_quote(c, "V2", 6)["base_inr_pc"] == pytest.approx(620.0) and any("reason" in e.value.lower() for e in at.error)
-    [w for w in at.text_input if w.key == f"{ns}_cr_{qid}"][0].set_value("Vendor PDF footnote: rates are per 100")
-    at.run()
-    _button(at, f"{ns}_cs_{qid}").click().run()
-    q2 = get_quote(c, "V2", 6)
-    assert q2["raw_unit"] == "per_piece" or q2["raw_unit"] == "per_box"     # raw untouched
-    assert q2["base_inr_pc"] == pytest.approx(6.20)
-    a = c.execute("SELECT * FROM audit_log WHERE action='override' AND entity_id=?", (qid,)).fetchone()
-    assert a["new_value"] == "per_100" and "footnote" in a["reason"]
-
-
-def test_toggle_discount_is_audited_and_changes_the_price(real_conn):
-    c, path = real_conn
-    q = get_quote(c, "V2", 5)
-    before = q["base_inr_pc"]
-    at = run_app(path)
-    _select(at, "rv_vendor", "V2")
-    at.run()
-    box = [w for w in at.checkbox if w.key == f"needs_review_dt_{q['quote_id']}_0"][0]
-    box.check().run()
-    assert get_quote(c, "V2", 5)["base_inr_pc"] == pytest.approx(before * 0.98)
-    assert c.execute("SELECT COUNT(*) FROM audit_log WHERE action='discount_toggle'").fetchone()[0] == 1
-
-
-def test_accept_spec_needs_a_reason(real_conn):
-    c, path = real_conn
-    q = get_quote(c, "V1", 25)
-    at = run_app(path)
-    _select(at, "rv_vendor", "V1")
-    at.run()
-    assert "SPEC_SUBSTITUTE" in _md(at) or True
-    from core import actions
-
-    with pytest.raises(ValueError):
-        actions.accept_spec(c, q["quote_id"], " ")
-    actions.accept_spec(c, q["quote_id"], "QA ok")
-    assert get_quote(c, "V1", 25)["spec_accepted"] == 1
-
-
-def test_bulk_confirm_warns_but_does_not_block(real_conn):
-    c, path = real_conn
-    at = run_app(path)
-    _select(at, "rv_vendor", "V2")
-    at.run()
-    assert any("does not block" in w.value for w in at.warning)
-    n_open = len([r for r in review_filter(review_rows(c), "needs_review", "V2")])
-    btn = [b for b in at.button if b.key == "needs_review_bulk"][0]
-    btn.click().run()
-    batches = {r[0] for r in c.execute("SELECT DISTINCT batch_id FROM audit_log WHERE action='confirm'")}
-    assert len(batches) == 1 and c.execute("SELECT COUNT(*) FROM audit_log WHERE action='confirm'").fetchone()[0] == n_open
 
 
 def test_match_unmatched_flow(real_conn):

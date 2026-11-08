@@ -114,3 +114,50 @@ def match_unmatched(conn: sqlite3.Connection, quote_id: int, line_no: int, reaso
     conn.execute("UPDATE quotes SET line_id=?, quote_status='quoted', supersedes_quote_id=? WHERE quote_id=?",
                  (line["line_id"], cur["quote_id"] if cur else None, quote_id))
     recompute_quote(conn, quote_id)
+
+
+def reject_quote(conn: sqlite3.Connection, quote_id: int, reason: str, actor: str = "buyer") -> None:
+    """The buyer rejects a vendor's quote on this line (for example a spec substitute): it becomes not eligible. Reason required."""
+    if not (reason or "").strip():
+        raise ValueError("a reason is required to reject a quote")
+    meta = _meta(conn, quote_id)
+    meta["rejected"] = {"reason": reason, "by": actor, "ts": _now()}
+    _save_meta(conn, quote_id, meta)
+    audit.log(conn, "reject", ("quote", quote_id), field="rejected", old=False, new=True, reason=reason, actor=actor)
+    recompute_quote(conn, quote_id)
+
+
+def confirm_many(conn: sqlite3.Connection, quote_ids: list[int], actor: str = "buyer", label: str = "clean lines",
+                 skip: dict[int, set] | None = None) -> str:
+    """Bulk-confirm every field on these (clean) quotes. ONE audit row for the whole batch (evidence lists every quote); returns the batch id."""
+    batch = audit.new_batch_id()
+    lines = []
+    for q in quote_ids:
+        meta = _meta(conn, q)
+        fields = [f for f in (meta.get("fields") or {}) if f in CONFIRMABLE and f not in (skip or {}).get(q, set())]
+        meta.setdefault("confirmed", {})
+        for f in fields:
+            meta["confirmed"].setdefault(f, {"by": actor, "ts": _now(), "via": "bulk_clean"})
+        _save_meta(conn, q, meta)
+        row = conn.execute("SELECT l.line_no, v.vendor_code FROM quotes q JOIN vendors v USING (vendor_id) LEFT JOIN line_items l USING (line_id) WHERE q.quote_id=?", (q,)).fetchone()
+        lines.append({"quote_id": q, "line_no": row["line_no"], "vendor": row["vendor_code"]})
+    audit.log(conn, "confirm", ("quotes", None), field="all fields", new=f"confirmed {len(quote_ids)} {label}", actor=actor, batch_id=batch,
+              evidence={"bulk": True, "lines": lines})
+    conn.commit()
+    for q in quote_ids:
+        recompute_quote(conn, q)
+    return batch
+
+
+def set_discount_basis(conn: sqlite3.Connection, quote_id: int, index: int, basis: str, reason: str, actor: str = "buyer") -> str | None:
+    """The buyer settles an unclear volume-discount basis (per_order / annual), like toggle_discount: audited, then recomputed. Returns the old basis."""
+    if basis not in ("per_order", "annual"):
+        raise ValueError("basis must be per_order or annual")
+    row = conn.execute("SELECT discounts_json FROM quotes WHERE quote_id=?", (quote_id,)).fetchone()
+    discounts = json.loads(row["discounts_json"] or "[]")
+    old = discounts[index].get("qty_basis")
+    discounts[index]["qty_basis"] = basis
+    audit.log(conn, "override", ("quote", quote_id), field=f"discounts[{index}].qty_basis", old=old, new=basis, reason=reason, actor=actor)
+    conn.execute("UPDATE quotes SET discounts_json=? WHERE quote_id=?", (json.dumps(discounts), quote_id))
+    recompute_quote(conn, quote_id)
+    return old

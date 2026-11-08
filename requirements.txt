@@ -9,3 +9,4 @@ python-dotenv
 google-genai
 xlsxwriter
 pytest
+pdfplumber

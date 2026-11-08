@@ -7,8 +7,8 @@ def test_header_banner_sidebar(real_db_path, real_conn):
     c, path = real_conn
     at = run_app(path)
     assert not at.exception
-    assert len([w for w in at.warning if "awaiting confirmation" in w.value]) + len(at.success) >= 1
-    assert sum("awaiting confirmation" in w.value for w in at.warning) <= 1
+    assert len([w for w in at.warning if "awaiting review" in w.value]) + len(at.success) >= 1
+    assert sum("awaiting review" in w.value for w in at.warning) <= 1
     n = c.execute("SELECT COUNT(*) FROM v_review_queue WHERE status='must_confirm'").fetchone()[0]
     assert any("Response due" in x.value and "Evaluating" in x.value for x in at.caption)
     assert any(e.label == "Evaluation settings" for e in at.sidebar.expander)

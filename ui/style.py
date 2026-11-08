@@ -20,6 +20,10 @@ CSS = """
 [class*="st-key-mainrow_"] [data-testid="stColumn"] { display: flex; justify-content: center; }
 /* fields filled by the co-pilot get a subtle green left edge */
 [class*="st-key-ai_"] { border-left: 3px solid #3fb27f; padding-left: 0.5rem; }
+/* Review & Reconcile: the source viewer stays in view while the queue scrolls; the selected item has an amber edge */
+[data-testid="stColumn"]:has([class*="st-key-rv_viewer"]) { position: sticky; top: 3.5rem; align-self: flex-start; }
+[class*="st-key-rvitem_sel_"] { border-color: #f2b01e !important; box-shadow: 0 0 0 1px #f2b01e; }
+[class*="st-key-rvform_"] { background: rgba(128,128,128,.08); }
 </style>
 """
 

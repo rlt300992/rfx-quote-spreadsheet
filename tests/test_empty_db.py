@@ -26,7 +26,7 @@ def test_app_cold_start_loads_quotes_from_cache(tmp_path):
     assert c.execute("SELECT COUNT(*) FROM vendor_responses").fetchone()[0] >= 5
     c.close()
     assert not [w for w in at.warning if "hit a problem" in w.value]
-    assert any("values awaiting confirmation" in w.value for w in at.warning)
+    assert any("items awaiting review" in w.value for w in at.warning)
 
 
 def test_seed_only_db_does_not_crash_any_tab(tmp_path, monkeypatch):
