@@ -24,6 +24,8 @@ CSS = """
 [data-testid="stColumn"]:has([class*="st-key-rv_viewer"]) { position: sticky; top: 3.5rem; align-self: flex-start; }
 [class*="st-key-rvitem_sel_"] { border-color: #f2b01e !important; box-shadow: 0 0 0 1px #f2b01e; }
 [class*="st-key-rvform_"] { background: rgba(128,128,128,.08); }
+/* Bid Analysis: the selected scenario card is outlined */
+[class*="st-key-bidsc_sel_"] { border-color: #3fb27f !important; box-shadow: 0 0 0 1px #3fb27f; }
 </style>
 """
 

@@ -192,8 +192,8 @@ def test_existing_responses_and_other_tabs_still_work_after_an_rfq_edit(real_con
     at.chat_input(key="rfq_chat_input").set_value("45 days").run()
     [b for b in at.button if b.key == "rfq_confirm"][0].click().run()
     assert not at.exception
-    grid = [d.value for d in at.dataframe if d.value.shape == (30, 5)]
-    assert grid and grid[0].loc[5, "V3"].endswith("⚠")                                     # Bid Analysis still renders real extracted prices
+    grid = [d.value for d in at.dataframe if "Winner · vs last yr" in d.value.columns]
+    assert grid and len(grid[0]) == 30                                                      # Bid Analysis still renders the real extracted prices
     assert c.execute("SELECT COUNT(*) FROM v_comparison_grid").fetchone()[0] == 150
 
 

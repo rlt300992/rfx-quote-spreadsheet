@@ -1,0 +1,222 @@
+<!doctype html>
+<html><head><meta charset="utf-8">
+<style>
+:root{--bg:#1b1b1b;--side:#262626;--line:#3a3a3a;--txt:#f2f2f2;--mut:#a3a3a3;--dim:#7c7c7c;--red:#ff4b4b;--blue:#2f8be8;
+--amberbg:#3a3014;--amber:#f5c542;--greenbg:#173a24;--green:#5fd38d;--bluebg:#132c45;--bluet:#8cc4ff;--redbg:#3d1a1a;--redt:#ff8a8a;--in:#262730}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--txt);font-family:'Source Sans 3','Segoe UI',Arial,sans-serif;font-size:14px}
+.app{display:flex;min-height:100vh}
+.side{width:240px;background:var(--side);padding:72px 16px 24px;flex-shrink:0}
+.side .co{font-weight:700;font-size:14.5px;margin-bottom:16px}
+.exp{border:1px solid var(--line);border-radius:8px;margin-bottom:20px;padding:10px 14px;font-size:14px}
+.btn{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);border-radius:8px;padding:6px 12px;font-size:13.5px;color:var(--txt);white-space:nowrap;background:transparent}
+.btn.primary{background:var(--red);border-color:var(--red);color:#fff;font-weight:600}
+.btn.sm{padding:4px 10px;font-size:12.5px}
+.btn.ok{border-color:#2f6b45;color:var(--green)}
+.main{flex:1;padding:50px 34px 50px;min-width:0}
+h1{font-size:28px;margin:0 0 6px}
+.sub{color:var(--mut);font-size:13.5px}
+.chip{display:inline-block;padding:1px 8px;border-radius:999px;font-size:11.5px;font-weight:600;white-space:nowrap}
+.grey{background:#333;color:#cfcfcf}.green{background:var(--greenbg);color:var(--green)}.amber{background:var(--amberbg);color:var(--amber)}.blue{background:var(--bluebg);color:var(--bluet)}.redc{background:var(--redbg);color:var(--redt)}
+.banner{border-radius:8px;padding:11px 16px;margin:12px 0 2px;display:flex;gap:10px;font-size:14px}
+.b-amber{background:var(--amberbg);color:var(--amber)}.b-green{background:var(--greenbg);color:var(--green)}.b-blue{background:var(--bluebg);color:var(--bluet)}
+.tabs{display:flex;gap:22px;border-bottom:1px solid var(--line);margin:12px 0 14px;font-size:14px}
+.tabs span{padding:8px 0}.tabs .on{color:var(--red);border-bottom:2px solid var(--red)}
+.pills{display:flex;gap:8px;align-items:center;margin-bottom:12px;flex-wrap:wrap}
+.pill{border:1px solid var(--line);border-radius:999px;padding:5px 12px;font-size:13px;display:inline-flex;gap:6px;align-items:center}
+.pill.on{background:#3a3a3a;border-color:#666;font-weight:600}
+.pill .c{background:var(--amberbg);color:var(--amber);border-radius:999px;padding:0 7px;font-size:11.5px;font-weight:700}
+.pill .c.done{background:var(--greenbg);color:var(--green)}
+.cols{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(0,1fr);gap:18px;align-items:start}
+.vh{display:flex;flex-wrap:nowrap;justify-content:space-between;align-items:center;gap:10px;margin-bottom:8px}
+.vh .t{font-weight:700;font-size:16px}
+.prog{height:6px;background:#333;border-radius:3px;margin:6px 0 12px}.prog i{display:block;height:6px;border-radius:3px;background:var(--green)}
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:8px;overflow:hidden}.seg span{padding:5px 12px;font-size:12.5px;white-space:nowrap}.seg .on{background:#3a3a3a;font-weight:600}
+.grp{font-size:12px;color:var(--mut);font-weight:700;text-transform:uppercase;letter-spacing:.5px;margin:14px 0 6px;display:flex;justify-content:space-between}
+.item{border:1px solid var(--line);border-radius:10px;padding:11px 13px;margin-bottom:8px;background:#1f1f1f}
+.item.sel{border-color:#8a6d1a;box-shadow:inset 3px 0 0 var(--amber)}
+.item.done{opacity:.85}
+.r1{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.dot{width:10px;height:10px;border-radius:50%;display:inline-block;flex-shrink:0}
+.d-red{background:#ff5c5c}.d-yel{background:#f5c542}.d-grn{background:#5fd38d}
+.r1 .ttl{font-weight:700}
+.r1 .fld{color:var(--mut)}
+.kv{display:grid;grid-template-columns:120px 1fr;gap:3px 10px;margin:8px 0 2px;font-size:13.5px}
+.kv .k{color:var(--mut)}
+.why{margin-top:6px;font-size:13.5px;line-height:1.45}
+.acts{display:flex;gap:8px;margin-top:10px;align-items:center;flex-wrap:wrap}
+.link{color:var(--bluet);font-size:13px}
+.src{border:1px solid var(--line);border-radius:10px;overflow:hidden;position:sticky;top:12px;background:#151515}
+.src .hd{padding:10px 12px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;font-size:13px}
+.src .bd{max-height:760px;overflow:hidden;background:#fff}
+.src img{width:100%;display:block}
+.src .ft{padding:8px 12px;font-size:12.5px;color:var(--mut);border-top:1px solid var(--line);background:#151515}
+.box{border:1px solid var(--line);border-radius:8px;padding:10px 12px;margin-top:10px;background:#181818}
+.f label{display:block;font-size:12px;color:var(--mut);margin-bottom:4px}
+.f .in{background:var(--in);border-radius:6px;padding:7px 10px;font-size:13.5px}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
+table{width:100%;border-collapse:collapse;font-size:12.8px}
+th,td{padding:6px 8px;border-bottom:1px solid #2f2f2f;text-align:left}
+th{color:var(--mut);font-weight:600;font-size:12px}
+td.r,th.r{text-align:right}
+.fail{color:var(--redt);font-weight:600}.warn{color:var(--amber);font-weight:600}.pass{color:var(--green)}
+.lbl{position:fixed;top:8px;left:256px;background:#f4a261;color:#14213d;font-weight:700;font-size:13px;padding:4px 10px;border-radius:5px;z-index:99}
+.mut{color:var(--mut)}.dimt{color:var(--dim)}
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,.62);display:flex;align-items:flex-start;justify-content:center;padding-top:110px;z-index:50}
+.dlg{background:#232323;border:1px solid var(--line);border-radius:12px;padding:22px 24px;width:600px;box-shadow:0 10px 40px rgba(0,0,0,.5)}
+.dlg h3{margin:0 0 12px;font-size:19px;display:flex;justify-content:space-between}
+.dlg p{color:#d6d6d6;line-height:1.5;margin:0 0 10px}
+.dlg .a{display:flex;justify-content:flex-end;gap:10px;margin-top:16px}
+.collapsed{border:1px solid var(--line);border-radius:8px;padding:9px 12px;margin-bottom:8px;display:flex;justify-content:space-between;font-size:13.5px}
+.xl{border-collapse:collapse;font-size:11.5px;width:100%;color:#111}
+.xl{table-layout:fixed}.xl td{border:1px solid #d0d0d0;padding:3px 4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:11px}.xl td:first-child{width:24px}.xl td:last-child{width:34%}
+.xl .h td{background:#f1f1f1;color:#555;text-align:center}
+.xl .hl td{background:#fff3b0;outline:2px solid #e07800}
+.em{padding:14px 16px;color:#111;font-family:Arial;font-size:13.5px;line-height:1.6}
+.em mark{background:#fff3b0;outline:2px solid #e07800}
+.note{border-radius:8px;padding:10px 12px;font-size:13.5px;margin-bottom:10px}
+</style></head><body>
+<div class="app">
+<div class="side"><div class="co">Sahyadri Consumer Products Ltd · Procurement</div><div class="exp">▸ Evaluation settings</div><span class="btn">Test Gemini</span></div>
+<div class="main" id="main"></div></div>
+<div id="ov"></div>
+<script>
+const S=(location.hash||'#01').slice(1);
+const M=document.getElementById('main'),O=document.getElementById('ov');
+function lbl(t){document.body.insertAdjacentHTML('beforeend',`<div class="lbl">${t}</div>`)}
+function head(n,kind='amber'){const txt=kind==='green'?'<b>All items confirmed.</b> Ready to award in Analyst &amp; Award.':`<b>${n} items awaiting review.</b> These could change the award. Review them in Review &amp; Reconcile.`;
+ return `<h1>Corrugated boxes - FY2026-27 annual rate contract</h1><div class="sub">RFQ · Response due 16 Nov 2026 · <span class="chip amber">Evaluating</span></div>
+ <div class="banner b-${kind}"><span>${kind==='green'?'✅':'⚠️'}</span><span>${txt}</span></div>
+ <div class="tabs"><span>Create RFQ</span><span>Responses</span><span class="on">Review &amp; Reconcile</span><span>Bid Analysis</span><span>Analyst &amp; Award</span></div>`}
+function pills(on,counts){const v=[['V1','Deccan'],['V2','Shree Ganesh'],['V3','Western India'],['V4','Om Sai'],['V5','Krishna Kraft']];
+ return `<div class="pills"><span class="mut" style="font-size:13px;margin-right:4px">Vendor</span>${v.map((x,i)=>{const c=counts[i];return `<span class="pill ${x[0]===on?'on':''}">${x[0]} · ${x[1]} <span class="c ${c===0?'done':''}">${c===0?'✓':c}</span></span>`}).join('')}</div>`}
+function vh(title,done,total,clean,view='q'){const pct=Math.round(done/total*100);
+ return `<div class="vh"><div><span class="t">${title}</span> <span class="mut" style="font-size:13px">· ${done} of ${total} reviewed</span></div><div style="display:flex;gap:8px;align-items:center"><span class="seg"><span class="${view==='q'?'on':''}">Needs review</span><span class="${view==='all'?'on':''}">All 30 lines</span></span>${clean?`<span class="btn ok">✓ Confirm ${clean} clean lines</span>`:''}</div></div><div class="prog"><i style="width:${pct}%"></i></div>`}
+function item(o){
+ const badge=(o.award?'<span class="chip redc">Could change the award</span>':'')+(o.badge||'');
+ const st=o.state==='done'?`<span class="chip green">${o.doneTxt||'✓ Confirmed'}</span>`:o.state==='wait'?'<span class="chip amber">✉ Asked vendor · waiting</span>':'';
+ return `<div class="item ${o.sel?'sel':''} ${o.state==='done'?'done':''}"><div class="r1"><span class="dot d-${o.dot}"></span><span class="ttl">${o.ttl}</span><span class="fld">· ${o.fld}</span>${badge}<span style="margin-left:auto">${st}</span></div>
+ ${o.compact?`<div class="why mut">${o.compact}</div>`:`<div class="kv"><span class="k">Vendor wrote</span><span>${o.wrote}</span><span class="k">Read as</span><span>${o.read}</span></div><div class="why">${o.why}</div>`}
+ ${o.extra||''}
+ ${o.state==='done'||o.noacts?'':`<div class="acts">${o.acts||'<span class="btn sm">✓ Confirm as read</span><span class="btn sm">✎ Correct</span><span class="btn sm">✉ Ask vendor</span>'}<span class="link" style="margin-left:auto">${o.open?'▾':'▸'} Evidence &amp; checks</span></div>`}
+ ${o.ev||''}</div>`}
+function src(name,meta,body,ft){return `<div class="src"><div class="hd"><span><b>${name}</b> <span class="mut">· ${meta}</span></span><span class="link">⬇ Original</span></div><div class="bd">${body}</div><div class="ft">${ft}</div></div>`}
+const v2src=(img,ft)=>src('V2_ShreeGanesh_Quotation_SGPI-Q-1127.pdf','page 1 of 2',`<img src="${img}">`,ft);
+const T_pay={ttl:'Payment terms',fld:'all 30 lines',dot:'yel',wrote:'“Payment: 90 days credit from date of invoice.”',read:'90 days → <b>evaluated at 45 days</b>',why:'V2 is a small enterprise (vendor master). The MSMED Act caps credit for micro and small vendors at 45 days, so the evaluation uses 45 days, not 90.'};
+const T_disc={ttl:'Cash discount',fld:'all 30 lines',dot:'yel',wrote:'“* Rates subject to 2% cash discount if payment is released within 15 days of invoice.”',read:'2% · <b>not applied</b> (conditional)',why:'Conditional discounts are never applied automatically. Turn it on only if you will pay within 15 days.',acts:'<span class="btn sm">✓ Keep not applied</span><span class="btn sm">Apply 2% discount</span><span class="btn sm">✉ Ask vendor</span>'};
+const L6={ttl:'Line 6',fld:'Toothbrush retail display (inner) · price',dot:'red',award:1,wrote:'“620.00” in the column “Rate/box (₹)”',read:'₹620.00 per piece',why:'This is <b>100× the other vendors</b> (median ₹5.98/pc). The unit is probably per 100 pieces, which gives <b>₹6.20/pc</b>.'};
+const L8={ttl:'Line 8',fld:'Face cream 50g x 96 shipper · price',dot:'red',award:1,wrote:'“944.00” in the column “Rate/box (₹)”',read:'₹944.00 per piece',why:'This is <b>103× the other vendors</b> (median ₹9.17/pc). The unit is probably per 100 pieces, which gives <b>₹9.44/pc</b>.'};
+const L12={ttl:'Line 12',fld:'Spices 100g x 120 carton · price',dot:'red',award:1,wrote:'“1,229.00” in the column “Rate/box (₹)”',read:'₹1,229.00 per piece',why:'This is <b>105× the other vendors</b> (median ₹11.73/pc). The unit is probably per 100 pieces, which gives <b>₹12.29/pc</b>.'};
+const bottom=(nq=0,um=0,rev=null)=>`${rev!==null?`<div class="grp"><span>Reviewed (${rev})</span><span class="link">Show ▸</span></div>`:''}<div class="collapsed"><span>Not quoted <span class="mut">(${nq})</span></span><span class="mut">▸</span></div><div class="collapsed"><span>Unmatched lines <span class="mut">(${um})</span></span><span class="mut">▸</span></div>`;
+const C=[0,5,4,2,5];
+
+/* 01 default */
+if(S==='01'){lbl('01 · Default: V2 selected, needs-review queue, source beside');
+ M.innerHTML=head(19)+pills('V2',[3,5,4,2,5])+`<div class="cols"><div>${vh('V2 · Shree Ganesh Packaging Industries',0,5,27)}
+ <div class="grp"><span>Vendor terms · apply to all 30 lines</span></div>${item(T_pay)}${item(T_disc)}
+ <div class="grp"><span>Lines · 3 to review</span><span class="dimt" style="text-transform:none;font-weight:400">sorted: could change the award first</span></div>${item({...L6,sel:1})}${item(L8)}${item(L12)}${bottom(0,0)}</div>
+ ${v2src('v2_l6.png','Highlighted: Sr 6, “Rate/box (₹)” column · found from the PDF text')}</div>`}
+
+/* 02 correct inline */
+if(S==='02'){lbl('02 · ✎ Correct: inline fix with live price preview');
+ const ex=`<div class="box"><div class="g3"><div class="f"><label>Unit</label><div class="in">Per 100 pieces ▾ <span class="chip green" style="margin-left:6px">suggested</span></div></div><div class="f"><label>Price as written</label><div class="in">620.00</div></div><div class="f"><label>Result</label><div class="in"><b>₹6.20/pc</b> · landed ₹6.80 · evaluated ₹6.83</div></div></div>
+ <div class="f" style="margin-top:10px"><label>Reason (saved to the audit trail)</label><div class="in">Value is 100× the other vendors; “Rate/box” here means per 100 pieces.</div></div>
+ <div class="acts"><span class="btn primary sm">Save correction</span><span class="btn sm">Cancel</span><span class="mut" style="font-size:12.5px">Also apply to lines 8 and 12 (same column, same problem)? <span class="link">Yes, apply to all 3</span></span></div></div>`;
+ M.innerHTML=head(19)+pills('V2',[3,5,4,2,5])+`<div class="cols"><div>${vh('V2 · Shree Ganesh Packaging Industries',0,5,27)}
+ <div class="grp"><span>Vendor terms · apply to all 30 lines</span></div>${item({...T_pay,compact:'90 days → evaluated at 45 days (MSMED Act cap)',wrote:0})}${item({...T_disc,compact:'2% if paid within 15 days · not applied'})}
+ <div class="grp"><span>Lines · 3 to review</span></div>${item({...L6,sel:1,noacts:1,extra:ex})}${item(L8)}${item(L12)}</div>
+ ${v2src('v2_l6.png','Highlighted: Sr 6, “Rate/box (₹)” column')}</div>`}
+
+/* 03 after actions */
+if(S==='03'){lbl('03 · After actions: auto-advance to the next item, progress updates');
+ M.innerHTML=head(17)+pills('V2',[3,3,4,2,5])+`<div class="cols"><div>${vh('V2 · Shree Ganesh Packaging Industries',2,5,27)}
+ <div class="note b-green">✅ Line 6 corrected to ₹6.20/pc (per 100). Moved to Reviewed. <span class="link">Undo</span></div>
+ <div class="grp"><span>Vendor terms · apply to all 30 lines</span></div>${item(T_disc)}
+ <div class="grp"><span>Lines · 2 to review</span></div>${item({...L8,sel:1})}${item(L12)}
+ <div class="grp"><span>Reviewed (2)</span><span class="link">Hide ▾</span></div>
+ ${item({...T_pay,state:'done',doneTxt:'✓ Confirmed · 14:51',compact:'90 days → evaluated at 45 days (MSMED Act cap). Confirmed by Rohit.'})}
+ ${item({...L6,award:0,state:'done',doneTxt:'✎ Corrected · 14:52',compact:'₹620.00 per piece → <b>₹6.20/pc</b> (per 100). Reason: value is 100× the other vendors. <span class="link">Undo</span>'})}
+ ${bottom(0,0)}</div>
+ ${v2src('v2_l8.png','Highlighted: Sr 8, “Rate/box (₹)” column')}</div>`}
+
+/* 04 evidence expanded */
+if(S==='04'){lbl('04 · ▾ Evidence & checks expanded (failed checks first)');
+ const ev=`<div class="box"><table><tr><th>Check</th><th>Result</th><th>Detail</th></tr>
+ <tr><td>Sanity vs other vendors</td><td class="fail">✗ Fail</td><td>₹944.00 is 103× the median of V1, V3, V4, V5 (₹9.17)</td></tr>
+ <tr><td>Sanity vs last year</td><td class="fail">✗ Fail</td><td>₹944.00 is about 100× last year's price for this line (₹9.58–₹9.94, supplied by V5 and V1)</td></tr>
+ <tr><td>Unit stated</td><td class="warn">! Warn</td><td>Header says “Rate/box”, but the size of the number suggests per 100</td></tr></table>
+ <div class="link" style="margin:8px 0">▸ 10 of 13 checks passed · show all</div>
+ <div style="font-size:13px;line-height:1.6"><b>How computed:</b> 944.00 read as per piece → ₹944.00 + freight ₹0.60 (quoted) = landed ₹944.60 · payment loading (45 vs 60 days) +₹4.23 → evaluated ₹948.83<br><b>Source:</b> page 1, Sr 8, column “Rate/box (₹)” · second read agrees on the number and the header</div></div>`;
+ M.innerHTML=head(17)+pills('V2',[3,3,4,2,5])+`<div class="cols"><div>${vh('V2 · Shree Ganesh Packaging Industries',2,5,27)}
+ <div class="grp"><span>Lines · 2 to review</span></div>${item({...L8,sel:1,open:1,ev})}${item(L12)}${bottom(0,0,2)}</div>
+ ${v2src('v2_l8.png','Highlighted: Sr 8, “Rate/box (₹)” column')}</div>`}
+
+/* 05 bulk confirm */
+if(S==='05'){lbl('05 · ✓ Confirm clean lines: the buyer sees all 27 before confirming');
+ const R=[[1, "Shampoo 180ml bottle shipper (24s)", "₹8.42", "₹8.42", "₹9.02"], [2, "Shampoo sachet master (960s)", "₹13.34", "₹13.34", "₹13.94"], [3, "Bathing soap 75g x 144 carton", "₹12.82", "₹12.82", "₹13.42"], [4, "Bathing soap 125g x 72 carton", "₹12.46", "₹12.46", "₹13.06"], [5, "Toothpaste 150g x 72 shipper", "₹15.30", "₹15.30", "₹15.90"], [7, "Hair oil 100ml x 48 shipper", "₹11.16", "₹11.16", "₹11.76"], [9, "Biscuit 75g x 60 carton", "₹16.73", "₹16.73", "₹17.33"], [10, "Noodles 70g x 96 carton", "₹19.54", "₹19.54", "₹20.14"], [11, "Tea 250g x 40 carton", "₹16.52", "₹16.52", "₹17.12"], [13, "Detergent powder 1kg x 20 master", "₹38.49", "₹38.49", "₹39.09"], [14, "Detergent powder 500g x 40 master", "₹38.28", "₹38.28", "₹38.88"], [15, "Liquid detergent 1L x 12 shipper", "₹32.98", "₹32.98", "₹33.58"], [16, "Dishwash bar 200g x 100 carton", "₹33.42", "₹33.42", "₹34.02"], [17, "Floor cleaner 1L x 12 shipper", "₹36.15", "₹36.15", "₹36.75"], [18, "Toilet cleaner 500ml x 24 shipper", "₹32.55", "₹32.55", "₹33.15"], [19, "Edible oil 1L pouch x 16 carton", "₹33.02", "₹33.02", "₹33.62"], [20, "Edible oil 1L bottle x 12 carton", "₹32.38", "₹32.38", "₹32.98"], [21, "Ghee 500ml jar x 24 carton", "₹28.97", "₹28.97", "₹29.57"], [22, "Atta 5kg x 4 carton", "₹43.70", "₹43.70", "₹44.30"], [23, "Sugar 1kg x 20 carton", "₹35.45", "₹35.45", "₹36.05"], [24, "Hand wash 250ml x 24 shipper", "₹27.94", "₹27.94", "₹28.54"], [25, "Mixed SKU e-commerce shipper", "₹34.12", "₹34.12", "₹34.72"], [26, "Promo gift-pack outer", "₹40.80", "₹40.80", "₹41.40"], [27, "Export detergent 25kg bulk carton", "₹101.69", "₹101.69", "₹102.29"], [28, "Export edible oil 15L tin x 2 carton", "₹92.18", "₹92.18", "₹92.78"], [29, "Pallet-load spice drum outer", "₹110.17", "₹110.17", "₹110.77"], [30, "Heavy-duty atta 25kg export carton", "₹103.50", "₹103.50", "₹104.10"]];
+ M.innerHTML=head(17)+pills('V2',[3,3,4,2,5])+`<div class="cols"><div>${vh('V2 · Shree Ganesh Packaging Industries',2,5,27)}<div class="grp"><span>Lines · 2 to review</span></div>${item({...L8,sel:1})}${item(L12)}</div>${v2src('v2_l8.png','')}</div>`;
+ O.innerHTML=`<div class="overlay" style="padding-top:40px"><div class="dlg" style="width:820px"><h3>Confirm 27 clean lines for V2? <span class="mut">✕</span></h3><p>Every check passed on these lines. Scan them, then confirm. They are logged in the audit trail as one entry.</p>
+ <div style="max-height:470px;overflow:hidden;border:1px solid var(--line);border-radius:8px"><table><tr><th>Line</th><th>Description</th><th class="r">Vendor wrote</th><th class="r">₹/pc</th><th class="r">Landed</th><th>Checks</th></tr>${R.map(r=>`<tr><td>${r[0]}</td><td>${r[1]}</td><td class="r">${r[2]}</td><td class="r">${r[3]}</td><td class="r">${r[4]}</td><td class="pass">13/13 ✓</td></tr>`).join('')}</table></div>
+ <p class="mut" style="font-size:12.5px;margin-top:8px">Showing 27 lines (scroll). Landed = price + freight ₹0.60 (quoted). Lines 6, 8 and 12 are not included: they still need your review.</p>
+ <div class="a"><span class="btn primary">Cancel</span><span class="btn">Confirm 27 lines</span></div></div></div>`}
+
+/* 06 V4 photo + ask vendor + not quoted */
+if(S==='06'){lbl('06 · V4 photo: low-confidence value, ✉ asked vendor, not-quoted lines');
+ const nq=`<div class="grp"><span>Not quoted (3)</span><span class="link">Hide ▾</span></div><div class="item"><div class="r1"><span class="dot" style="background:#777"></span><span class="ttl">Lines 26, 28, 29</span><span class="fld">· Promo gift-pack outer · Export edible oil 15L tin x 2 · Pallet-load spice drum outer</span></div><div class="why mut">Not on V4's rate card. Shown as <b>Not quoted</b>, never ₹0, and V4 can't win these lines.</div><div class="acts"><span class="btn sm">✉ Ask V4 to quote these</span></div></div>`;
+ M.innerHTML=head(15)+pills('V4',[3,3,4,1,5])+`<div class="note b-blue" style="margin-bottom:10px">ℹ️ V4 replied on 17 Nov, after the due date (16 Nov). The reply is flagged, not blocked.</div><div class="cols"><div>${vh('V4 · Om Sai Box Works',1,2,26)}
+ <div class="grp"><span>Vendor terms · apply to all 27 quoted lines</span></div>
+ ${item({ttl:'Freight',fld:'all 27 quoted lines',dot:'yel',wrote:'Nothing about freight (ex-works rate card)',read:'<b>Imputed</b> ₹1.20 / ₹2.40 / ₹5.50 per piece (3 / 5 / 7-ply)',why:'Freight is never invented. With none quoted, we use the highest freight another vendor quoted for the same line, so V4 is not favoured.',acts:'<span class="btn sm">✓ Accept imputed freight</span><span class="btn sm">✎ Enter V4\'s freight</span><span class="btn sm">✉ Ask vendor</span>'})}
+ <div class="grp"><span>Lines · 1 to review</span></div>
+ ${item({ttl:'Line 14',fld:'Detergent powder 500g x 40 master · price',dot:'red',award:1,sel:1,state:'wait',wrote:'“34.80” (handwritten, digits smudged)',read:'₹34.80 per piece · 61% confidence',why:'The photo is hard to read at this row. The second read got “34.30”. Until V4 confirms, this value can\'t be used in the award.',noacts:1,extra:'<div class="acts"><span class="mut" style="font-size:12.5px">Added to V4\'s clarification email in Responses.</span><span class="btn sm">✎ Correct now</span><span class="link" style="margin-left:auto">▸ Evidence &amp; checks</span></div>'})}
+ ${nq}<div class="collapsed"><span>Unmatched lines <span class="mut">(0)</span></span><span class="mut">▸</span></div></div>
+ ${src('V4_OmSai_ratecard_photo.jpg','photo · WhatsApp forward','<img src="v4.jpg">','Row 14 on the card (5-ply, 430×320×280). Photos can\'t be highlighted precisely; zoom to check.')}</div>`}
+
+/* 07 V5 email */
+if(S==='07'){lbl('07 · V5 email: derived ₹/kg conversion and “same as last year” lines');
+ const em=`<div class="em"><div style="color:#555;font-size:12.5px">From: Rajesh Patil &lt;rajesh@krishnakraft.example&gt; · 9 Nov 2026, 19:42<br>Subject: Re: RFQ - Corrugated boxes FY27 - Sahyadri</div><hr>Sir,<br><br>₹42/kg for the 5-ply, 38 for the 3-ply, <mark>rest same as last year</mark>, freight extra.<br>Payment terms as before.<br><br>ISO copy attached. Rejection ok. Capacity approx 180 T/month.<br><br>Regards<br>Rajesh Patil<br>Krishna Kraft Packaging LLP, Shirwal<br>(Udyam: Small)</div>`;
+ M.innerHTML=head(15)+pills('V5',[3,3,4,2,5])+`<div class="note b-blue" style="margin-bottom:10px">ℹ️ V5 is <b>disqualified</b> (ISO 9001 expired 31 Mar 2026), so it can't win any line. Its items are listed last and don't affect the award unless it requalifies.</div><div class="cols"><div>${vh('V5 · Krishna Kraft Packaging LLP',0,5,0)}
+ <div class="grp"><span>Vendor terms</span></div>
+ ${item({ttl:'Price basis',fld:'lines 1–26',dot:'yel',wrote:'“₹42/kg for the 5-ply, 38 for the 3-ply”',read:'₹/kg × each box\'s weight = ₹/pc <span class="chip blue">derived</span>',why:'Line 1: 38/kg × 0.192 kg = <b>₹7.30/pc</b>. The weight comes from each line\'s size and paper spec.'})}
+ ${item({ttl:'Freight',fld:'all 30 lines',dot:'yel',wrote:'“freight extra” (no amount)',read:'<b>Imputed</b> at the highest freight other vendors quoted',why:'Freight is never invented; V5 is not favoured.',acts:'<span class="btn sm">✓ Accept imputed freight</span><span class="btn sm">✉ Ask vendor</span>'})}
+ ${item({ttl:'Lines 27–30',fld:'7-ply · “rest same as last year”',dot:'yel',wrote:'“rest same as last year”',read:'Last year\'s V5 prices: ₹97.79 · ₹83.15 · ₹104.28 · ₹92.50',why:'Taken from last year\'s purchase prices for V5.'})}
+ <div class="grp"><span>Lines · 2 to review</span></div>
+ ${item({ttl:'Lines 28 and 30',fld:'spec changed since last year',dot:'red',sel:1,badge:'<span class="chip grey">Can\'t win: disqualified</span>',wrote:'“same as last year”',read:'₹83.15 and ₹92.50 per piece',why:'Last year\'s boxes had <b>lighter outer liners</b> than this RFQ asks for, so last year\'s price may not cover this spec.'})}
+ ${bottom(0,0)}</div>
+ ${src('V5_KrishnaKraft_email.eml','email body',em,'Highlighted: the phrase the lines 27–30 prices come from')}</div>`}
+
+/* 08 V1 Excel substitute */
+if(S==='08'){lbl('08 · V1 Excel: spec substitute (accept / reject), source cell highlighted');
+ const rows=[['21','DCPL-C115','SUGAR 1KG X 20 BOX','440 x 300 x 280','5 Ply 180/120/150/120/180','3682',''],['22','DCPL-C116','HAND WASH 250ML X 24 SHIPPER BOX','380 x 260 x 240','5 Ply 180/120/150/120/180','2870',''],['23','DCPL-C117','MIXED SKU E-COMMERCE SHIPPER BOX','400 x 300 x 300','3 Ply 200/150/200','2284','We suggest 3 ply heavy duty 200/150/200 - cost effective alternative'],['24','DCPL-C118','PROMO GIFT-PACK OUTER','450 x 350 x 250','5 Ply 180/120/150/120/180','4443',''],['25','3 PLY CARTONS','','','','',''],['26','DCPL-C119','SHAMPOO 180ML BOTTLE SHIPPER BOX (24S)','300 x 200 x 150','3 Ply 150/120/150','887','* Addl 4% off for release qty >= 20,000 nos']];
+ const xl=`<table class="xl"><tr class="h"><td></td><td>A</td><td>B</td><td>C</td><td>D</td><td>E</td><td>G</td></tr><tr><td class="h" style="background:#f1f1f1">4</td><td><b>Our Code</b></td><td><b>Box Description</b></td><td><b>Inside Size</b></td><td><b>Construction</b></td><td><b>Rate / 100 Nos</b></td><td><b>Remarks</b></td></tr>${rows.map(r=>`<tr class="${r[0]==='23'?'hl':''}"><td style="background:#f1f1f1;color:#555">${r[0]}</td>${r.slice(1).map(c=>`<td>${c}</td>`).join('')}</tr>`).join('')}</table>`;
+ M.innerHTML=head(19)+pills('V1',[3,5,4,2,5])+`<div class="cols"><div>${vh('V1 · Deccan Corrugators Pvt Ltd',0,3,27)}
+ <div class="grp"><span>Lines · 3 to review</span></div>
+ ${item({ttl:'Line 25',fld:'Mixed SKU e-commerce shipper · spec',dot:'yel',sel:1,award:1,wrote:'“3 Ply 200/150/200” · “We suggest 3 ply heavy duty… cost effective alternative”',read:'<b>Substitute</b>: 3-ply offered, RFQ asks for 5-ply',why:'A substitute can\'t win until you accept it. If accepted, ₹22.84/pc becomes eligible for this line.',acts:'<span class="btn sm">✓ Accept substitute</span><span class="btn sm">✗ Reject (not eligible)</span><span class="btn sm">✉ Ask vendor</span>'})}
+ ${item({ttl:'Line 16',fld:'Dishwash bar 200g x 100 carton · spec',dot:'yel',wrote:'“Offered in 150 GSM outer liner - meets BS”',read:'<b>Deviation</b>: lighter outer liner than specified',why:'The vendor says bursting strength is still met. Accept only if QA agrees.',acts:'<span class="btn sm">✓ Accept deviation</span><span class="btn sm">✗ Reject</span><span class="btn sm">✉ Ask vendor</span>'})}
+ ${item({ttl:'Line 19',fld:'Edible oil 1L pouch x 16 carton · discount',dot:'yel',wrote:'“3% volume discount above 50,000 nos”',read:'Not applied: unclear if per order or per year',why:'Per order: never reached (typical order 10,000). Per year: reached (120,000/year). Changes ₹33.60 → ₹32.59.',acts:'<span class="btn sm">Per order (not applied)</span><span class="btn sm">Per year (apply 3%)</span><span class="btn sm">✉ Ask vendor</span>'})}
+ ${bottom(0,0)}</div>
+ ${src('V1_Deccan_Price_Offer_SCPL.xlsx','sheet “Price Offer”',xl,'Highlighted: row 23 (cells D23, G23)')}</div>`}
+
+/* 09 vendor complete */
+if(S==='09'){lbl('09 · Vendor fully reviewed → next vendor');
+ M.innerHTML=head(16)+pills('V1',[0,5,4,2,5])+`<div class="cols"><div>${vh('V1 · Deccan Corrugators Pvt Ltd',3,3,0)}
+ <div class="note b-green" style="font-size:14.5px">✅ <b>V1 is fully reviewed.</b> 1 substitute accepted, 1 deviation rejected, 1 discount set to per order, 27 clean lines confirmed in one step. Everything is in the audit trail.<div style="margin-top:10px"><span class="btn primary">Next: V2 · 5 to review →</span></div></div>
+ <div class="grp"><span>Reviewed (3)</span><span class="link">Hide ▾</span></div>
+ ${item({ttl:'Line 25',fld:'spec substitute',dot:'grn',state:'done',doneTxt:'✓ Accepted · 15:02',compact:'3-ply heavy duty accepted. Reason: QA approved the alternative. <span class="link">Undo</span>'})}
+ ${item({ttl:'Line 16',fld:'spec deviation',dot:'grn',state:'done',doneTxt:'✗ Rejected · 15:03',compact:'Not eligible for line 16. Reason: QA wants the specified liner. <span class="link">Undo</span>'})}
+ ${item({ttl:'Line 19',fld:'discount basis',dot:'grn',state:'done',doneTxt:'✓ Set · 15:03',compact:'Per order: 3% not applied. <span class="link">Undo</span>'})}
+ ${item({ttl:'27 clean lines',fld:'bulk',dot:'grn',state:'done',doneTxt:'✓ Confirmed · 15:04',compact:'Every check passed. Logged as one audit entry.'})}
+ ${bottom(0,0)}</div>
+ ${src('V1_Deccan_Price_Offer_SCPL.xlsx','sheet “Price Offer”','<div style="padding:40px;color:#555;text-align:center;font-size:14px">Select an item to see where it came from.</div>','')}</div>`}
+
+/* 10 all lines view */
+if(S==='10'){lbl('10 · “All 30 lines” view: every line with its status');
+ const rows=[[1,'Shampoo 180ml bottle shipper (24s)','8.42','₹8.42','₹9.02','auto'],[2,'Shampoo sachet master (960s)','13.34','₹13.34','₹13.94','auto'],[3,'Bathing soap 75g x 144 carton','12.82','₹12.82','₹13.42','auto'],[4,'Bathing soap 125g x 72 carton','12.46','₹12.46','₹13.06','auto'],[5,'Toothpaste 150g x 72 shipper','15.30','₹15.30','₹15.90','auto'],[6,'Toothbrush retail display (inner)','620.00','₹6.20','₹6.80','fix'],[7,'Hair oil 100ml x 48 shipper','11.16','₹11.16','₹11.76','auto'],[8,'Face cream 50g x 96 shipper','944.00','₹944.00','₹944.60','need'],[9,'Biscuit 75g x 60 carton','16.73','₹16.73','₹17.33','auto'],[10,'Noodles 70g x 96 carton','19.54','₹19.54','₹20.14','auto'],[11,'Tea 250g x 40 carton','16.52','₹16.52','₹17.12','auto'],[12,'Spices 100g x 120 carton','1,229.00','₹1,229.00','₹1,229.60','need'],[13,'Detergent powder 1kg x 20 master','38.49','₹38.49','₹39.09','auto'],[14,'Detergent powder 500g x 40 master','38.28','₹38.28','₹38.88','auto']];
+ const st={auto:'<span class="chip grey">All checks passed</span>',fix:'<span class="chip green">✎ Corrected</span>',need:'<span class="chip amber">⚠ Needs review</span>'};
+ M.innerHTML=head(17)+pills('V2',[3,3,4,2,5])+`<div class="cols" style="grid-template-columns:minmax(0,1.4fr) minmax(0,1fr)"><div>${vh('V2 · Shree Ganesh Packaging Industries',2,5,27,'all')}
+ <table><tr><th>Line</th><th>Description</th><th class="r">Vendor wrote</th><th class="r">₹/pc</th><th class="r">Landed</th><th>Status</th></tr>${rows.map(r=>`<tr ${r[0]===8?'style="background:#2a2410"':''}><td>${r[0]}</td><td>${r[1]}</td><td class="r">${r[2]}</td><td class="r">${r[3]}</td><td class="r">${r[4]}</td><td>${st[r[5]]}</td></tr>`).join('')}<tr><td colspan="6" class="mut">… lines 15–30</td></tr></table>
+ <div class="mut" style="font-size:12.5px;margin-top:8px">Click a line to open it in the review queue. Landed = price + freight ₹0.60 (quoted).</div></div>
+ ${v2src('v2_l8.png','Highlighted: Sr 8 (selected row)')}</div>`}
+
+/* 11 all done */
+if(S==='11'){lbl('11 · Every vendor reviewed: banner turns green');
+ M.innerHTML=head(0,'green')+pills('V5',[0,0,0,0,0])+`<div class="note b-green" style="font-size:14.5px">✅ <b>All 5 vendors reviewed.</b> 19 items resolved: 6 corrected, 10 confirmed, 3 accepted or rejected (V4 line 14 confirmed after V4's reply). Clean lines were confirmed in one step per vendor. Every decision is in the audit trail.<div style="margin-top:10px;display:flex;gap:8px"><span class="btn primary">Go to Bid Analysis →</span><span class="btn">Download review log (Excel)</span></div></div>`}
+</script></body></html>

@@ -156,3 +156,9 @@ do not touch secrets or Streamlit settings; keep Gemini calls minimal (cache fir
 - **B4-4 Clean lines** = quoted, no failed/warn check, no open value outside a vendor-term item, not in an open line item. Bulk confirm never confirms values owned by an open vendor-term item (e.g. the 45-day payment cap).
 - **B4-5 Correct preview** runs the same recompute on an in-memory copy of the database; nothing is saved until Save.
 - **B4-6 Source viewer** (`ui/source_view.py`): PDF page image with the cited row highlighted from pdfplumber word coordinates; Excel window with the cited row; Word paragraph/table row; email with the phrase marked; photo with the row reference.
+
+## UI batch 5 (Bid Analysis rebuild)
+- **B5-1** Scenarios A-D are `award_scenario` calls (basis evaluated). C excludes the vendors that have not-firm prices, and D names the vendors with unaccepted substitutes/deviations, both read from `v_comparison_grid`. "Use this scenario" calls `propose_award` (stages a proposal in the session; nothing is committed).
+- **B5-2** `agent.tools.scenario_eligibility` is the old eligibility rule pulled out of `_scenario_from_grid` unchanged, so the grid can grey out quotes that cannot win in the selected scenario.
+- **B5-3** The grid is a native `st.dataframe` with cell selection: clicking a price opens the build-up dialog. Vendor headers (qualification chip, lines quoted, payment terms, not firm, ☆ star) sit in a strip of cards above the grid because a dataframe header cannot hold chips. Tags on cells are plain text ("Unconfirmed" means the price or unit itself is a must-confirm value).
+- **B5-4** "Ask about this line" puts the question in the analyst chat box with a few lines of JavaScript (`st.chat_input` has no default value).

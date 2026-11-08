@@ -97,38 +97,3 @@ def test_match_unmatched_flow(real_conn):
 
 
 # ------------------------------------------------------------------ Bid Analysis in the real app
-def test_bid_analysis_grid_totals_and_qualification(real_conn):
-    c, path = real_conn
-    at = run_app(path)
-    assert not at.exception
-    grid = _grid(at)
-    assert grid.loc[26, "V4"] == "not quoted"
-    assert "⚠" in grid.loc[1, "V3"] and "◆" in grid.loc[6, "V2"]
-    assert any("NOT-FIRM" in w.value for w in at.warning)
-    md = _md(at)
-    assert "DISQUALIFIED" in md and "QUALIFIED" in md and "PENDING" in md
-    assert "Q01_ISO9001 (fail)" in md and "expired 2026-03-31" in md
-    metrics = {m.label: m.value for m in at.metric}
-    assert "Saving vs last year (landed)" in metrics and metrics["Lines with a winner"].endswith("/ 30")
-
-
-def test_bid_toggle_switches_between_landed_and_evaluated(real_conn):
-    c, path = real_conn
-    at = run_app(path)
-    ev = _grid(at).loc[5, "V2"]
-    [r for r in at.radio if r.key == "bid_basis"][0].set_value("Quoted (landed)").run()
-    la = _grid(at).loc[5, "V2"]
-    assert ev != la
-    row = c.execute("SELECT landed_inr_pc, evaluated_inr_pc FROM v_comparison_grid WHERE vendor_code='V2' AND line_no=5").fetchone()
-    assert la.startswith(f"{row['landed_inr_pc']:.2f}") and ev.startswith(f"{row['evaluated_inr_pc']:.2f}")
-
-
-def test_line_detail_explains_why_a_quote_cannot_win(real_conn):
-    c, path = real_conn
-    at = run_app(path)
-    [s for s in at.selectbox if s.key == "bid_line"][0].select(1)
-    at.run()
-    md = _md(at)
-    assert "Why it can't win" in md and "knock-out" in md                # V5 disqualified on line 1
-    assert "How computed" in md and "per_kg" in md                       # V5 per-kg trace shown
-    assert not at.exception

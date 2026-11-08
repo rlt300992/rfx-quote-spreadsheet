@@ -1,0 +1,203 @@
+<!doctype html>
+<html><head><meta charset="utf-8">
+<style>
+:root{--bg:#1b1b1b;--side:#262626;--line:#3a3a3a;--txt:#f2f2f2;--mut:#a3a3a3;--dim:#7c7c7c;--red:#ff4b4b;--blue:#2f8be8;
+--amberbg:#3a3014;--amber:#f5c542;--greenbg:#173a24;--green:#5fd38d;--bluebg:#132c45;--bluet:#8cc4ff;--redbg:#3d1a1a;--redt:#ff8a8a;--in:#262730}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--txt);font-family:'Source Sans 3','Segoe UI',Arial,sans-serif;font-size:14.5px}
+.app{display:flex;min-height:100vh}
+.side{width:260px;background:var(--side);padding:72px 18px 24px;flex-shrink:0}
+.side .co{font-weight:700;font-size:15px;margin-bottom:16px}
+.exp{border:1px solid var(--line);border-radius:8px;margin-bottom:20px;padding:10px 14px;font-size:14px}
+.btn{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);border-radius:8px;padding:7px 13px;font-size:14px;color:var(--txt);white-space:nowrap}
+.btn.primary{background:var(--red);border-color:var(--red);color:#fff;font-weight:600}
+.btn.dis{opacity:.35}
+.main{flex:1;padding:52px 40px 50px}
+h1{font-size:30px;margin:0 0 6px}
+.sub{color:var(--mut);font-size:14px}
+.chip{display:inline-block;padding:1px 9px;border-radius:999px;font-size:12px;font-weight:600}
+.grey{background:#333;color:#cfcfcf}.green{background:var(--greenbg);color:var(--green)}.amber{background:var(--amberbg);color:var(--amber)}.blue{background:var(--bluebg);color:var(--bluet)}.redc{background:var(--redbg);color:var(--redt)}
+.banner{border-radius:8px;padding:12px 16px;margin:14px 0 4px;display:flex;gap:10px;font-size:14.5px}
+.b-amber{background:var(--amberbg);color:var(--amber)}.b-green{background:var(--greenbg);color:var(--green)}.b-blue{background:var(--bluebg);color:var(--bluet)}.b-red{background:var(--redbg);color:var(--redt)}
+.tabs{display:flex;gap:22px;border-bottom:1px solid var(--line);margin:14px 0 14px;font-size:14px}
+.tabs span{padding:8px 0}.tabs .on{color:var(--red);border-bottom:2px solid var(--red)}
+.bar{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;gap:12px}
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:8px;overflow:hidden}
+.seg span{padding:7px 14px;font-size:13.5px}.seg .on{background:#3a3a3a;font-weight:600}
+.bar .l{color:var(--mut);font-size:13px}
+.cols{display:grid;grid-template-columns:1fr 390px;gap:20px;align-items:start}
+.sec{border:1px solid var(--line);border-radius:10px;margin-bottom:12px}
+.sec .hd{display:flex;align-items:center;gap:10px;padding:12px 16px}
+.sec .hd .n{width:22px;height:22px;border-radius:50%;background:#333;display:inline-flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0}
+.sec .hd .t{font-weight:700;font-size:15.5px;white-space:nowrap}
+.sec .hd .sum{color:var(--mut);font-size:13px;margin-left:auto;text-align:right}
+.sec .bd{padding:4px 16px 14px;border-top:1px solid var(--line)}
+.sec.done .n{background:var(--greenbg);color:var(--green)}
+.sec.err .n{background:var(--redbg);color:var(--redt)}
+.sec.cur{border-color:#5a5a5a;box-shadow:0 0 0 1px #5a5a5a}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px 14px;margin-top:10px}
+.f label{display:block;font-size:12px;color:var(--mut);margin-bottom:4px}
+.f div{background:var(--in);border-radius:6px;padding:8px 10px;font-size:13.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.f div.new{box-shadow:inset 3px 0 0 var(--green)}
+.f div.bad{box-shadow:inset 0 0 0 1px var(--redt);color:var(--redt)}
+.f small{display:block;color:var(--dim);font-size:11.5px;margin-top:3px}
+table{width:100%;border-collapse:collapse;font-size:12.8px;margin-top:10px}
+th,td{padding:6px 8px;border-bottom:1px solid #2f2f2f;text-align:left;white-space:nowrap}
+th{color:var(--mut);font-weight:600;font-size:12px}
+td.r,th.r{text-align:right}
+td.w{white-space:normal}
+.warnrow td{background:var(--redbg);color:var(--redt)}
+.tog{display:inline-block;width:30px;height:16px;border-radius:8px;background:#444;position:relative;vertical-align:middle}
+.tog::after{content:'';position:absolute;top:2px;left:2px;width:12px;height:12px;border-radius:50%;background:#bbb}
+.tog.on{background:var(--red)}.tog.on::after{left:16px;background:#fff}
+.cb{display:inline-block;width:14px;height:14px;border-radius:3px;border:1px solid #777;vertical-align:middle}
+.cb.on{background:var(--red);border-color:var(--red);position:relative}.cb.on::after{content:'✓';color:#fff;font-size:11px;position:absolute;left:2px;top:-2px}
+.chat{border:1px solid var(--line);border-radius:10px;display:flex;flex-direction:column}
+.chat .hd{padding:12px 14px;border-bottom:1px solid var(--line);font-weight:700;display:flex;justify-content:space-between}
+.msgs{padding:12px 14px;display:flex;flex-direction:column;gap:10px}
+.m{max-width:92%;padding:9px 12px;border-radius:10px;font-size:13.5px;line-height:1.45}
+.m.ai{background:#262626}.m.me{background:#1f3a5c;align-self:flex-end}
+.m code{font-size:12px;color:#cde}
+.sugg{display:flex;flex-wrap:wrap;gap:6px;padding:0 14px 10px}
+.sugg span{border:1px solid var(--line);border-radius:999px;padding:4px 10px;font-size:12.5px;color:#ddd}
+.inp{margin:0 14px 14px;background:var(--in);border-radius:8px;padding:10px 12px;color:#777;font-size:13.5px;display:flex;justify-content:space-between}
+.ck{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:10px}
+.ck div{background:#222;border-radius:6px;padding:8px 10px;font-size:13px}
+.ck div.x{background:var(--redbg);color:var(--redt)}.ck div.w{background:var(--amberbg);color:var(--amber)}
+.lbl{position:fixed;top:10px;left:280px;background:#f4a261;color:#14213d;font-weight:700;font-size:13px;padding:4px 10px;border-radius:5px;z-index:99}
+.mut{color:var(--mut)}
+.note{border-radius:8px;padding:10px 14px;font-size:13.5px;margin-bottom:12px}
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,.62);display:flex;align-items:flex-start;justify-content:center;padding-top:60px;z-index:50}
+.dlg{background:#232323;border:1px solid var(--line);border-radius:12px;padding:22px 24px;width:600px;box-shadow:0 10px 40px rgba(0,0,0,.5)}
+.dlg.wide{width:960px}
+.dlg h3{margin:0 0 12px;font-size:20px;display:flex;justify-content:space-between}
+.dlg p{color:#d6d6d6;line-height:1.5;margin:0 0 10px}
+.dlg .acts{display:flex;justify-content:flex-end;gap:10px;margin-top:18px}
+.em{background:#1b1b1b;border:1px solid var(--line);border-radius:8px;padding:14px 16px;font-size:14px;line-height:1.55}
+.em .k{color:var(--mut);display:inline-block;width:64px}
+.att{display:inline-flex;gap:8px;align-items:center;border:1px solid var(--line);border-radius:8px;padding:8px 12px;margin-top:12px;font-size:13.5px}
+.att a{color:var(--bluet)}
+.xl{border-collapse:collapse;font-size:12px;width:100%;background:#fff;color:#111;margin:0}
+.xl td{border:1px solid #d0d0d0;padding:3px 6px;white-space:nowrap;border-bottom:1px solid #d0d0d0}
+.xl .hd td{background:#f1f1f1;color:#555;text-align:center}
+.xl .th td{background:#14213d;color:#fff;font-weight:600}
+.xl .fill{background:#fff7d6}
+.sheets{display:flex;gap:2px;margin-top:6px}.sheets span{font-size:12px;padding:3px 10px;background:#333;border-radius:0 0 5px 5px}.sheets .on{background:#fff;color:#111;font-weight:600}
+</style></head><body>
+<div class="app">
+<div class="side"><div class="co">Sahyadri Consumer Products Ltd · Procurement</div><div class="exp">▸ Evaluation settings</div><span class="btn">Test Gemini</span></div>
+<div class="main" id="main"></div></div>
+<div id="ov"></div>
+<script>
+const L=[["1", "CB-3P-SH-01", "Shampoo 180ml bottle shipper (24s)", "300\u00d7200\u00d7150", "3", "7", 120000, 10000], ["2", "CB-3P-SH-02", "Shampoo sachet master (960s)", "380\u00d7250\u00d7200", "3", "8", 90000, 7500], ["3", "CB-3P-SP-01", "Bathing soap 75g x 144 carton", "360\u00d7240\u00d7180", "3", "9", 150000, 12500], ["4", "CB-3P-SP-02", "Bathing soap 125g x 72 carton", "340\u00d7260\u00d7160", "3", "9", 96000, 8000], ["5", "CB-3P-TP-01", "Toothpaste 150g x 72 shipper", "420\u00d7280\u00d7190", "3", "8", 84000, 7000], ["6", "CB-3P-TB-01", "Toothbrush retail display (inner)", "250\u00d7180\u00d7120", "3", "5", 60000, 5000], ["7", "CB-3P-HO-01", "Hair oil 100ml x 48 shipper", "320\u00d7240\u00d7170", "3", "8", 72000, 6000], ["8", "CB-3P-FC-01", "Face cream 50g x 96 shipper", "300\u00d7220\u00d7140", "3", "7", 48000, 4000], ["9", "CB-3P-BS-01", "Biscuit 75g x 60 carton", "400\u00d7300\u00d7220", "3", "8", 180000, 15000], ["10", "CB-3P-ND-01", "Noodles 70g x 96 carton", "420\u00d7320\u00d7250", "3", "8", 144000, 12000], ["11", "CB-3P-TE-01", "Tea 250g x 40 carton", "360\u00d7280\u00d7230", "3", "9", 66000, 5500], ["12", "CB-3P-SC-01", "Spices 100g x 120 carton", "330\u00d7250\u00d7200", "3", "8", 54000, 4500], ["13", "CB-5P-DT-01", "Detergent powder 1kg x 20 master", "450\u00d7300\u00d7300", "5", "14", 60000, 5000], ["14", "CB-5P-DT-02", "Detergent powder 500g x 40 master", "430\u00d7320\u00d7280", "5", "13", 72000, 6000], ["15", "CB-5P-LD-01", "Liquid detergent 1L x 12 shipper", "400\u00d7300\u00d7270", "5", "14", 48000, 4000], ["16", "CB-5P-DW-01", "Dishwash bar 200g x 100 carton", "420\u00d7300\u00d7250", "5", "13", 84000, 7000], ["17", "CB-5P-FL-01", "Floor cleaner 1L x 12 shipper", "410\u00d7310\u00d7290", "5", "14", 42000, 3500], ["18", "CB-5P-TC-01", "Toilet cleaner 500ml x 24 shipper", "420\u00d7280\u00d7260", "5", "13", 54000, 4500], ["19", "CB-5P-EO-01", "Edible oil 1L pouch x 16 carton", "380\u00d7280\u00d7260", "5", "15", 120000, 10000], ["20", "CB-5P-EO-02", "Edible oil 1L bottle x 12 carton", "360\u00d7270\u00d7300", "5", "16", 96000, 8000], ["21", "CB-5P-GH-01", "Ghee 500ml jar x 24 carton", "400\u00d7270\u00d7220", "5", "14", 36000, 3000], ["22", "CB-5P-AT-01", "Atta 5kg x 4 carton", "460\u00d7330\u00d7300", "5", "16", 60000, 5000], ["23", "CB-5P-SG-01", "Sugar 1kg x 20 carton", "440\u00d7300\u00d7280", "5", "14", 48000, 4000], ["24", "CB-5P-HW-01", "Hand wash 250ml x 24 shipper", "380\u00d7260\u00d7240", "5", "13", 42000, 3500], ["25", "CB-5P-EC-01", "Mixed SKU e-commerce shipper", "400\u00d7300\u00d7300", "5", "14", 30000, 2500], ["26", "CB-5P-PG-01", "Promo gift-pack outer", "450\u00d7350\u00d7250", "5", "13", 12000, 1000], ["27", "CB-7P-XD-01", "Export detergent 25kg bulk carton", "600\u00d7400\u00d7400", "7", "22", 12000, 1000], ["28", "CB-7P-XO-01", "Export edible oil 15L tin x 2 carton", "620\u00d7330\u00d7400", "7", "21", 9600, 800], ["29", "CB-7P-PD-01", "Pallet-load spice drum outer", "580\u00d7400\u00d7450", "7", "22", 6000, 500], ["30", "CB-7P-XA-01", "Heavy-duty atta 25kg export carton", "560\u00d7400\u00d7420", "7", "20", 7200, 600]];
+const S=(location.hash||'#c').slice(1);
+const fmt=n=>n.toLocaleString('en-IN');
+const M=document.getElementById('main'),O=document.getElementById('ov');
+function lbl(t){document.body.insertAdjacentHTML('beforeend',`<div class="lbl">${t}</div>`)}
+function head(){return `<h1>Corrugated boxes - FY2026-27 annual rate contract</h1><div class="sub">RFQ · Response due 16 Nov 2026 · <span class="chip amber">Evaluating</span></div>
+<div class="banner b-amber"><span>⚠️</span><span><b>159 values awaiting confirmation.</b> These could change the award. Review them in Review &amp; Reconcile.</span></div>
+<div class="tabs"><span class="on">Create RFQ</span><span>Responses</span><span>Review &amp; Reconcile</span><span>Bid Analysis</span><span>Analyst &amp; Award</span></div>`}
+function bar(mode,status,right){return `<div class="bar"><div style="display:flex;gap:14px;align-items:center"><span class="seg"><span class="${mode==='demo'?'on':''}">Demo RFQ</span><span class="${mode==='draft'?'on':''}">New draft</span></span><span class="l">${status}</span></div><div style="display:flex;gap:8px">${right}</div></div>`}
+function sec(n,t,st,sum,body,cls=''){const chip={done:'<span class="chip green">Complete</span>',need:'<span class="chip amber">Needs input</span>',todo:'<span class="chip grey">Not started</span>',err:'<span class="chip redc">1 issue</span>',pub:'<span class="chip blue">Published</span>'}[st];
+ return `<div class="sec ${st==='done'||st==='pub'?'done':''} ${st==='err'?'err':''} ${cls}"><div class="hd"><span class="n">${st==='done'||st==='pub'?'✓':st==='err'?'!':n}</span><span class="t">${t}</span>${chip}<span class="sum">${sum}</span><span class="mut">${body?'▾':'▸'}</span></div>${body?`<div class="bd">${body}</div>`:''}</div>`}
+function f(l,v,cls='',small=''){return `<div class="f"><label>${l}</label><div class="${cls}">${v}</div>${small?`<small>${small}</small>`:''}</div>`}
+function lines(rows,extra=''){return `<table><tr><th>#</th><th>SKU</th><th>Description</th><th>Size (mm)</th><th>Ply</th><th class="r">BS kg/cm²</th><th class="r">Annual qty</th><th class="r">Typical order</th></tr>
+${rows.map(r=>`<tr><td>${r[0]}</td><td>${r[1]}</td><td>${r[2]}</td><td>${r[3]}</td><td>${r[4]}</td><td class="r">${r[5]}</td><td class="r">${fmt(r[6])}</td><td class="r">${fmt(r[7])}</td></tr>`).join('')}${extra}</table>`}
+function chat(msgs,sugg,sub='drafts from the item catalog'){return `<div class="chat"><div class="hd">Co-pilot <span class="mut" style="font-weight:400;font-size:12px">${sub}</span></div><div class="msgs">${msgs.map(m=>`<div class="m ${m[0]}">${m[1]}</div>`).join('')}</div><div class="sugg">${sugg.map(s=>`<span>${s}</span>`).join('')}</div><div class="inp">Ask the co-pilot… <span>➤</span></div></div>`}
+const OV='Corrugated packaging · Annual rate contract · FY2026-27 · FOR Chakan · INR';
+const QS=[['Q01','Valid ISO 9001 certificate for the manufacturing site','Document','Valid on award date',1,1],['Q02','Meets bursting strength on every line; test report ≤ 6 months','Yes/No','Must be Yes',1,1],['Q03','Accepts rejection and free replacement of failed lots','Yes/No','Must be Yes',1,0],['Q04','Monthly corrugation capacity (tonnes)','Number','≥ 150',0,0],['Q05','First-supply lead time after PO (days)','Number','≤ 15',0,0],['Q06','Kraft paper source for liners','Text','Virgin or mixed',0,0],['Q07','FSC chain-of-custody certification','Document','Valid on award date',0,1],['Q08','Quality complaints from FMCG customers, last 12 months','Number','≤ 3',0,0]];
+const VD=[['V1','Deccan Corrugators Pvt Ltd','Chakan, Pune','Medium','sales@deccancorrugators.example'],['V2','Shree Ganesh Packaging Industries','Bhosari MIDC, Pune','Small','quotes@shreeganeshpack.example'],['V3','Western India Cartons Ltd','Vapi, Gujarat','Not MSME','tenders@wicartons.example'],['V4','Om Sai Box Works','Ranjangaon MIDC, Pune','Micro','omsaiboxworks@gmail.example'],['V5','Krishna Kraft Packaging LLP','Shirwal, Satara','Small','rajesh@krishnakraft.example']];
+const done5=(cur)=>[sec(1,'Overview','done',OV,null),sec(2,'Line items','done','30 lines · 12 × 3-ply, 14 × 5-ply, 4 × 7-ply',null),sec(3,'Questionnaire','done','8 questions · 3 knock-outs · 3 need a document',null),sec(4,'Terms &amp; timeline','done','Payment 60 days · GST 18% extra · Due 16 Nov 2026',null),sec(5,'Suppliers','done','5 approved vendors · 3 MSME',null)].join('');
+function reviewOK(){const ck=[['Overview','6 of 6 fields'],['Line items','30 lines'],['Questionnaire','8 questions · 3 knock-outs'],['Terms','60 days · FOR Chakan · GST 18% extra'],['Timeline','Due 16 Nov 2026 (in 8 days)'],['Suppliers','5 approved vendors']];
+ return `<div class="ck">${ck.map(c=>`<div>✅ <b>${c[0]}</b><br><span class="mut">${c[1]}</span></div>`).join('')}</div><div style="margin-top:14px;display:flex;gap:10px;justify-content:flex-end"><span class="btn">Preview email to suppliers</span><span class="btn primary">Publish &amp; send to 5 suppliers</span></div>`}
+
+/* C: landing on the published demo RFQ */
+if(S==='c'){lbl('C · Tab opens on the published demo RFQ (read-only)');
+ const ov=`<div class="grid">${f('Title','Corrugated boxes - FY2026-27 annual rate contract')}${f('Category','Corrugated packaging')}${f('Contract type','Annual rate contract')}${f('Contract period','FY2026-27 (12 months)')}${f('Delivery (FOR)','Chakan MIDC Phase II, Pune 410501')}${f('Currency','INR (₹)')}</div>`;
+ M.innerHTML=head()+bar('demo','Published 7 Nov 2026, 11:00 · sent to 5 suppliers · read-only','<span class="btn">✎ Edit RFQ</span><span class="btn primary">+ Start new draft</span>')+
+ `<div class="note b-blue">ℹ️ Demo RFQ. The 5 vendor replies in this demo were written for it. A new draft is kept separate and never changes this RFQ or its replies.</div>
+ <div class="cols"><div>${sec(1,'Overview','pub',OV,ov)}${sec(2,'Line items','pub','30 lines · 12 × 3-ply, 14 × 5-ply, 4 × 7-ply',null)}${sec(3,'Questionnaire','pub','8 questions · 3 knock-outs · 3 need a document',null)}${sec(4,'Terms &amp; timeline','pub','Payment 60 days · GST 18% extra · Due 16 Nov 2026',null)}${sec(5,'Suppliers','pub','5 approved vendors · 3 MSME',null)}${sec(6,'Sent email','pub','To 5 suppliers · 📎 RFQ_Corrugated_FY27.xlsx',null)}</div>
+ ${chat([['ai','This RFQ was published on 7 Nov and all 5 suppliers have replied. Ask me about it, or start a new draft to see how I build an RFQ from scratch.']],['Start a new draft','What did we ask suppliers?','Who was invited?'],'')}</div>`}
+
+/* D: new draft, empty */
+if(S==='d'){lbl('D · New draft, empty: the co-pilot starts the conversation');
+ M.innerHTML=head()+bar('draft','New draft · not saved yet','<span class="btn">Discard draft</span><span class="btn">Load demo RFQ</span>')+
+ `<div class="cols"><div>${sec(1,'Overview','todo','',null)}${sec(2,'Line items','todo','',null)}${sec(3,'Questionnaire','todo','',null)}${sec(4,'Terms &amp; timeline','todo','',null)}${sec(5,'Suppliers','todo','',null)}${sec(6,'Review &amp; publish','todo','Unlocks when 1–5 are complete',null)}
+ <div class="mut" style="font-size:13px;margin-top:6px">Each section fills in as you talk to the co-pilot. You can also open any section and type directly.</div></div>
+ ${chat([['ai','Hi Rohit. What are we sourcing?<br><br>You can describe it in a sentence, paste SKU codes from the item master, or copy last year\'s RFQ for the same category.']],['Describe what you\'re sourcing','Paste SKU codes','Copy last year\'s corrugated RFQ'])}</div>`}
+
+/* A: mid-draft */
+if(S==='a'){lbl('A · Drafting: overview filled, lines added from pasted SKUs');
+ const ov=`<div class="grid">${f('Title','Corrugated boxes - FY2026-27 annual rate contract','new')}${f('Category','Corrugated packaging','new')}${f('Contract type','Annual rate contract','new')}${f('Contract period','FY2026-27 (12 months)','new')}${f('Delivery (FOR)','Chakan MIDC Phase II, Pune 410501','new')}${f('Currency','INR (₹)','new')}</div>`;
+ const li=lines(L.slice(0,12),`<tr class="warnrow"><td>–</td><td>CB-3P-JM-01</td><td colspan="6">Not in the catalog. Not added. Did you mean CB-3P-HO-01?</td></tr>`)+`<div style="margin-top:10px;display:flex;gap:8px"><span class="btn">+ Paste SKUs</span><span class="btn">+ Same as last year</span><span class="btn">+ Describe a box</span></div>`;
+ M.innerHTML=head()+bar('draft','Draft · auto-saved 12:41','<span class="btn">Discard draft</span><span class="btn">Load demo RFQ</span>')+`<div class="cols"><div>
+ ${sec(1,'Overview','done','6 of 6 fields',ov)}${sec(2,'Line items','need','12 lines · 1 SKU not found',li,'cur')}${sec(3,'Questionnaire','todo','',null)}${sec(4,'Terms &amp; timeline','todo','',null)}${sec(5,'Suppliers','todo','',null)}${sec(6,'Review &amp; publish','todo','Unlocks when 1–5 are complete',null)}</div>
+ ${chat([['ai','Hi Rohit. What are we sourcing? Describe it, paste SKU codes, or copy last year\'s RFQ.'],['me','Annual rate contract for corrugated boxes, Chakan plant, FY27, in INR.'],['ai','Filled in <b>Overview</b>: title, category, contract type, FY2026-27, delivery FOR Chakan, INR. Which boxes should go in?'],['me','<code>CB-3P-SH-01, CB-3P-SH-02, CB-3P-SP-01, CB-3P-SP-02, CB-3P-TP-01, CB-3P-TB-01, CB-3P-HO-01, CB-3P-FC-01, CB-3P-BS-01, CB-3P-ND-01, CB-3P-TE-01, CB-3P-SC-01, CB-3P-JM-01</code>'],['ai','Added <b>12 lines</b> with specs and last year\'s quantities. <b>CB-3P-JM-01</b> isn\'t in the catalog, so I left it out. Did you mean CB-3P-HO-01 (hair oil shipper)? It\'s already in.<br><br>Last year also had 18 five- and seven-ply lines. Add them?']],['Add last year\'s 5- and 7-ply lines','Remove CB-3P-JM-01','Change typical order for line 9'])}</div>`}
+
+/* E: questionnaire editor */
+if(S==='e'){lbl('E · Questionnaire expanded: knock-out and document toggles');
+ const qt=`<table><tr><th>#</th><th>Question</th><th>Answer type</th><th>Pass rule</th><th>Knock-out</th><th>Document required</th></tr>${QS.map(q=>`<tr><td>${q[0]}</td><td class="w">${q[1]}</td><td>${q[2]}</td><td>${q[3]}</td><td><span class="tog ${q[4]?'on':''}"></span></td><td><span class="cb ${q[5]?'on':''}"></span></td></tr>`).join('')}</table><div style="margin-top:10px;display:flex;gap:8px"><span class="btn">+ Add question</span><span class="mut" style="font-size:12.5px;align-self:center">A failed knock-out disqualifies the vendor. A “Yes” without the required document counts as not met.</span></div>`;
+ M.innerHTML=head()+bar('draft','Draft · auto-saved 12:44','<span class="btn">Discard draft</span><span class="btn">Load demo RFQ</span>')+`<div class="cols"><div>
+ ${sec(1,'Overview','done',OV,null)}${sec(2,'Line items','done','30 lines · 12 × 3-ply, 14 × 5-ply, 4 × 7-ply',null)}${sec(3,'Questionnaire','done','8 questions · 3 knock-outs · 3 need a document',qt,'cur')}${sec(4,'Terms &amp; timeline','todo','',null)}${sec(5,'Suppliers','todo','',null)}${sec(6,'Review &amp; publish','todo','Unlocks when 1–5 are complete',null)}</div>
+ ${chat([['me','Add last year\'s 5- and 7-ply lines.'],['ai','Added <b>18 lines</b>. Line items now has <b>30 lines</b>.'],['me','Use the standard quality questionnaire. ISO, BS test and rejection are knock-outs.'],['ai','Added <b>8 questions</b> from the corrugated template. <b>Q01–Q03</b> are knock-outs, and Q01, Q02 and Q07 ask for a document. You can change the rules in the table.']],['Make Q05 a knock-out','Tighten lead time to 10 days','Next: terms & timeline'])}</div>`}
+
+/* F: terms + suppliers */
+if(S==='f'){lbl('F · Terms & timeline and Suppliers expanded');
+ const tt=`<div class="grid">${f('Payment terms (days)','60','new','From invoice. Vendors may propose different terms.')}${f('Delivery basis','FOR Chakan (freight included)','new')}${f('GST','18% extra','new','Prices quoted ex-GST')}${f('Response due','16 Nov 2026','new','8 days from today')}${f('Award reference date','16 Nov 2026','new','Certificates must be valid on this date')}${f('Price validity','6 months from PO','new')}</div>`;
+ const sp=`<table><tr><th></th><th>Code</th><th>Supplier</th><th>Location</th><th>MSME</th><th>Approved for corrugated</th><th>Contact</th></tr>${VD.map(v=>`<tr><td><span class="cb on"></span></td><td>${v[0]}</td><td>${v[1]}</td><td>${v[2]}</td><td>${v[3]}</td><td>✅</td><td class="mut">${v[4]}</td></tr>`).join('')}</table><div class="mut" style="font-size:12.5px;margin-top:8px">From the approved vendor list for this category. Micro and small vendors' credit is capped at 45 days in evaluation (MSMED Act).</div>`;
+ M.innerHTML=head()+bar('draft','Draft · auto-saved 12:46','<span class="btn">Discard draft</span><span class="btn">Load demo RFQ</span>')+`<div class="cols"><div>
+ ${sec(1,'Overview','done',OV,null)}${sec(2,'Line items','done','30 lines',null)}${sec(3,'Questionnaire','done','8 questions · 3 knock-outs',null)}${sec(4,'Terms &amp; timeline','done','6 of 6 fields',tt,'cur')}${sec(5,'Suppliers','done','5 of 5 approved vendors selected',sp,'cur')}${sec(6,'Review &amp; publish','need','Ready to check',null)}</div>
+ ${chat([['me','Payment 60 days, GST extra, due 16 Nov. Invite the approved vendors.'],['ai','Done. <b>Terms</b>: 60 days, FOR Chakan, GST 18% extra, prices firm for 6 months. <b>Timeline</b>: due 16 Nov 2026, which is also the award reference date. <b>Suppliers</b>: all 5 approved corrugated vendors (3 are MSME).']],['Remove V4','Move due date to 20 Nov','Review & publish'])}</div>`}
+
+/* G: review with a failing check */
+if(S==='g'){lbl('G · Review & publish with a failed check (Publish blocked)');
+ const ck=[['','✅','Overview','6 of 6 fields'],['','✅','Line items','30 lines'],['w','⚠️','Questionnaire','No knock-out questions. Any vendor can qualify.'],['','✅','Terms','60 days · FOR Chakan · GST 18% extra'],['x','❌','Timeline','Response due 5 Nov 2026 is in the past'],['','✅','Suppliers','5 approved vendors']];
+ const rv=`<div class="ck">${ck.map(c=>`<div class="${c[0]}">${c[1]} <b>${c[2]}</b><br><span style="opacity:.85">${c[3]}</span></div>`).join('')}</div><div style="margin-top:14px;display:flex;gap:10px;justify-content:flex-end;align-items:center"><span class="mut" style="font-size:13px">Fix 1 issue to publish</span><span class="btn dis">Preview email to suppliers</span><span class="btn primary dis">Publish &amp; send to 5 suppliers</span></div>`;
+ M.innerHTML=head()+bar('draft','Draft · auto-saved 12:48','<span class="btn">Discard draft</span><span class="btn">Load demo RFQ</span>')+`<div class="cols"><div>
+ ${sec(1,'Overview','done',OV,null)}${sec(2,'Line items','done','30 lines',null)}${sec(3,'Questionnaire','done','8 questions · 0 knock-outs',null)}${sec(4,'Terms &amp; timeline','err','Response due 5 Nov 2026',null)}${sec(5,'Suppliers','done','5 approved vendors',null)}${sec(6,'Review &amp; publish','err','1 blocking issue · 1 warning',rv,'cur')}</div>
+ ${chat([['ai','Two things before you publish:<br>❌ The response due date, <b>5 Nov 2026</b>, is already past. Suppliers need time to quote; 16 Nov gives them 8 days.<br>⚠️ No question is a knock-out, so a vendor without ISO 9001 could still win.']],['Set due date to 16 Nov','Make Q01–Q03 knock-outs','Publish anyway (warning only)'])}</div>`}
+
+/* B: complete */
+if(S==='b'){lbl('B · Draft complete: all checks passed');
+ M.innerHTML=head()+bar('draft','Draft · auto-saved 12:50','<span class="btn">Discard draft</span><span class="btn">Load demo RFQ</span>')+`<div class="cols"><div>${done5()}${sec(6,'Review &amp; publish','done','All checks passed',reviewOK(),'cur')}</div>
+ ${chat([['me','Set due date to 16 Nov and make Q01–Q03 knock-outs.'],['ai','Done. Everything is complete. Preview the email to see exactly what suppliers will receive, then publish.']],['Preview the email','Change due date','Make Q05 a knock-out'])}</div>`}
+
+/* H: email preview dialog */
+if(S==='h'){lbl('H · Preview email to suppliers (dialog)');
+ M.innerHTML=head()+bar('draft','Draft · auto-saved 12:50','<span class="btn">Discard draft</span><span class="btn">Load demo RFQ</span>')+`<div class="cols"><div>${done5()}${sec(6,'Review &amp; publish','done','All checks passed',reviewOK(),'cur')}</div>${chat([],[])}</div>`;
+ O.innerHTML=`<div class="overlay"><div class="dlg" style="width:720px"><h3>Email to suppliers <span class="mut">✕</span></h3>
+ <div class="em"><div><span class="k">To</span>Deccan Corrugators (V1), Shree Ganesh Packaging (V2), Western India Cartons (V3), Om Sai Box Works (V4), Krishna Kraft Packaging (V5) <span class="mut">· one email each</span></div>
+ <div><span class="k">Subject</span><b>RFQ: Corrugated boxes - FY2026-27 annual rate contract</b></div><hr style="border:none;border-top:1px solid #333;margin:10px 0">
+ Dear Sir/Madam,<br><br>Sahyadri Consumer Products Ltd invites your quotation for 30 corrugated box lines under an annual rate contract for FY2026-27, delivered FOR our Chakan plant.<br><br>The attached workbook has the terms, the line items with specifications, and an 8-question quality questionnaire. You may fill in the workbook or reply in your own format; please quote in ₹ per piece, ex-GST, and attach the documents the questionnaire asks for.<br><br>Please reply by <b>16 Nov 2026</b>.<br><br>Regards,<br>Category Buyer, Sahyadri Consumer Products Ltd, Chakan MIDC, Pune
+ <div class="att">📎 <b>RFQ_Corrugated_FY27.xlsx</b> <span class="mut">3 sheets: Terms · Line items · Questionnaire</span> <a>Preview ↗</a></div></div>
+ <div class="acts"><span class="btn">Back to edit</span><span class="btn primary">Publish &amp; send to 5 suppliers</span></div></div></div>`}
+
+/* I: attachment preview */
+if(S==='i'){lbl('I · Preview of the attached RFQ workbook (Line items sheet)');
+ M.innerHTML=head()+bar('draft','Draft · auto-saved 12:50','')+`<div class="cols"><div>${done5()}</div>${chat([],[])}</div>`;
+ const rows=L.slice(0,16);
+ O.innerHTML=`<div class="overlay" style="padding-top:36px"><div class="dlg wide"><h3>RFQ_Corrugated_FY27.xlsx <span class="mut">✕</span></h3><p style="font-size:13px;color:var(--mut)">Generated from this draft · attached to each supplier email · yellow cells are for the supplier</p>
+ <div style="border-radius:6px;overflow:hidden"><table class="xl"><tr class="hd"><td></td>${'ABCDEFGHIJ'.split('').map(c=>`<td>${c}</td>`).join('')}</tr>
+ <tr class="th"><td style="background:#f1f1f1;color:#555">1</td><td>Line</td><td>SKU</td><td>Description</td><td>Size (mm)</td><td>Ply</td><td>BS kg/cm²</td><td>Annual qty</td><td>Typical order</td><td>Your price ₹/pc (ex-GST)</td><td>Remarks</td></tr>
+ ${rows.map((r,i)=>`<tr><td style="background:#f1f1f1;color:#555">${i+2}</td><td>${r[0]}</td><td>${r[1]}</td><td>${r[2]}</td><td>${r[3]}</td><td>${r[4]}</td><td>${r[5]}</td><td>${fmt(r[6])}</td><td>${fmt(r[7])}</td><td class="fill"></td><td class="fill"></td></tr>`).join('')}</table></div>
+ <div class="sheets"><span>Terms</span><span class="on">Line items</span><span>Questionnaire</span></div><div class="acts"><span class="btn">⬇ Download</span></div></div></div>`}
+
+/* J: sent */
+if(S==='j'){lbl('J · After Publish & send (stubbed)');
+ M.innerHTML=head()+bar('draft','Published 8 Nov 2026, 12:52 · read-only','<span class="btn">+ Start new draft</span>')+
+ `<div class="note b-green">✅ <b>Sent to 5 suppliers (stub).</b> Each got the cover email with RFQ_Corrugated_FY27.xlsx. Logged in the audit trail. In this demo, the Responses tab keeps showing the replies to the demo RFQ.</div>
+ <div class="cols"><div>${[sec(1,'Overview','pub',OV,null),sec(2,'Line items','pub','30 lines',null),sec(3,'Questionnaire','pub','8 questions · 3 knock-outs',null),sec(4,'Terms &amp; timeline','pub','Payment 60 days · GST 18% extra · Due 16 Nov 2026',null),sec(5,'Suppliers','pub','5 approved vendors',null),sec(6,'Sent email','pub','To 5 suppliers · 12:52 · 📎 RFQ_Corrugated_FY27.xlsx',null)].join('')}</div>
+ ${chat([['ai','Published and sent to 5 suppliers. I\'ll flag replies as they arrive in Responses.']],['View sent email','Start another draft'])}</div>`}
+
+/* K: edit after publish */
+if(S==='k'){lbl('K · Editing the published RFQ: vendors have already quoted');
+ const li=lines(L.slice(23,30),`<tr><td colspan="8" style="padding:0"></td></tr>`);
+ M.innerHTML=head()+bar('demo','Editing a published RFQ · changes are checked against the replies','<span class="btn">Cancel</span><span class="btn primary">Save changes</span>')+
+ `<div class="cols"><div>${sec(1,'Overview','pub',OV,null)}${sec(2,'Line items','need','30 lines · 1 change blocked',
+ `<div class="note b-amber" style="margin:10px 0 0">⚠️ <b>Line 26 (Promo gift-pack outer) can't be removed.</b> 4 vendors have already quoted it. It stays in the RFQ; drop it at award time instead.</div>`+li.replace('<tr><td>26</td>','<tr style="background:#2a2410"><td>26</td>'),'cur')}${sec(3,'Questionnaire','pub','8 questions · 3 knock-outs',null)}${sec(4,'Terms &amp; timeline','pub','Payment 60 days · Due 16 Nov 2026',null)}${sec(5,'Suppliers','pub','5 approved vendors',null)}</div>
+ ${chat([['me','Drop the promo box.'],['ai','I can\'t remove <b>line 26</b>: 4 vendors have already quoted it, and removing it would leave their quotes with nothing to match. It stays in the RFQ, and you can leave it out when you award.']],['Exclude line 26 from the award','Undo'])}</div>`}
+
+/* L: load demo over a draft */
+if(S==='l'){lbl('L · Load demo RFQ over an unfinished draft');
+ M.innerHTML=head()+bar('draft','Draft · auto-saved 12:41','<span class="btn">Discard draft</span><span class="btn">Load demo RFQ</span>')+`<div class="cols"><div>${sec(1,'Overview','done',OV,null)}${sec(2,'Line items','need','12 lines',null)}${sec(3,'Questionnaire','todo','',null)}${sec(4,'Terms &amp; timeline','todo','',null)}${sec(5,'Suppliers','todo','',null)}</div>${chat([],[])}</div>`;
+ O.innerHTML=`<div class="overlay"><div class="dlg"><h3>Replace your current draft? <span class="mut">✕</span></h3><p>This fills the draft with the demo RFQ: 30 lines, 8 questions, terms and 5 suppliers. Your current draft will be lost.</p><div class="acts"><span class="btn primary">Cancel</span><span class="btn">Replace draft</span></div></div></div>`}
+</script></body></html>

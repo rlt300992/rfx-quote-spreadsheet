@@ -126,6 +126,15 @@ def render(conn) -> None:
 
     used = sum(1 for m in st.session_state["chat"] if m["role"] == "user")
     left = _limit() - used
+    pre = st.session_state.pop("analyst_prefill", None)
+    if pre:    # "Ask about this line" from Bid Analysis: put the question in the box (st.chat_input has no default value), the buyer presses Enter
+        import json as _json
+        st.session_state["analyst_prefilled"] = pre
+        st.html("<script>(function(){const t=" + _json.dumps(pre) + ";let n=0;const id=setInterval(function(){"
+                "const a=[...document.querySelectorAll('textarea[data-testid=\"stChatInputTextArea\"]')].filter(e=>e.offsetParent!==null);"
+                "if(a.length){const el=a[0];const set=Object.getOwnPropertyDescriptor(HTMLTextAreaElement.prototype,'value').set;set.call(el,t);"
+                "el.dispatchEvent(new Event('input',{bubbles:true}));el.focus();clearInterval(id);} if(++n>40)clearInterval(id);},150);})();</script>",
+                unsafe_allow_javascript=True)
     q = st.chat_input("Ask about prices, qualification, what-ifs, or ask for a proposed award" if left > 0 else "Message limit reached for this session",
                       disabled=left <= 0, key="chat_input")
     st.caption(f"{max(left, 0)} of {_limit()} messages left in this session.")

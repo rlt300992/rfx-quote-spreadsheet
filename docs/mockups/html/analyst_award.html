@@ -1,0 +1,156 @@
+<!doctype html>
+<html><head><meta charset="utf-8">
+<style>
+:root{--bg:#1b1b1b;--side:#262626;--line:#3a3a3a;--txt:#f2f2f2;--mut:#a3a3a3;--dim:#7c7c7c;--red:#ff4b4b;
+--amberbg:#3a3014;--amber:#f5c542;--greenbg:#173a24;--green:#5fd38d;--bluebg:#132c45;--bluet:#8cc4ff;--redbg:#3d1a1a;--redt:#ff8a8a;--in:#262730}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--txt);font-family:'Source Sans 3','Segoe UI',Arial,sans-serif;font-size:14px}
+.app{display:flex;min-height:100vh}
+.side{width:230px;background:var(--side);padding:72px 16px 24px;flex-shrink:0}
+.side .co{font-weight:700;font-size:14.5px;margin-bottom:16px}
+.exp{border:1px solid var(--line);border-radius:8px;margin-bottom:20px;padding:10px 14px;font-size:14px}
+.btn{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);border-radius:8px;padding:6px 12px;font-size:13px;color:var(--txt);white-space:nowrap}
+.btn.primary{background:var(--red);border-color:var(--red);color:#fff;font-weight:600}
+.btn.sm{padding:3px 9px;font-size:12px}.btn.dis{opacity:.35}
+.main{flex:1;padding:50px 30px 50px;min-width:0}
+h1{font-size:28px;margin:0 0 6px}
+.sub{color:var(--mut);font-size:13.5px}
+.chip{display:inline-block;padding:1px 8px;border-radius:999px;font-size:11.5px;font-weight:600;white-space:nowrap}
+.grey{background:#333;color:#cfcfcf}.green{background:var(--greenbg);color:var(--green)}.amber{background:var(--amberbg);color:var(--amber)}.blue{background:var(--bluebg);color:var(--bluet)}.redc{background:var(--redbg);color:var(--redt)}
+.banner{border-radius:8px;padding:11px 16px;margin:12px 0 2px;display:flex;gap:10px;font-size:14px;background:var(--amberbg);color:var(--amber)}
+.tabs{display:flex;gap:22px;border-bottom:1px solid var(--line);margin:12px 0 16px;font-size:14px}
+.tabs span{padding:8px 0}.tabs .on{color:var(--red);border-bottom:2px solid var(--red)}
+.cols{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(0,1fr);gap:18px;align-items:start}
+.chat{border:1px solid var(--line);border-radius:12px;background:#1d1d1d;display:flex;flex-direction:column}
+.chat .hd{padding:12px 16px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center}
+.msgs{padding:14px 16px;display:flex;flex-direction:column;gap:12px}
+.me{align-self:flex-end;background:#1f3a5c;padding:9px 13px;border-radius:12px;max-width:80%;font-size:14px}
+.ai{background:#242424;border:1px solid #2f2f2f;padding:12px 14px;border-radius:12px;font-size:14px;line-height:1.5}
+.ai .head{font-size:15px}
+.ai table{width:100%;border-collapse:collapse;font-size:12.8px;margin-top:10px}
+.ai th,.ai td{padding:5px 8px;border-bottom:1px solid #303030;text-align:left;white-space:nowrap}
+.ai th{color:var(--mut);font-weight:600;font-size:12px}
+.ai td.r,.ai th.r{text-align:right}
+.badges{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
+.how{border:1px solid #333;border-radius:8px;margin-top:10px;font-size:12.8px}
+.how .h{padding:7px 10px;color:var(--bluet)}
+.how .b{padding:8px 12px;border-top:1px solid #333;color:#cfcfcf;line-height:1.6}
+.how code{background:#2c2c2c;padding:1px 5px;border-radius:4px;font-size:12px}
+.acts{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap;align-items:center}
+.sugg{display:flex;flex-wrap:wrap;gap:6px}
+.sugg span{border:1px solid var(--line);border-radius:999px;padding:5px 11px;font-size:12.8px;color:#ddd}
+.inp{margin:4px 16px 8px;background:var(--in);border-radius:10px;padding:12px 14px;color:#888;font-size:14px;display:flex;justify-content:space-between}
+.foot{padding:0 16px 12px;font-size:12px;color:var(--dim)}
+.panel{border:1px solid var(--line);border-radius:12px;background:#1d1d1d;position:sticky;top:12px}
+.panel .hd{padding:12px 16px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;font-weight:700}
+.panel .bd{padding:14px 16px}
+.steps{display:flex;gap:6px;margin-bottom:12px;font-size:12px}
+.steps span{flex:1;text-align:center;padding:6px 4px;border-radius:6px;background:#262626;color:var(--mut)}
+.steps .done{background:var(--greenbg);color:var(--green)}.steps .cur{background:#3a3a3a;color:#fff;font-weight:700}
+.kv{display:grid;grid-template-columns:1fr auto;gap:6px 10px;font-size:13.5px}
+.kv span:nth-child(odd){color:var(--mut)}
+.vb{margin:12px 0}
+.vbr{display:grid;grid-template-columns:110px 1fr 70px;gap:8px;align-items:center;font-size:13px;margin:5px 0}
+.vbr div{height:14px;border-radius:3px;background:#3f7f5a}
+.sec{font-size:12px;color:var(--mut);font-weight:700;text-transform:uppercase;letter-spacing:.5px;margin:14px 0 6px}
+.risk{font-size:13px;line-height:1.7}
+.byp{border:1px solid #8a6d1a;border-radius:8px;padding:10px 12px;background:#231e10;font-size:13px}
+.f label{display:block;font-size:12px;color:var(--mut);margin:8px 0 4px}
+.f .in{background:var(--in);border-radius:6px;padding:7px 10px;font-size:13.5px}
+.lbl{position:fixed;top:8px;left:246px;background:#f4a261;color:#14213d;font-weight:700;font-size:13px;padding:4px 10px;border-radius:5px;z-index:99}
+.mut{color:var(--mut)}
+.note{border-radius:8px;padding:10px 12px;font-size:13.5px;margin-bottom:10px}
+.b-green{background:var(--greenbg);color:var(--green)}.b-blue{background:var(--bluebg);color:var(--bluet)}
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,.62);display:flex;align-items:flex-start;justify-content:center;padding-top:40px;z-index:50}
+.dlg{background:#232323;border:1px solid var(--line);border-radius:12px;padding:22px 24px;width:640px;box-shadow:0 10px 40px rgba(0,0,0,.5)}
+.dlg h3{margin:0 0 12px;font-size:19px;display:flex;justify-content:space-between}
+.dlg .a{display:flex;justify-content:flex-end;gap:10px;margin-top:16px}
+.memo{background:#fff;color:#1a1a1a;border-radius:6px;padding:22px 26px;font-family:Georgia,serif;font-size:13px;line-height:1.55;max-height:640px;overflow:hidden}
+.memo h4{font-family:Arial;font-size:13px;margin:12px 0 4px;color:#14213d;text-transform:uppercase;letter-spacing:.5px}
+.memo table{border-collapse:collapse;width:100%;font-family:Arial;font-size:11.5px}.memo td,.memo th{border:1px solid #ccc;padding:3px 6px;text-align:left}
+</style></head><body>
+<div class="app">
+<div class="side"><div class="co">Sahyadri Consumer Products Ltd · Procurement</div><div class="exp">▸ Evaluation settings</div><span class="btn">Test Gemini</span></div>
+<div class="main" id="main"></div></div>
+<div id="ov"></div>
+<script>
+const S=(location.hash||'#01').slice(1);
+const M=document.getElementById('main'),O=document.getElementById('ov');
+function lbl(t){document.body.insertAdjacentHTML('beforeend',`<div class="lbl">${t}</div>`)}
+function head(chip='amber',ct='Evaluating',ban=true){return `<h1>Corrugated boxes - FY2026-27 annual rate contract</h1><div class="sub">RFQ · Response due 16 Nov 2026 · <span class="chip ${chip}">${ct}</span></div>
+${ban?'<div class="banner"><span>⚠️</span><span><b>23 items awaiting review.</b> These could change the award. Review them in Review &amp; Reconcile.</span></div>':''}
+<div class="tabs"><span>Create RFQ</span><span>Responses</span><span>Review &amp; Reconcile</span><span>Bid Analysis</span><span class="on">Analyst &amp; Award</span></div>`}
+const STARTERS=['Cheapest per line, only among vendors who cleared quality?','Why didn\'t V5 win line 1? It\'s the cheapest.','Which unconfirmed values could change the winner?','What if we ordered 20,000 per release instead?','Show savings vs last year by vendor as a chart','Exclude V3. What\'s the total and who\'s the backup per line?'];
+function chat(body,sugg,count=30){return `<div class="chat"><div class="hd"><b>Ask the analyst</b><span class="mut" style="font-size:12px">Answers come only from the comparison data. The analyst can propose; only you can confirm.</span></div><div class="msgs">${body}</div>
+ ${sugg?`<div style="padding:0 16px 8px"><div class="mut" style="font-size:12px;margin-bottom:6px">${sugg[0]}</div><div class="sugg">${sugg[1].map(s=>`<span>${s}</span>`).join('')}</div></div>`:''}
+ <div class="inp">Ask about prices, qualification, what-ifs, or ask for a proposed award <span>➤</span></div><div class="foot">${count} of 30 questions left in this session</div></div>`}
+function steps(i){const n=['1 Propose','2 Review','3 Confirm','4 Notify'];return `<div class="steps">${n.map((x,k)=>`<span class="${k<i?'done':k===i?'cur':''}">${k<i?'✓ ':''}${x}</span>`).join('')}</div>`}
+function panelEmpty(){return `<div class="panel"><div class="hd">Award <span class="chip grey">No proposal yet</span></div><div class="bd">${steps(0)}
+ <div class="mut" style="font-size:13.5px;line-height:1.6">Ask the analyst to propose an award, for example <i>“Propose the cheapest award among qualified vendors”</i>, or pick a scenario in Bid Analysis.</div>
+ <div class="sec">Current best scenario (not proposed)</div><div class="kv"><span>Cheapest per line · qualified only</span><b>₹4.90 cr</b><span>vs last year (landed)</span><b style="color:var(--green)">↓ ₹1.9 L</b></div>
+ <div class="acts"><span class="btn sm">⬇ Download Excel</span></div></div></div>`}
+function panelProp(state){const confirmed=state==='awarded';
+ return `<div class="panel"><div class="hd">Award <span class="chip ${confirmed?'green':'blue'}">${confirmed?'Awarded':'Proposed · not confirmed'}</span></div><div class="bd">${steps(confirmed?3:(state==='bypass'?1:1))}
+ <div class="mut" style="font-size:12.5px;margin-bottom:8px">${confirmed?'Confirmed by Rohit · 8 Nov 2026, 17:05 · batch A-0007':'Proposed by the analyst from: “Propose the cheapest award among qualified vendors” · 16:52'}</div>
+ ${(()=>{const ch=state!=='prop';return `<div class="kv"><span>Scenario</span><b>Cheapest per line · qualified only${ch?' · 1 override':''}</b><span>Lines awarded</span><b>30 / 30</b><span>Annual value (evaluated)</span><b>₹4.90 cr</b><span>vs last year (landed)</span><b style="color:var(--green)">↓ ${ch?'₹1.7 L (0.3%)':'₹1.9 L (0.4%)'}</b></div>
+ <div class="vb"><div class="vbr"><span>V3 · ${ch?17:16} lines</span><div style="width:100%"></div><b>${ch?'₹3.06 cr':'₹2.97 cr'}</b></div><div class="vbr"><span>V1 · ${ch?13:14} lines</span><div style="width:${ch?60:65}%"></div><b>${ch?'₹1.84 cr':'₹1.93 cr'}</b></div></div>`})()}
+ <div class="sec">Risks to accept</div><div class="risk">⚠ ${state==='prop'?'₹2.97 cr':'₹3.06 cr'} on V3 prices not firm (kraft-linked)<br>⚠ 23 items still to review (could change winners)<br>ℹ Backup vendor recorded for every line</div>
+ ${state==='bypass'?`<div class="sec">Needs a reason</div><div class="byp"><b>Line 28</b> · Export edible oil 15L tin x 2 carton → <b>V3 ₹96.43</b> instead of the cheapest eligible <b>V1 ₹94.52</b> (+₹18,336 a year)<div class="f"><label>Reason code</label><div class="in">Capacity ▾</div></div><div class="f"><label>Reason (saved to the audit trail)</label><div class="in">V1 is already at 85% of its 7-ply capacity; V3 has spare lines.</div></div></div>`:''}
+ ${confirmed?`<div class="sec">Next steps</div><div class="acts"><span class="btn primary">✉ Notify suppliers (stub)</span><span class="btn">⬇ Award pack (Excel + memo)</span></div><div class="acts"><span class="btn sm">Send for approval (stub)</span><span class="btn sm">↺ Undo award</span></div><div class="mut" style="font-size:12px;margin-top:8px">Next in a real system: create the rate contract / POs. Out of scope here.</div>`
+ :`<div class="acts" style="margin-top:14px"><span class="btn">📄 Preview award memo</span><span class="btn primary">Confirm award…</span></div><div class="mut" style="font-size:12px;margin-top:8px">Pinned answers: ${state==='bypass'?2:1} · they go into the award memo.</div>`}
+ </div></div>`}
+const A1=`<div class="me">${STARTERS[0]}</div><div class="ai"><div class="head"><b>V1 wins 14 lines and V3 wins 16, for ₹4.90 cr a year: ₹1.9 L (0.4%) below last year.</b></div>
+ <div>Only V1 and V3 cleared the knock-out questions. V2 and V4 are pending; V5 is disqualified (ISO expired).</div>
+ <table><tr><th>Line</th><th>Box</th><th>Winner</th><th class="r">₹/pc</th><th>Backup</th><th class="r">₹/pc</th><th class="r">Last yr</th></tr>
+ <tr><td>1</td><td>Shampoo 180ml bottle shipper</td><td>V1</td><td class="r">8.87</td><td>V3</td><td class="r">9.53</td><td class="r">8.69</td></tr>
+ <tr><td>3</td><td>Bathing soap 75g x 144 carton</td><td>V3 ●</td><td class="r">13.82</td><td>V1</td><td class="r">13.93</td><td class="r">13.40</td></tr>
+ <tr><td>9</td><td>Biscuit 75g x 60 carton</td><td>V3 ●</td><td class="r">17.68</td><td>V1</td><td class="r">17.72</td><td class="r">17.33</td></tr>
+ <tr><td>28</td><td>Export edible oil 15L tin x 2</td><td>V1</td><td class="r">94.52</td><td>V3</td><td class="r">96.43</td><td class="r">87.12</td></tr>
+ <tr><td colspan="7" class="mut">… 26 more lines · <span style="color:var(--bluet)">show all</span> · ● = V3 price not firm</td></tr></table>
+ <div class="badges"><span class="chip amber">16 lines on not-firm prices (₹2.97 cr)</span><span class="chip amber">23 items not yet reviewed</span></div>`;
+function how(open){return `<div class="how"><div class="h">${open?'▾':'▸'} How I got this</div>${open?`<div class="b">1. <code>award_scenario</code>(basis = evaluated, qualified only) → winner and backup per line, totals<br>2. <code>query_view</code> on <code>v_vendor_qualification</code> → who cleared the knock-outs<br>Prices: evaluated ₹/pc (landed + payment cost), GST excluded. Savings: landed vs last year's landed, same lines.</div>`:''}</div>`}
+const A1acts=`<div class="acts"><span class="btn sm">📌 Pin to award memo</span><span class="btn sm">Propose this as the award</span><span class="btn sm">⬇ Table as Excel</span></div></div>`;
+const F1=['Follow-ups',['What changes if V2 and V4 qualify?','Which lines are close calls?','Propose this as the award']];
+
+if(S==='01'){lbl('01 · Empty state: starter questions, award panel waiting');M.innerHTML=head()+`<div class="cols">${chat(`<div class="ai"><b>Hi Rohit.</b> I can answer questions over all 5 replies, the 30 lines and the questionnaire, run what-ifs, and propose an award for you to confirm. Try one of these:</div>`,['Suggested questions',STARTERS])}${panelEmpty()}</div>`}
+if(S==='02'){lbl('02 · Answer = headline, table, badges, “How I got this”, follow-ups');M.innerHTML=head()+`<div class="cols">${chat(A1+how(true)+A1acts,F1,29)}${panelEmpty()}</div>`}
+if(S==='03'){lbl('03 · Chart answer + pinned + award proposed (live panel)');
+ const ch=`<div class="me">Show savings vs last year by vendor as a chart</div><div class="ai"><div class="head"><b>V3's lines save ₹3.5 L vs last year; V1's lines cost ₹1.6 L more. Net: ₹1.9 L saved.</b></div>
+ <svg width="560" height="170" style="margin-top:10px"><line x1="60" x2="540" y1="85" y2="85" stroke="#666"/><text x="0" y="89" fill="#999" font-size="11">₹0</text>
+ <rect x="140" y="35" width="90" height="50" fill="#3f7f5a" rx="3"/><text x="160" y="28" fill="#5fd38d" font-size="12" font-weight="700">+₹3.5 L</text><text x="160" y="150" fill="#ccc" font-size="12">V3 · 16 lines</text>
+ <rect x="330" y="85" width="90" height="23" fill="#8a3b3b" rx="3"/><text x="350" y="125" fill="#ff8a8a" font-size="12" font-weight="700">−₹1.6 L</text><text x="345" y="150" fill="#ccc" font-size="12">V1 · 14 lines</text></svg>
+ <div class="badges"><span class="chip grey">Landed price vs last year's landed · same lines</span></div>${how(false)}
+ <div class="acts"><span class="chip green">📌 Pinned to award memo</span><span class="btn sm">⬇ Chart data</span></div></div>
+ <div class="me">Propose the cheapest award among qualified vendors</div><div class="ai"><b>Proposed.</b> 30 lines: V3 16, V1 14, ₹4.90 cr a year. It's in the Award panel on the right. I can't confirm it; you can, with Confirm award.</div>`;
+ M.innerHTML=head()+`<div class="cols">${chat(A1.replace('<div class="me">','<div class="me" style="opacity:.6">')+'</div>'+ch,['Follow-ups',['Which lines are close calls?','What would change the winner on line 28?','Preview the award memo']],27)}${panelProp('prop')}</div>`}
+if(S==='04'){lbl('04 · Buyer overrides a line → reason required → confirm');
+ const c=`<div class="me">Give line 28 to V3 instead. V1 is close to its 7-ply capacity.</div><div class="ai"><b>Updated the proposal:</b> line 28 → V3 at ₹96.43 (V1 was ₹94.52), +₹18,336 a year. Because it isn't the cheapest eligible bid, it needs a reason before you can confirm.</div>`;
+ M.innerHTML=head()+`<div class="cols">${chat(c,['Follow-ups',['What is V3\'s capacity?','Undo the change to line 28']],26)}${panelProp('bypass')}</div>`;
+ O.innerHTML=`<div class="overlay" style="padding-top:120px"><div class="dlg"><h3>Confirm award? <span class="mut">✕</span></h3>
+ <div class="kv" style="margin-bottom:10px"><span>Lines</span><b>30 · V3 17, V1 13</b><span>Annual value (evaluated)</span><b>₹4.90 cr</b><span>vs last year (landed)</span><b style="color:var(--green)">↓ ₹1.7 L</b><span>Lines not on the cheapest eligible bid</span><b>1 (line 28 · capacity)</b></div>
+ <div class="note" style="background:var(--amberbg);color:var(--amber)">⚠ 23 items are still unreviewed and ₹3.06 cr is on prices not firm. You can still confirm; both are recorded with the award.</div>
+ <div style="font-size:13px" class="mut">Writes one audit entry per line (who, when, scenario, reason) and sets the RFQ to Awarded. You can undo it later with a reason.</div>
+ <div class="a"><span class="btn primary">Cancel</span><span class="btn">Confirm award</span></div></div></div>`}
+if(S==='05'){lbl('05 · Awarded: next steps (notify, award pack, undo)');
+ const c=`<div class="ai"><b>Award confirmed</b> at 17:05: 30 lines, V3 17 and V1 13, ₹4.90 cr a year. Next: notify the suppliers and download the award pack.</div>`;
+ M.innerHTML=head('green','Awarded')+`<div class="cols">${chat(c,['Follow-ups',['Draft the note to the non-winning suppliers','Summarise the award for my VP']],25)}${panelProp('awarded')}</div>`}
+if(S==='06'){lbl('06 · Award memo preview (goes into the award pack)');
+ M.innerHTML=head()+`<div class="cols">${chat(A1+how(false)+A1acts,F1,27)}${panelProp('prop')}</div>`;
+ O.innerHTML=`<div class="overlay"><div class="dlg" style="width:760px"><h3>Award memo · preview <span class="mut">✕</span></h3><div class="memo">
+ <div style="font-family:Arial;font-size:11px;color:#666">SAHYADRI CONSUMER PRODUCTS LTD · PROCUREMENT · AWARD RECOMMENDATION · DRAFT</div>
+ <div style="font-family:Arial;font-size:17px;font-weight:700;margin:6px 0 2px">Corrugated boxes - FY2026-27 annual rate contract</div><div style="font-family:Arial;font-size:11.5px;color:#666">RFQ issued 7 Nov 2026 · 5 suppliers invited · 5 replied (1 late) · prepared 8 Nov 2026</div>
+ <h4>Recommendation</h4>Award 30 lines to Western India Cartons (V3, 17 lines) and Deccan Corrugators (V1, 13 lines) for ₹4.90 cr a year, ₹1.7 L (0.3%) below last year on the same lines.
+ <h4>Basis</h4>Cheapest evaluated price per line (landed incl. freight, plus payment cost at 10.9%, GST excluded) among suppliers that met all knock-out questions. V2 and V4 pending (open questionnaire answers); V5 disqualified (ISO 9001 expired 31 Mar 2026).
+ <h4>Exceptions</h4><table><tr><th>Line</th><th>Awarded</th><th>Cheapest eligible</th><th>Extra / yr</th><th>Reason</th></tr><tr><td>28</td><td>V3 ₹96.43</td><td>V1 ₹94.52</td><td>₹18,336</td><td>Capacity: V1 near 7-ply capacity</td></tr></table>
+ <h4>Risks accepted</h4>₹3.06 cr on V3 prices linked to the kraft paper index (not firm). 23 extracted values not yet reviewed. Backup supplier recorded for every line.
+ <h4>Analyst findings pinned</h4>• Savings by vendor: V3 lines save ₹3.5 L, V1 lines cost ₹1.6 L more.<br>• Including V2 and V4 once qualified would save ₹17 L.
+ <h4>Next steps</h4>Notify suppliers · resolve V2/V4 questionnaire · issue rate contract and release POs.
+ <div style="font-family:Arial;font-size:10.5px;color:#888;margin-top:10px">Audit trail: batch A-0007, 30 entries · full detail in the Excel award pack.</div></div>
+ <div class="a"><span class="btn">⬇ Download memo (PDF)</span><span class="btn primary">Close</span></div></div></div>`}
+if(S==='07'){lbl('07 · Notify suppliers (stub): winners and non-winners');
+ M.innerHTML=head('green','Awarded')+`<div class="cols">${chat(`<div class="ai"><b>Award confirmed</b> at 17:05.</div>`,null,25)}${panelProp('awarded')}</div>`;
+ O.innerHTML=`<div class="overlay"><div class="dlg" style="width:700px"><h3>Notify suppliers (stub) <span class="mut">✕</span></h3>
+ <div class="sec" style="margin-top:0">Awarded (2)</div><div class="kv"><span>V3 · Western India Cartons</span><b>17 lines · ₹3.06 cr/yr</b><span>V1 · Deccan Corrugators</span><b>13 lines · ₹1.84 cr/yr</b></div>
+ <div class="sec">Not awarded (3)</div><div class="kv"><span>V2 · Shree Ganesh</span><b class="mut">thank-you note · open questions listed</b><span>V4 · Om Sai Box Works</span><b class="mut">thank-you note · reply was after the due date</b><span>V5 · Krishna Kraft</span><b class="mut">thank-you note · ISO certificate expired</b></div>
+ <div class="sec">Preview · V1</div><div style="background:#1b1b1b;border:1px solid var(--line);border-radius:8px;padding:12px 14px;font-size:13.5px;line-height:1.55">Subject: Award: Corrugated boxes FY2026-27 rate contract<br><br>Dear Deccan Corrugators team, we are pleased to award you 13 lines (list attached) at your quoted rates, FOR Chakan, payment 60 days. A rate contract will follow…</div>
+ <div class="a"><span class="btn primary">Cancel</span><span class="btn">Send 5 emails (stub)</span></div></div></div>`}
+</script></body></html>

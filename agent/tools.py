@@ -64,8 +64,9 @@ def query_view(conn: sqlite3.Connection, sql: str, limit: int = ROW_LIMIT, snaps
 
 
 # ------------------------------------------------------------------ award_scenario
-def _scenario_from_grid(g: pd.DataFrame, basis: str, exclude_vendors: list[str] | None, require_qualified: bool,
-                        include_pending: bool, include_accepted_substitutes: bool) -> pd.DataFrame:
+def scenario_eligibility(g: pd.DataFrame, basis: str = "evaluated", exclude_vendors: list[str] | None = None, require_qualified: bool = True,
+                         include_pending: bool = False, include_accepted_substitutes: bool = False) -> pd.Series:
+    """True for every grid row that may win under these scenario settings (the rule award_scenario applies; exposed so the grid can grey out the rest)."""
     col = {"evaluated": "evaluated_inr_pc", "landed": "landed_inr_pc"}[basis]
     exclude = set(exclude_vendors or [])
 
@@ -79,8 +80,15 @@ def _scenario_from_grid(g: pd.DataFrame, basis: str, exclude_vendors: list[str] 
             return r["qual_status"] in ({"qualified"} | ({"pending"} if include_pending else set()))
         return True
 
+    return g.apply(eligible, axis=1) if len(g) else pd.Series(dtype=bool)
+
+
+def _scenario_from_grid(g: pd.DataFrame, basis: str, exclude_vendors: list[str] | None, require_qualified: bool,
+                        include_pending: bool, include_accepted_substitutes: bool) -> pd.DataFrame:
+    col = {"evaluated": "evaluated_inr_pc", "landed": "landed_inr_pc"}[basis]
+
     g = g.copy()
-    g["_ok"] = g.apply(eligible, axis=1) if len(g) else pd.Series(dtype=bool)
+    g["_ok"] = scenario_eligibility(g, basis, exclude_vendors, require_qualified, include_pending, include_accepted_substitutes)
     rows = []
     for line_no, grp in g.groupby("line_no"):
         ok = grp[grp["_ok"]].sort_values([col, "vendor_code"])
