@@ -3,6 +3,7 @@
 Everything shown comes from award_scenario and the comparison views (core.bid_view); nothing here awards or commits."""
 from __future__ import annotations
 
+import html
 import io
 
 import pandas as pd
@@ -67,7 +68,7 @@ def _star(code: str) -> None:
 # ------------------------------------------------------------------ recommended award + scenarios
 def _recommended(sc: dict, n_lines: int) -> None:
     t = sc["totals"]
-    with st.container(border=True):
+    with st.container(key="rr_card_recommended"):
         st.caption(f"RECOMMENDED AWARD · {sc['title']}")
         st.markdown(B.headline(sc, n_lines))
         k = st.columns(5)
@@ -94,7 +95,7 @@ def _scenario_cards(conn, scs: list[dict], sel: str, n_lines: int) -> None:
     for col, sc in zip(cols, scs):
         t = sc["totals"]
         on = sc["key"] == sel
-        with col.container(border=True, key=f"bidsc_{'sel_' if on else ''}{sc['key']}"):
+        with col.container(key=f"rr_card_bidsc_{'sel_' if on else ''}{sc['key']}"):
             st.markdown(f"{'● ' if on else ''}**{sc['title']}**")
             st.caption(sc["sub"])
             sav = t.get("saving_vs_ly_inr", 0.0)
@@ -114,9 +115,56 @@ def _scenario_cards(conn, scs: list[dict], sel: str, n_lines: int) -> None:
 
 
 # ------------------------------------------------------------------ the grid
+BRIDGE_JS = """<script>(function(){
+if(window.__bidBridge){return;} window.__bidBridge=true;
+function send(v){const el=document.querySelector('input[aria-label="bid_bridge"]'); if(!el){return;}
+ const set=Object.getOwnPropertyDescriptor(HTMLInputElement.prototype,'value').set; set.call(el, v+'|'+Date.now());
+ el.dispatchEvent(new Event('input',{bubbles:true})); el.dispatchEvent(new KeyboardEvent('keydown',{key:'Enter',code:'Enter',keyCode:13,which:13,bubbles:true}));}
+document.addEventListener('click',function(e){
+ const c=e.target.closest('td[data-cell]'); if(c){send('cell|'+c.dataset.cell);return;}
+ const a=e.target.closest('td[data-ask]'); if(a){send('ask|'+a.dataset.ask);return;}
+ const st=e.target.closest('[data-star]'); if(st){send('star|'+st.dataset.star);return;}});
+})();</script>"""
+
+QUAL_CHIP = {"qualified": "green", "pending": "amber", "disqualified": "red"}
+
+
+def _grid_html(model: dict, strip: list[dict], rows_idx: list[int], vendors: list[str], stars: set, metric: str) -> str:
+    """The grid as one HTML table: vendor header with chip, lines quoted and terms; a tag on a second line under the price (10.5px)."""
+    e = html.escape
+    sv = {v["code"]: v for v in strip}
+    th = ""
+    for v in vendors:
+        x = sv[v]
+        extra = " · ".join(t for t in (x["days"], "not firm" if x["not_firm"] else "") if t)
+        th += (f"<th class='r'><div class='vh'><span class='star' data-star='{v}'>{'★' if v in stars else '☆'}</span>{e(v)} · {e(x['name'])}</div>"
+               f"<div class='vs'><span class='rr-chip {QUAL_CHIP.get(x['qual'], 'grey')} sm'>{e(x['qual'].capitalize())}</span> {x['lines']}/{x['n_lines']} lines</div>"
+               f"<div class='vt'>{e(extra) or '&nbsp;'}</div></th>")
+    head = f"<thead><tr><th>#</th><th>Line</th><th class='r'>Annual qty</th><th class='r'>Last yr</th>{th}<th>Winner · vs last yr</th><th></th></tr></thead>"
+    body = ""
+    for i in rows_idx:
+        r = model["df"].iloc[i]
+        ln = int(r["#"])
+        cells = ""
+        for v in vendors:
+            c = model["cells"][i][v]
+            tag = f"<div class='tag'>{e(c['tag'])}</div>" if c["tag"] else ""
+            dot = "<span class='dot'></span>" if c["dot"] else ""
+            cells += f"<td class='c {c['cls']}' data-cell='{ln}|{v}'><span class='p'>{e(c['p'])}</span>{dot}{tag}</td>"
+        win = str(r["Winner · vs last yr"])
+        close = ""
+        if " · close: " in win:
+            win, who = win.split(" · close: ")
+            close = f"<span class='rr-chip amber sm'>close: {e(who)}</span>"
+        ly = "" if pd.isna(r["Last yr"]) else f"{r['Last yr']:.2f}"
+        body += (f"<tr><td class='n'>{ln}</td><td>{e(str(r['Line']))}</td><td class='r'>{int(r['Annual qty']):,}</td><td class='r'>{ly}</td>{cells}"
+                 f"<td class='w'>{e(win)}{close}</td><td class='ask' data-ask='{ln}'>💬</td></tr>")
+    return f"<div class='bg-wrap'><table class='bg'>{head}<tbody>{body}</tbody></table></div>"
+
+
 def _grid(conn, g: pd.DataFrame, sc: dict, n_lines: int, qual: pd.DataFrame) -> None:
     strip = B.vendor_strip(g, n_lines)
-    c = st.columns([2.2, 3, 5.2], vertical_alignment="center")
+    c = st.columns([1.9, 3.1, 4.6, 0.9], vertical_alignment="center")
     basis_label = c[0].segmented_control("Price", ["Evaluated", "Landed"], default="Evaluated", key="bid_basis", label_visibility="collapsed") or "Evaluated"
     metric = c[1].segmented_control("Show", ["₹ / pc", "% above cheapest", "Annual value"], default="₹ / pc", key="bid_metric", label_visibility="collapsed") or "₹ / pc"
     flt = c[2].pills("Filter", FILTERS, default="All plies", key="bid_filter", label_visibility="collapsed") or "All plies"
@@ -124,19 +172,6 @@ def _grid(conn, g: pd.DataFrame, sc: dict, n_lines: int, qual: pd.DataFrame) -> 
     mm = {"₹ / pc": "₹/pc"}.get(metric, metric)
     model = B.grid_model(g, sc["params"], basis, mm)
     stars = st.session_state.get("bid_stars", set())
-
-    sc_cols = st.columns(len(strip))
-    for col, v in zip(sc_cols, strip):
-        with col.container(border=True):
-            h = st.columns([1, 4], vertical_alignment="center")
-            h[0].button("★" if v["code"] in stars else "☆", key=f"bid_star_{v['code']}", type="tertiary", on_click=_star, args=(v["code"],))
-            h[1].markdown(f"**{v['code']} · {v['name']}**")
-            st.markdown(f":{QUAL_BADGE.get(v['qual'], 'gray')}-badge[{v['qual'].capitalize()}] :gray[{v['lines']}/{v['n_lines']} lines]")
-            late = g[(g["vendor_code"] == v["code"])].iloc[0]
-            extra = " · ".join(x for x in (v["days"], "not firm" if v["not_firm"] else "") if x)
-            if extra:
-                st.caption(extra)
-
     keep = []
     for i, m in enumerate(model["meta"]):
         if flt in PLIES and m["ply"] != PLIES[flt]:
@@ -149,44 +184,36 @@ def _grid(conn, g: pd.DataFrame, sc: dict, n_lines: int, qual: pd.DataFrame) -> 
     vendors = model["vendors"]
     if flt.startswith("☆") and stars:
         vendors = [v for v in vendors if v in stars]
-    df = model["df"].iloc[keep].reset_index(drop=True)
-    css = [model["css"][i] for i in keep]
-    meta = [model["meta"][i] for i in keep]
-    names = {v["code"]: f"{v['code']} · {v['name']}" for v in strip}
-    df = df[["#", "Line", "Annual qty", "Last yr"] + vendors + ["Winner · vs last yr", "Ask"]]
-    if df.empty:
+    shown = model["df"].iloc[keep].reset_index(drop=True)[["#", "Line", "Annual qty", "Last yr"] + vendors + ["Winner · vs last yr"]]
+    c[3].download_button("⬇ Excel", data=lambda: _grid_xlsx(shown), file_name="bid_grid.xlsx", key="bid_xlsx",
+                         mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
+    # the click bridge: the table's cells write "cell|line|vendor" into this (hidden) input, which reruns the app
+    with st.container(key="bid_bridge"):
+        bridge = st.text_input("bid_bridge", key="bid_bridge_in", label_visibility="collapsed")
+    if not keep:
         st.info("No lines match this filter.")
-        return
-    cssdf = pd.DataFrame([[("" if c in ("#", "Line", "Annual qty", "Last yr", "Winner · vs last yr", "Ask") else r.get(c, "")) for c in df.columns] for r in css], columns=df.columns)
-    ev = st.dataframe(df.style.apply(lambda _: cssdf, axis=None).format({"Last yr": "{:.2f}"}, na_rep="n/a"), hide_index=True, width="stretch", height=640,
-                      on_select="rerun", selection_mode="single-cell", key="bid_grid",
-                      column_config={**{v: st.column_config.TextColumn(names[v], width=120) for v in vendors}, "Annual qty": st.column_config.NumberColumn(format="localized", width=80),
-                                     "Line": st.column_config.TextColumn(width=220), "#": st.column_config.NumberColumn(width=40), "Last yr": st.column_config.NumberColumn(width=60),
-                                     "Winner · vs last yr": st.column_config.TextColumn(width=150),
-                                     "Ask": st.column_config.TextColumn("💬", width="small")})
-    st.caption("**Green** = cheapest eligible price in this scenario · red = the highest bid on the line · grey = can't win in this scenario · ● price not firm · "
-               "Not quoted is never a price. Click any price for how it was built up. ₹ per piece, GST excluded.")
-    try:
-        cells = ev.selection.cells
-    except Exception:
-        cells = []
-    if cells:
-        row, colname = cells[0][0], cells[0][1]
-        key = (meta[row]["line_no"], colname) if row < len(meta) else None
-        if key and st.session_state.get("bid_last_cell") != key:
-            st.session_state["bid_last_cell"] = key
-            ln = meta[row]["line_no"]
-            if colname == "Ask":
-                _ask(ln)
-                st.rerun()
-            elif colname in vendors or colname == "Winner · vs last yr":
-                v = colname if colname in vendors else meta[row]["winner"]
-                if v:
-                    st.session_state["_bid_dialog"] = ("cell", ln, v)
     else:
-        st.session_state.pop("bid_last_cell", None)
-    st.download_button("⬇ Excel", data=lambda: _grid_xlsx(df), file_name="bid_grid.xlsx", key="bid_xlsx",
-                       mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
+        st.html(_grid_html(model, strip, keep, vendors, stars, metric) + BRIDGE_JS, unsafe_allow_javascript=True)
+    st.caption("**Green** = cheapest eligible price in this scenario · red = the highest bid on the line · grey = can't win in this scenario · "
+               "● price not firm · Not quoted is never a price. Click any price for how it was built up. ₹ per piece, GST excluded.")
+    _on_bridge(bridge, [model["meta"][i] for i in keep], vendors)
+
+
+def _on_bridge(value: str, meta: list[dict], vendors: list[str]) -> None:
+    """Handle a click from the table: 'cell|line|vendor|ts' opens the build-up, 'ask|line|ts' pre-fills the analyst, 'star|V|ts' toggles a star."""
+    if not value or st.session_state.get("bid_last_bridge") == value:
+        return
+    st.session_state["bid_last_bridge"] = value
+    parts = value.split("|")
+    if parts[0] == "cell" and len(parts) >= 3:
+        st.session_state["_bid_dialog"] = ("cell", int(parts[1]), parts[2])
+        st.rerun()
+    elif parts[0] == "ask" and len(parts) >= 2:
+        _ask(int(parts[1]))
+        st.rerun()
+    elif parts[0] == "star" and len(parts) >= 2:
+        _star(parts[1])
+        st.rerun()
 
 
 def _grid_xlsx(df: pd.DataFrame) -> bytes:
@@ -252,7 +279,7 @@ def _charts(g: pd.DataFrame, sc: dict) -> None:
     a, b = st.columns([1, 1.6])
     by = sc["totals"].get("by_vendor", {})
     names = {v["code"]: f"{v['code']} · {v['name']}" for v in B.vendor_strip(g, g["line_no"].nunique())}
-    with a.container(border=True):
+    with a.container(key="rr_card_chart_a"):
         st.markdown("**Award value by vendor** :gray[· this scenario]")
         items = sorted(by.items(), key=lambda kv: kv[1])
         fig = go.Figure(go.Bar(x=[v / 1e7 for _, v in items], y=[names.get(k, k) for k, _ in items], orientation="h",
@@ -260,13 +287,13 @@ def _charts(g: pd.DataFrame, sc: dict) -> None:
         fig.update_layout(height=60 + 60 * max(len(items), 1), margin=dict(l=0, r=70, t=5, b=0), xaxis=dict(visible=False, range=[0, max([v / 1e7 for _, v in items] or [1]) * 1.3]))
         st.plotly_chart(fig, width="stretch", key="bid_chart_value")
         st.caption("Disqualified vendors are never shown as winners or ranked on savings.")
-    with b.container(border=True):
+    with b.container(key="rr_card_chart_b"):
         st.markdown("**Price spread per line** :gray[· each dot is a vendor's price vs the winner (green line); below the line = cheaper but can't win]")
         model = B.grid_model(g, sc["params"], "evaluated")
         win = {m["line_no"]: m["winner_price"] for m in model["meta"]}
         fig = go.Figure()
         fig.add_hline(y=0, line_color="#3fb27f", line_width=2)
-        fig.add_annotation(xref="paper", x=0, y=0, text="winner", showarrow=False, xanchor="right", font=dict(color="#3fb27f"))
+        fig.add_annotation(xref="paper", x=0.0, y=0, text="winner", showarrow=False, xanchor="left", yshift=11, font=dict(color="#3fb27f", size=11))
         for v in model["vendors"]:
             sub = g[(g["vendor_code"] == v) & (g["quote_status"] == "quoted") & g["evaluated_inr_pc"].notna()]
             pts = [(int(r["line_no"]), (r["evaluated_inr_pc"] / win[int(r["line_no"])] - 1) * 100, int(r["line_no"]) in win and False) for _, r in sub.iterrows()
@@ -280,7 +307,7 @@ def _charts(g: pd.DataFrame, sc: dict) -> None:
         wx = [m["line_no"] for m in model["meta"] if m["winner"]]
         wc = [VENDOR_COLOURS.get(m["winner"], "#999") for m in model["meta"] if m["winner"]]
         fig.add_trace(go.Scatter(x=wx, y=[0] * len(wx), mode="markers", name="winner", marker=dict(size=12, color=wc, line=dict(color="white", width=2)), hoverinfo="skip"))
-        fig.update_layout(height=330, margin=dict(l=10, r=10, t=5, b=0), yaxis=dict(range=[-16, 26], ticksuffix="%", zeroline=False), xaxis=dict(title="line number"),
+        fig.update_layout(height=330, margin=dict(l=10, r=10, t=5, b=0), yaxis=dict(range=[-16, 26], zeroline=False, tickvals=[-15, -10, -5, 5, 10, 15, 20, 25], ticktext=["−15%", "−10%", "−5%", "+5%", "+10%", "+15%", "+20%", "+25%"]), xaxis=dict(title="line number"),
                           legend=dict(orientation="h", y=-0.25))
         st.plotly_chart(fig, width="stretch", key="bid_chart_spread")
         st.caption("x = line number · capped at −15% / +25%")

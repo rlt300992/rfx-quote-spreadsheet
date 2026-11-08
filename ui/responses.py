@@ -199,7 +199,7 @@ def render(conn) -> None:
         card = {**card, **card_extras(conn, vid)}
         failed = card["failed"] and not card["extracted"]
         fmt = card["format"] or card["main_format"]
-        with st.container(border=True, key=f"card_{code}"):
+        with st.container(key=f"rr_card_{code}"):
             head = st.columns([2.6, 1.4, 2.5, 2.5, 0.6, 0.3], vertical_alignment="center")
             head[0].markdown(f"**{code} · {card['name']}**{_tier(card['msme'])}")
             head[1].markdown(f"Format: **{FORMAT_LABEL.get(fmt, fmt or 'n/a')}**")

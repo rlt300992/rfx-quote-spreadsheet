@@ -138,12 +138,13 @@ def grid_model(g: pd.DataFrame, params: dict, basis: str = "evaluated", metric: 
         back = elig[1] if len(elig) > 1 else None
         hi = max(r[col] for r in elig) if len(elig) > 1 else None
         byv = {r["vendor_code"]: r for r in grp}
-        text, css = {}, {}
+        text, css, cell = {}, {}, {}
         for v in vendors:
             r = byv[v]
             tag = _tag(r)
             if r["quote_status"] != "quoted" or pd.isna(r[col]):
                 text[v], css[v] = "Not quoted", "color:#8b949e;font-style:italic"
+                cell[v] = {"p": "Not quoted", "cls": "nq", "tag": "", "dot": False}
                 continue
             price = r[col]
             if metric == "% above cheapest":
@@ -162,6 +163,12 @@ def grid_model(g: pd.DataFrame, params: dict, basis: str = "evaluated", metric: 
             else:
                 css[v] = ""
             text[v] = s + (f" · {tag}" if tag else "")
+            is_win = win is not None and r["vendor_code"] == win["vendor_code"]
+            cls = "win" if is_win else "out" if not r["_ok"] else "hi" if (hi is not None and price == hi) else ""
+            # only true per-line exceptions get a tag: a grey cell that is grey because of the vendor (pending, disqualified, left out of this
+            # scenario) does not repeat "Unconfirmed" on every line; spec tags stay because they are about this line
+            shown = tag if not (cls == "out" and tag == "Unconfirmed") else ""
+            cell[v] = {"p": s.replace(" ●", ""), "cls": cls, "tag": shown, "dot": bool(is_win and r["price_not_firm"])}
         close = None
         if win is not None and back is not None and (back[col] / win[col] - 1) * 100 < CLOSE_PCT:
             close = back["vendor_code"]
@@ -177,9 +184,10 @@ def grid_model(g: pd.DataFrame, params: dict, basis: str = "evaluated", metric: 
         rows.append({"#": int(ln), "Line": f"{first['description']} · {int(first['ply'])}-ply", "Annual qty": int(first["annual_qty"]),
                      "Last yr": None if pd.isna(ly) else float(ly), **{v: text[v] for v in vendors}, "Winner · vs last yr": wtxt, "Ask": "💬"})
         csss.append(css)
+        texts.append(cell)
         meta.append({"line_no": int(ln), "ply": int(first["ply"]), "winner": None if win is None else win["vendor_code"], "winner_price": None if win is None else float(win[col]),
                      "close": close, "at_risk": at_risk})
-    return {"df": pd.DataFrame(rows), "css": csss, "meta": meta, "vendors": vendors, "basis": basis}
+    return {"df": pd.DataFrame(rows), "css": csss, "cells": texts, "meta": meta, "vendors": vendors, "basis": basis}
 
 
 # ------------------------------------------------------------------ risks

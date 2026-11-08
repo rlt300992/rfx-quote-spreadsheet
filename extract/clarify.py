@@ -112,7 +112,7 @@ def _issues_hash(vendor_code: str, items: list[str], prompt: str) -> str:
     return hashlib.sha256(json.dumps([vendor_code, items, prompt]).encode("utf-8")).hexdigest()
 
 
-def draft_for_vendor(conn: sqlite3.Connection, vendor_code: str, cfg: dict | None = None, force: bool = False) -> str | None:
+def draft_for_vendor(conn: sqlite3.Connection, vendor_code: str, cfg: dict | None = None, force: bool = False, cache_only: bool = False) -> str | None:
     """Draft (and store) the clarification email for one vendor. Returns the email text, or None if nothing to ask."""
     cfg = cfg or load_config()
     v = conn.execute("SELECT * FROM vendors WHERE vendor_code=?", (vendor_code,)).fetchone()
@@ -141,6 +141,8 @@ def draft_for_vendor(conn: sqlite3.Connection, vendor_code: str, cfg: dict | Non
             if hit is not None:
                 text = hit["result"]
                 break
+    if text is None and cache_only:
+        return None            # never call the model from a reset
     if text is None:
         last: Exception | None = None
         for m in chain:  # daily quota exhausted on one model -> next model

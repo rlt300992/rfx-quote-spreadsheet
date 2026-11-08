@@ -37,9 +37,9 @@ section[data-testid="stSidebar"] > div:first-child { width: 210px !important; }
 .rr-prog{height:6px;background:var(--rr-track);border-radius:3px;margin:6px 0 12px}.rr-prog i{display:block;height:6px;border-radius:3px;background:var(--rr-green)}
 .rr-title{font-weight:700;font-size:16px}.rr-meta{color:var(--rr-mut);font-size:13px}
 
-[class*="st-key-rr_card_"]{border:1px solid var(--rr-line);border-radius:10px;padding:11px 13px;background:var(--rr-card);gap:.3rem;margin-bottom:2px}
+[class*="st-key-rr_card_"]{border:1px solid var(--rr-line);border-radius:10px;padding:11px 13px;background:var(--rr-card);gap:.45rem;margin-bottom:2px}
 [class*="st-key-rr_card_sel_"]{border-color:var(--rr-ambersel);box-shadow:inset 3px 0 0 var(--rr-ambersel)}
-[class*="st-key-rr_card_"] [data-testid="stHtml"], [class*="st-key-rr_card_"] [data-testid="stMarkdownContainer"] p{margin:0}
+[class*="st-key-rr_card_"] [data-testid="stHtml"]{margin:0}
 [class*="st-key-rr_acts_"]{margin-top:6px;align-items:center}
 [class*="st-key-rr_acts_"] button{padding:4px 10px;min-height:0;font-size:12.5px;border-radius:8px;line-height:1.3}
 [class*="st-key-rr_acts_"] button p{font-size:12.5px}
@@ -98,6 +98,70 @@ section[data-testid="stSidebar"] > div:first-child { width: 210px !important; }
 [class*="st-key-aa_btns_"] button, [class*="st-key-aa_fu_"] button, [class*="st-key-aa_starters"] button, [class*="st-key-aa_actions"] button{padding:4px 10px;min-height:0;font-size:12.5px;border-radius:999px;line-height:1.3}
 [class*="st-key-aa_actions"] button{border-radius:8px}
 [class*="st-key-aa_btns_"] button p, [class*="st-key-aa_fu_"] button p, [class*="st-key-aa_starters"] button p, [class*="st-key-aa_actions"] button p{font-size:12.5px}
+
+/* ---- components shared by every tab (same radius, padding, font and fill everywhere) */
+[data-testid="stExpander"] { border: 1px solid var(--rr-line); border-radius: 10px; background: transparent; }
+[data-testid="stExpander"] summary { padding-top: 0.45rem; padding-bottom: 0.45rem; }
+[data-testid="stVerticalBlockBorderWrapper"]:has(> [data-testid="stVerticalBlock"]) { border-radius: 10px; }
+[data-testid="stButton"] button, [data-testid="stDownloadButton"] button { border-radius: 8px; padding: 4px 12px; min-height: 0; font-size: 12.5px; line-height: 1.35; }
+[data-testid="stButton"] button p, [data-testid="stDownloadButton"] button p { font-size: 12.5px; }
+[data-testid="stAlert"] { border-radius: 8px; }
+/* selected segmented controls and pills: the theme's grey fill, not a red outline */
+[data-testid="stButtonGroup"] button { border-radius: 999px; font-size: 12.5px; padding: 4px 12px; background: transparent; border: 1px solid var(--rr-line); color: inherit; }
+[data-testid="stButtonGroup"] button[data-selected="true"], [data-testid="stButtonGroup"] button[aria-checked="true"], [data-testid="stButtonGroup"] button[aria-pressed="true"]
+  { background: var(--rr-sel) !important; border-color: var(--rr-selb) !important; font-weight: 600; color: inherit !important; }
+[data-testid="stButtonGroup"] [data-baseweb="button-group"] button[data-variant="segmented_control"] { border-radius: 8px; }
+/* the sidebar: a small grey System section pinned to the bottom */
+[data-testid="stSidebarContent"] { position: relative; }
+[class*="st-key-sb_system"] { position: absolute; bottom: 1rem; left: 1rem; right: 1rem; padding-top: .8rem; border-top: 1px solid var(--rr-line); gap: .5rem; }
+.sb-lbl { font-size: 11px; color: var(--rr-mut); letter-spacing: .6px; text-transform: uppercase; }
+
+/* ---- rules that used to live in ui/style.py (Responses, Create RFQ, Bid Analysis) */
+/* Preview links: tertiary buttons that read as blue text links (main file, evidence files, other attachments) */
+[class*="st-key-pv_"] button { padding: 0; min-height: 0; }
+[class*="st-key-pv_"] button p { color: #1a73e8; font-size: 0.9rem; }
+[class*="st-key-pv_"] button:hover p { text-decoration: underline; }
+[class*="st-key-pv_oth_"] button, [class*="st-key-pv_main_"] button { justify-content: flex-end; }
+/* the Vendor-response row looks and measures like the two expanders below it (same 40px box, same border) */
+[class*="st-key-mainrow_"] { border: 1px solid rgba(128,128,128,.3); border-radius: 0.5rem; padding: 0 1rem; height: 40px;
+                             min-height: 40px; justify-content: center; overflow: hidden; }
+[class*="st-key-mainrow_"] p { margin: 0; }
+/* questionnaire table: one thin native divider between rows, tight spacing */
+[class*="st-key-qtable_"] { gap: 0.4rem; }
+[class*="st-key-qtable_"] hr { margin: 0; border-color: rgba(128,128,128,.25); }
+[class*="st-key-qtable_"] p { margin-bottom: 0; }
+[class*="st-key-mainrow_"] [data-testid="stColumn"] { display: flex; justify-content: center; }
+/* fields filled by the co-pilot get a subtle green left edge */
+[class*="st-key-ai_"] { border-left: 3px solid #3fb27f; padding-left: 0.5rem; }
+/* Review & Reconcile: the source viewer stays in view while the queue scrolls; the selected item has an amber edge */
+[data-testid="stColumn"]:has([class*="st-key-rv_viewer"]) { position: sticky; top: 3.5rem; align-self: flex-start; }
+[class*="st-key-rvitem_sel_"] { border-color: #f2b01e !important; box-shadow: 0 0 0 1px #f2b01e; }
+[class*="st-key-rvform_"] { background: rgba(128,128,128,.08); }
+/* Bid Analysis: the selected scenario card is outlined */
+[class*="st-key-rr_card_bidsc_sel_"] { border-color: #3fb27f !important; box-shadow: 0 0 0 1px #3fb27f; }
+
+/* ---- Bid Analysis grid (an HTML table so the vendor header can carry chips and tags can sit on a second line) */
+.bg-wrap { overflow: auto; max-height: 640px; border: 1px solid var(--rr-line); border-radius: 10px; }
+table.bg { border-collapse: separate; border-spacing: 0; width: 100%; font-size: 13px; }
+table.bg th, table.bg td { padding: 5px 8px; border-bottom: 1px solid var(--rr-line); vertical-align: middle; }
+table.bg thead th { position: sticky; top: 0; background: var(--rr-card); z-index: 2; text-align: left; font-weight: 600; vertical-align: top; }
+table.bg td.r, table.bg th.r { text-align: right; font-variant-numeric: tabular-nums; }
+table.bg td.n { color: var(--rr-mut); width: 30px; }
+table.bg td.c { text-align: right; cursor: pointer; min-width: 112px; font-variant-numeric: tabular-nums; }
+table.bg td.c:hover { outline: 1px solid var(--rr-selb); }
+table.bg td.win { background: rgba(46,160,67,.32); font-weight: 700; }
+table.bg td.hi .p { color: var(--rr-red); }
+table.bg td.out .p, table.bg td.nq .p { color: var(--rr-dim); }
+table.bg td.nq .p { font-style: italic; }
+table.bg .tag { font-size: 10.5px; color: var(--rr-mut); font-weight: 400; line-height: 1.2; white-space: normal; }
+table.bg .dot { display: inline-block; width: 7px; height: 7px; border-radius: 50%; background: #f5c542; margin-left: 4px; }
+table.bg .vh { font-weight: 700; white-space: nowrap; }
+table.bg .vs, table.bg .vt { font-size: 11px; font-weight: 400; color: var(--rr-mut); white-space: nowrap; }
+table.bg .star { cursor: pointer; color: var(--rr-mut); margin-right: 3px; }
+table.bg td.ask { cursor: pointer; text-align: center; width: 34px; }
+table.bg td.w { white-space: nowrap; font-weight: 600; }
+.rr-chip.amber.sm { font-size: 10.5px; padding: 0 6px; margin-left: 4px; }
+[class*="st-key-bid_bridge"] { position: absolute; left: -9999px; height: 0; overflow: hidden; }
 </style>
 """
 

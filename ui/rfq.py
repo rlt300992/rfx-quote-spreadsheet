@@ -86,11 +86,11 @@ def _email_body(conn, d: dict) -> None:
         return
     names = {s["code"]: s["name"] for s in R.approved_suppliers(conn)}
     to = ", ".join(f"{names[c]} ({c})" for c in d["suppliers"] if c in names)
-    with st.container(border=True):
+    with st.container(key="rr_card_rfq1"):
         st.markdown(f"**To**  {to} · :gray[one email each]  \n**Subject**  **{R.subject(d)}**")
         st.divider()
         st.text(R.cover_note(d))
-        with st.container(border=True):
+        with st.container(key="rr_card_rfq2"):
             c = st.columns([5, 1.2], vertical_alignment="center")
             c[0].markdown(f"📎 **{R.XLSX_NAME}**  :gray[3 sheets: Terms · Line items · Questionnaire]")
             c[1].button("Preview ↗", key="pv_rfq_xlsx", type="tertiary", on_click=_set_email_view, args=("xlsx",))
@@ -273,7 +273,7 @@ def _send(conn, d: dict, msg: str) -> None:
 
 
 def _copilot_panel(conn, d: dict, key: str) -> None:
-    with st.container(border=True):
+    with st.container(key="rr_card_rfq3"):
         h = st.columns([1, 1.6], vertical_alignment="center")
         h[0].markdown("**Co-pilot**")
         h[1].caption("drafts from the item catalog")
@@ -337,7 +337,7 @@ def _readonly(conn, d: dict, published_at: str | None, key: str, sent_n: int | N
 # ------------------------------------------------------------------ demo mode
 def _demo_chat(conn) -> None:
     st.session_state.setdefault("demo_chat", [{"role": "assistant", "text": "This RFQ was published on 7 Nov and all 5 suppliers have replied. Ask me about it, or start a new draft to see how I build an RFQ from scratch."}])
-    with st.container(border=True):
+    with st.container(key="rr_card_rfq4"):
         h = st.columns([1, 1.6], vertical_alignment="center")
         h[0].markdown("**Co-pilot**")
         box = st.container(height=300, border=False)
@@ -572,7 +572,7 @@ def _sec_review(conn, d: dict, ver: int) -> None:
             elif w:
                 st.warning(f"**{title}**  \n{w[0]}", icon="⚠️")
             else:
-                with st.container(border=True):
+                with st.container(key=f"rr_card_rfq5_{sec}"):
                     st.markdown(f"✅ **{title}**  \n{text}")
     n = len(block)
     bar = st.columns([3, 1.6, 2.2], vertical_alignment="center")
@@ -601,7 +601,7 @@ def _draft(conn) -> None:
         with left:
             _readonly(conn, d, d["published_at"], "pub", sent_n=len(d["sent_to"]))
         with right:
-            with st.container(border=True):
+            with st.container(key="rr_card_rfq6"):
                 st.markdown("**Co-pilot**")
                 st.markdown(f"Published and sent to {len(d['sent_to'])} suppliers. I'll flag replies as they arrive in Responses.")
                 p = st.pills("After publish", ["View sent email", "Start another draft"], selection_mode="single", key=f"pub_pills_{st.session_state.get('pub_pill_n', 0)}",

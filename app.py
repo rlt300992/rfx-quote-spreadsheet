@@ -87,12 +87,31 @@ def sidebar(cfg: dict, rfq) -> None:
             st.write(f"**USD/INR:** ₹{cfg['fx']['USD_INR']} ({cfg['fx']['date']})")
             st.write(f"**Cost of funds:** {cfg['cost_of_funds_pct']}%")
             st.write(f"**Standard payment:** {rfq['std_payment_terms_days']} days")
-        st.write("")
-        if st.button("Test Gemini"):
-            try:
-                st.success(f"Gemini replied OK ({ping()})")
-            except Exception as e:  # show the real error
-                st.error(f"Gemini failed: {e}")
+        with st.container(key="sb_system"):
+            st.html("<div class='sb-lbl'>System</div>")
+            if st.button("Test Gemini", key="sb_test_gemini"):
+                try:
+                    st.success(f"Gemini replied OK ({ping()})")
+                except Exception as e:  # show the real error
+                    st.error(f"Gemini failed: {e}")
+            st.button("Reset demo", key="sb_reset", on_click=lambda: st.session_state.update(_sb_dialog="reset"),
+                      help="Rebuilds the database from the seed files and the saved extraction cache. No API calls.")
+
+
+def _reset_body(conn) -> None:
+    st.write("This rebuilds the demo database from the seed files and the saved extraction cache (no API calls). Your corrections, confirmations, award, "
+             "drafts and clarification edits will be lost.")
+    c = st.columns([2, 1, 1.4])
+    c[1].button("Cancel", type="primary", key="sb_reset_cancel", on_click=lambda: st.session_state.pop("_sb_dialog", None), width="stretch")
+    if c[2].button("Reset demo", key="sb_reset_go", width="stretch"):
+        from core.reset import reset_demo
+        with st.spinner("Rebuilding from the seed and the cache ..."):
+            res = reset_demo(conn)
+        keep = {k: v for k, v in st.session_state.items() if k in ("authed",)}
+        st.session_state.clear()
+        st.session_state.update(keep)
+        st.session_state["_reset_note"] = f"Demo reset: {res['quotes']} quotes rebuilt from the cache, {res['api_calls']} API calls."
+        st.rerun()
 
 
 def event_header(rfq, st_stats: dict | None) -> None:
@@ -115,6 +134,10 @@ def main() -> None:
     theme.inject()
     cfg = load_config()
     conn = get_conn()
+    if st.session_state.get("_sb_dialog") == "reset":
+        st.dialog("Reset the demo?", on_dismiss=lambda: st.session_state.pop("_sb_dialog", None))(_reset_body)(conn)
+    if note := st.session_state.pop("_reset_note", None):
+        st.toast(note)
     rfq_row = conn.execute("SELECT * FROM rfqs ORDER BY rfq_id LIMIT 1").fetchone()
     sidebar(cfg, rfq_row)
     try:
