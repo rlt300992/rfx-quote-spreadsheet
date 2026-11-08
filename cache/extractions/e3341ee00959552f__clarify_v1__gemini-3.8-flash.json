@@ -1,0 +1,12 @@
+{
+ "sha256": "e3341ee00959552f3acb6a41ae50be3b15ad56f8990868613c12006e75a0ae59",
+ "prompt": "clarify",
+ "prompt_version": "v1",
+ "model": "gemini-3.8-flash",
+ "created_at": "2026-11-08T08:29:18+00:00",
+ "meta": {
+  "items": 8,
+  "model": "gemini-3.8-flash"
+ },
+ "result": "Subject: RFQ Clarifications - Corrugated Boxes FY2026-27 Annual Rate Contract\n\nDear Rajesh,\n\nThank you for your response to our RFQ for the Corrugated Boxes FY2026-27 annual rate contract. \n\nPlease clarify the following points regarding your submission:\n\n1. For the 30 lines where freight is not stated, what is the freight per box to our Chakan MIDC plant for 3-ply, 5-ply, and 7-ply boxes, or are your quoted rates delivered (FOR Chakan)?\n2. For the 26 lines quoted per kg, what are the specific per-box prices, or what box weight did you assume?\n3. What is the exact per-box price for line 27 and line 29?\n4. What is your current price for line 28 and line 30 based on the revised specifications in our RFQ?\n5. Are your quoted rates exclusive or inclusive of GST?\n6. Could you please provide the missing responses and documentation for questionnaire items Q02_BS_TEST (bursting strength confirmation and recent test report), Q05_FIRST_SUPPLY (lead time in days), Q06_PAPER_SOURCE (kraft paper source), Q07_FSC (FSC certification), and Q08_COMPLAINTS (number of quality complaints)?\n7. Could you share a current certificate or evidence of validity for Q01_ISO9001, as certificate QMS/IN/17260 shows an expiry date of 2026-03-31?\n8. Could you please clarify and re-confirm your 'yes' response for item Q03_REJECTION?\n\nWe look forward to receiving your clarifications.\n\nRegards,\nCategory Buyer, Sahyadri Consumer Products Ltd, Chakan MIDC, Pune"
+}

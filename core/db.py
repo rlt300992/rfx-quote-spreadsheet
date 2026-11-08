@@ -88,6 +88,14 @@ CREATE TABLE IF NOT EXISTS last_year_prices (
   UNIQUE (vendor_id, catalog_sku, period)
 );
 
+CREATE TABLE IF NOT EXISTS extraction_jobs (
+  vendor_code TEXT PRIMARY KEY,
+  status TEXT NOT NULL CHECK (status IN ('extracting','extracted','failed')),
+  started_at TEXT, finished_at TEXT,
+  source TEXT CHECK (source IS NULL OR source IN ('fresh','cache')),
+  error TEXT
+);
+
 CREATE TABLE IF NOT EXISTS vendor_responses (
   response_id INTEGER PRIMARY KEY,
   rfq_id INTEGER NOT NULL REFERENCES rfqs(rfq_id),

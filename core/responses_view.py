@@ -9,14 +9,14 @@ from core.stage import fmt_date
 
 ROOT = Path(__file__).resolve().parent.parent
 FORMAT_LABEL = {"excel": "Excel", "pdf": "PDF", "word": "Word", "photo": "Photo", "email_text": "Email"}
-ROLE_LABEL = {"quote": "Quote", "mixed": "Quote + questionnaire", "questionnaire": "Questionnaire", "certificate": "Certificate"}
+ROLE_LABEL = {"quote": "Quote", "mixed": "Quote", "questionnaire": "Questionnaire", "certificate": "Certificate"}
+FORMAT_SHORT = {"excel": "Excel", "pdf": "PDF", "word": "Word", "photo": "photo", "email_text": "email"}
 
 
 def role_label(role: str | None, fmt: str | None) -> str:
-    """'Quote + questionnaire (email body)', 'Quote (photo)', ..."""
+    """'Quote (Excel)', 'Quote (photo)', 'Quote (email)', ... derived from the file format"""
     base = ROLE_LABEL.get(role or "", role or "")
-    suffix = {"email_text": " (email body)", "photo": " (photo)"}.get(fmt or "", "")
-    return base + suffix
+    return f"{base} ({FORMAT_SHORT[fmt]})" if fmt in FORMAT_SHORT else base
 DOC_LABEL = {"ISO9001": "ISO 9001", "test_report": "Test report", "FSC": "FSC chain of custody", "udyam_msme": "Udyam (MSME)",
              "gst_cert": "GST certificate", "other": "Document"}
 SIZE_LABEL = {"micro": "micro enterprise", "small": "small enterprise", "medium": "medium enterprise", "none": "large, not MSME"}
@@ -124,3 +124,50 @@ def send_clarification(conn: sqlite3.Connection, response_id: int, final_text: s
     audit.log(conn, "clarification_sent_stub", ("response", response_id), field="clarification_draft", new=final_text, actor=actor,
               evidence={"stub": True})
     conn.commit()
+
+
+def files_covered(conn: sqlite3.Connection, entry: dict | None) -> str:
+    """'Re-extracts 3 files: quote, ISO 9001, test report.' - what a re-extract of this vendor covers (from the inbox manifest)."""
+    if not entry:
+        return ""
+    names = []
+    for f in entry["files"]:
+        d = conn.execute("SELECT doc_type FROM documents WHERE file_name=? ORDER BY doc_id DESC LIMIT 1", (f,)).fetchone()
+        r = conn.execute("SELECT content_role FROM vendor_responses WHERE file_name=? ORDER BY response_id DESC LIMIT 1", (f,)).fetchone()
+        if d is not None:
+            names.append(DOC_LABEL.get(d["doc_type"], "document"))
+        elif r is not None and r["content_role"] in ("quote", "mixed"):
+            names.append("quote")
+        else:
+            names.append(f)
+    n = len(names)
+    return f"Re-extracts {n} file{'s' if n != 1 else ''}: {', '.join(names)}."
+
+
+def last_extracted(conn: sqlite3.Connection, code: str, main_path: str | None) -> str | None:
+    """Tooltip for the status: 'Last extracted 8 Nov 2026, 12:49 (fresh)' or '(from cache)'. Read from the job record after a
+    re-extract; otherwise from the created_at stored in the extraction cache entry of the vendor's main file."""
+    import json
+    from datetime import datetime
+
+    from extract import cache
+
+    def local(iso: str) -> str:
+        d = datetime.fromisoformat(iso).astimezone()
+        return f"{d.day} {d:%b %Y}, {d:%H:%M}"
+
+    job = conn.execute("SELECT * FROM extraction_jobs WHERE vendor_code=?", (code,)).fetchone()
+    if job is not None and job["status"] == "extracted" and job["finished_at"]:
+        return f"Last extracted {local(job['finished_at'])} ({'fresh' if job['source'] == 'fresh' else 'from cache'})"
+    p = resolve_path(main_path, None)
+    if p is None:
+        return None
+    sha = cache.sha256_file(p)[:16]
+    stamps = []
+    for f in cache.CACHE_DIR.glob(f"{sha}__quote_extract*"):
+        try:
+            stamps.append(json.loads(f.read_text(encoding="utf-8")).get("created_at"))
+        except ValueError:
+            pass
+    stamps = [s for s in stamps if s]
+    return f"Last extracted {local(max(stamps))} (from cache)" if stamps else None

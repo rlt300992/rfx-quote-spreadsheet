@@ -71,7 +71,7 @@ def test_v4_has_no_questionnaire_message(real_conn):
 def test_reextract_vendor_dialog_cancel_and_confirm(real_conn, monkeypatch):
     c, path = real_conn
     seen = []
-    monkeypatch.setattr("ui.responses.ingest_vendor", lambda conn, entry, force=False: seen.append((entry["vendor_code"], force)))
+    monkeypatch.setattr("core.jobs.start", lambda conn, entries, **k: seen.append([e["vendor_code"] for e in entries]) or [])
     at = run_app(path)
     _btn(at, "rerun_V2").click().run()
     assert not at.exception
@@ -81,13 +81,13 @@ def test_reextract_vendor_dialog_cancel_and_confirm(real_conn, monkeypatch):
     at = run_app(path)
     _btn(at, "rerun_V2").click().run()
     _btn(at, "rx_V2_go").click().run()
-    assert seen == [("V2", True)]
+    assert seen == [["V2"]]
 
 
 def test_reextract_all_dialog(real_conn, monkeypatch):
     c, path = real_conn
     seen = []
-    monkeypatch.setattr("ui.responses.ingest_all", lambda conn, force=False, **k: seen.append(force))
+    monkeypatch.setattr("core.jobs.start", lambda conn, entries, **k: seen.append([e["vendor_code"] for e in entries]) or [])
     at = run_app(path)
     _btn(at, "extract_all").click().run()
     assert any("Corrections and confirmations made in Review & Reconcile will be lost" in m.value for m in at.markdown)
@@ -96,7 +96,7 @@ def test_reextract_all_dialog(real_conn, monkeypatch):
     at = run_app(path)
     _btn(at, "extract_all").click().run()
     _btn(at, "rx_all_go").click().run()
-    assert seen == [True]
+    assert [sorted(x) for x in seen] == [["V1", "V2", "V3", "V4", "V5"]]
 
 
 def test_review_button_sets_vendor_filter_and_tab(real_conn):

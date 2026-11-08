@@ -3,13 +3,16 @@ from __future__ import annotations
 
 import streamlit as st
 
+from core import jobs
 from core.queries import vendor_cards
-from core.responses_view import (FORMAT_LABEL, QUAL_CHIP, SIZE_LABEL, card_extras, questionnaire_view, role_label,
-                                 send_clarification)
+from core.responses_view import (FORMAT_LABEL, QUAL_CHIP, SIZE_LABEL, card_extras, files_covered, last_extracted,
+                                 questionnaire_view, role_label, send_clarification)
 from core.stage import fmt_date
-from extract.extract import ingest_all, ingest_vendor, load_manifest
+from extract.extract import load_manifest
 from ui.preview import preview_dialog
+from ui.style import inject
 
+COLS = [2.6, 0.5, 4.3, 2.6]          # question / mark / answer / evidence = 26% / 5% / 43% / 26%
 ICON = {"excel": "📊", "pdf": "📄", "word": "📝", "photo": "🖼️", "email_text": "✉️"}
 RESULT = {"pass": "✅", "fail": "❌"}
 
@@ -33,19 +36,15 @@ def _close_dialog() -> None:
     st.session_state.pop("_responses_dialog", None)
 
 
-def _reextract_all_body(conn) -> None:
+def _reextract_all_body(conn, entries: list[dict]) -> None:
     st.write("This re-extracts every file and replaces all current extracted values. Corrections and confirmations made in Review & Reconcile will be lost.")
+    st.caption("It runs in the background: you can close this dialog and keep working. Each card shows its status.")
     c = st.columns([2.2, 1, 1.4])
     if c[1].button("Cancel", type="primary", key="rx_all_cancel", width="stretch"):
         _close_dialog()
         st.rerun()
     if c[2].button("Re-extract all", key="rx_all_go", width="stretch"):
-        with st.spinner("Re-extracting all vendor replies ..."):
-            try:
-                ingest_all(conn, force=True)
-            except Exception as e:  # show the real error, never swallow it
-                st.error(f"Extraction failed: {e}")
-                return
+        jobs.start(conn, entries)          # status = extracting is saved before the thread starts
         _close_dialog()
         st.rerun()
 
@@ -55,17 +54,15 @@ def _reextract_vendor_body(conn, entry: dict | None, code: str) -> None:
              "in Review & Reconcile will be lost. Other vendors are not affected.")
     if entry is None:
         st.error(f"No inbox entry found for {code}.")
+    else:
+        st.write(files_covered(conn, entry))
+    st.caption("It runs in the background: you can close this dialog and keep working.")
     c = st.columns([2.2, 1, 1.4])
     if c[1].button("Cancel", type="primary", key=f"rx_{code}_cancel", width="stretch"):
         _close_dialog()
         st.rerun()
     if c[2].button(f"Re-extract {code}", key=f"rx_{code}_go", disabled=entry is None, width="stretch"):
-        with st.spinner(f"Re-extracting {code} ..."):
-            try:
-                ingest_vendor(conn, entry, force=True)
-            except Exception as e:
-                st.error(f"Re-extraction failed: {e}")
-                return
+        jobs.start(conn, [entry])
         _close_dialog()
         st.rerun()
 
@@ -75,16 +72,38 @@ def _show_open_dialog(conn, entries: dict, n_vendors: int) -> None:
     if not spec:
         return
     if spec[0] == "all":
-        st.dialog(f"Re-extract all {n_vendors} responses?", on_dismiss=_close_dialog)(_reextract_all_body)(conn)
+        st.dialog(f"Re-extract all {n_vendors} responses?", on_dismiss=_close_dialog)(_reextract_all_body)(conn, list(entries.values()))
     elif spec[0] == "vendor":
         code, name = spec[1], spec[2]
         st.dialog(f"Re-extract {code} · {name}?", on_dismiss=_close_dialog)(_reextract_vendor_body)(conn, entries.get(code), code)
 
 
 def _goto_review(code: str) -> None:
+    """on_click callback: runs before the page redraws, so the Review filter and the target tab are already set when the
+    tabs render. Switching tabs from code only works because the tab bar is created with on_change="rerun" (see app.py)."""
     st.session_state["rv_vendor"] = code
     st.session_state["main_tab"] = "Review & Reconcile"
-    st.toast(f"Filter set to {code}. Open Review & Reconcile ↑")
+
+
+# ------------------------------------------------------------------ status chip (only this fragment polls, and only while a job runs)
+def _chip_body(conn, code: str, failed: bool, status: str, tip: str | None, was_running: bool) -> None:
+    running = jobs.is_running(conn, code)
+    if was_running and not running:
+        st.rerun()                      # the job finished: redraw the whole card with the new status
+    job = jobs.status_of(conn, code)
+    if running:
+        st.markdown("Status: :orange-badge[Extracting…]", help="Running in the background. You can close dialogs or switch tabs; it keeps going.")
+    elif job is not None and job["status"] == "failed":
+        st.markdown("Status: :red-badge[failed]", help=job["error"] or "Re-extraction failed.")
+    elif failed:
+        st.markdown("Status: :red-badge[failed]")
+    else:
+        st.markdown(f"Status: **{status}**", help=tip)
+
+
+def _status_chip(conn, code: str, failed: bool, status: str, tip: str | None) -> None:
+    running = jobs.is_running(conn, code)
+    st.fragment(run_every=3 if running else None)(_chip_body)(conn, code, failed, status, tip, running)
 
 
 # ------------------------------------------------------------------ card parts
@@ -96,7 +115,7 @@ def _evidence_cell(card: dict, q: dict) -> None:
             preview_dialog(ev["file_path"], ev["file_name"], f"{code} · {card['name']} · {ev['facts']}")
         st.caption(f":red[{ev['facts']}]" if ev["expired"] else ev["facts"])
     if q["ref"]:
-        st.caption(f"Source: {q['ref']}")
+        st.caption(f"Source: {q['ref'].replace('Vendor Questionnaire', 'Questionnaire')}")
     if not ev and not q["ref"]:
         st.caption(" ")
 
@@ -122,23 +141,25 @@ def _questionnaire(card: dict, qv: dict, draft_has_request: bool) -> None:
             st.write(f"The vendor sent {sent}. All {len(qv['rows'])} answers are missing, including the {qv['ko_total']} knock-outs, "
                      f"so the vendor stays **{label}**.{extra}")
         else:
-            h = st.columns([3, 0.5, 3, 3.5])
+            h = st.columns(COLS)
             for c, t in zip(h, ("Question", "", "Vendor's answer", "Evidence · source")):
                 c.caption(t)
-            for q in qv["rows"]:
-                c = st.columns([3, 0.5, 3, 3.5])
-                c[0].markdown(f"**{q['q_code']}** {q['text']}" + (" :red-badge[Knock-out]" if q["is_knockout"] else ""))
-                c[1].markdown(RESULT.get(q["result"], "⏳"))
-                c[2].write(q["answer"] if q["answered"] else "Not answered")
-                with c[3]:
-                    _evidence_cell(card, q)
-        st.divider()
+            with st.container(key=f"qtable_{code}"):
+                for q in qv["rows"]:
+                    c = st.columns(COLS, vertical_alignment="center")
+                    short = q["q_code"].replace("_", " · ", 1)           # 'Q01_ISO9001' -> 'Q01 · ISO9001'
+                    c[0].markdown(f"**{short}**" + (" :red-badge[Knock-out]" if q["is_knockout"] else ""), help=q["text"])
+                    c[1].markdown(RESULT.get(q["result"], "⏳"))
+                    c[2].write(q["answer"] if q["answered"] else "Not answered")
+                    with c[3]:
+                        _evidence_cell(card, q)
+                    st.divider()
         if qv["other"]:
             st.markdown("**Other attachments** (answer no question)")
             for i, o in enumerate(qv["other"]):
                 c = st.columns([6, 1.5])
                 c[0].write(f"📎 {o['file_name']}")
-                if c[1].button("Preview ↗", key=f"pv_oth_{code}_{i}"):
+                if c[1].button("Preview ↗", key=f"pv_oth_{code}_{i}", type="tertiary"):
                     preview_dialog(o["file_path"], o["file_name"], f"{code} · {card['name']} · Attachment")
         else:
             st.caption("Other attachments: none. Every file this vendor sent answers a question above.")
@@ -165,8 +186,10 @@ def render(conn) -> None:
     manifest = load_manifest()
     entries = {m["vendor_code"]: m for m in manifest}
     cards = vendor_cards(conn, manifest)
+    inject()
     top = st.columns([1.2, 5], vertical_alignment="center")
-    top[0].button("↻ Extract all", key="extract_all", width="stretch", on_click=_open_dialog, args=("all",))
+    top[0].button("↻ Extract all", key="extract_all", width="stretch", on_click=_open_dialog, args=("all",),
+                  disabled=jobs.any_running(conn))
     top[1].caption("Values come from real AI extraction (cached by file hash, prompt version and model). Use ↻ on a card to re-extract one vendor.")
     _show_open_dialog(conn, entries, len(cards))
 
@@ -176,13 +199,15 @@ def render(conn) -> None:
         card = {**card, **card_extras(conn, vid)}
         failed = card["failed"] and not card["extracted"]
         fmt = card["format"] or card["main_format"]
-        with st.container(border=True):
-            head = st.columns([3.4, 1.3, 2.4, 1.5, 0.5], vertical_alignment="center")
+        with st.container(border=True, key=f"card_{code}"):
+            head = st.columns([2.6, 1.4, 2.5, 2.5, 0.6, 0.3], vertical_alignment="center")
             head[0].markdown(f"**{code} · {card['name']}**{_tier(card['msme'])}")
             head[1].markdown(f"Format: **{FORMAT_LABEL.get(fmt, fmt or 'n/a')}**")
             head[2].markdown(f"Received: {_when(card['received_at'])}" + (" :red-badge[LATE]" if card["late"] else ""))
-            head[3].markdown("Status: :red-badge[failed]" if failed else f"Status: **{card['status']}**")
-            head[4].button("↻", key=f"rerun_{code}", help="Re-extract this file", on_click=_open_dialog, args=("vendor", code, card["name"]))
+            with head[3]:
+                _status_chip(conn, code, failed, card["status"], last_extracted(conn, code, card["main_path"]))
+            head[4].button("↻", key=f"rerun_{code}", help="Re-extract this vendor's files", on_click=_open_dialog,
+                           args=("vendor", code, card["name"]), disabled=jobs.is_running(conn, code))
 
             if card["extracted"]:
                 st.progress(card["lines_quoted"] / card["lines_total"],
@@ -197,7 +222,7 @@ def render(conn) -> None:
 
             st.caption("VENDOR RESPONSE")
             if card["main_file"]:
-                with st.container(border=True):
+                with st.container(key=f"mainrow_{code}"):
                     r = st.columns([0.4, 4, 2.6, 1.3], vertical_alignment="center")
                     r[0].markdown(ICON.get(fmt, "📄"))
                     r[1].write(card["main_file"])

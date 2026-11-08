@@ -85,22 +85,25 @@ def collect_issues(conn: sqlite3.Connection, vendor_code: str) -> list[str]:
     if "TAX_BASIS_UNSPECIFIED" in by_flag:
         items.append("Please confirm whether your rates are exclusive or inclusive of GST.")
 
-    # questionnaire: anything that is not a clean pass on a knock-out question
+    # questionnaire: anything that is not a clean pass, on EVERY question (knock-out or not)
     qa = conn.execute("""SELECT q.q_code, q.question_text, q.is_knockout, a.rule_result, a.rule_explanation
                          FROM rfx_questions q LEFT JOIN questionnaire_answers a
                            ON a.question_id=q.question_id AND a.vendor_id=? AND a.is_current=1
-                         WHERE q.is_knockout=1 ORDER BY q.question_id""", (v["vendor_id"],)).fetchall()
+                         ORDER BY q.question_id""", (v["vendor_id"],)).fetchall()
     unanswered = [r for r in qa if r["rule_result"] is None]
     if unanswered and len(unanswered) == len(qa):
         items.append("We have not received your response to our quality questionnaire. Please complete it and attach the ISO 9001 certificate "
                      "and a recent bursting-strength test report.")
     else:
+        if unanswered:
+            items.append("Please answer these questionnaire items, which are missing from your reply: "
+                         + "; ".join(f"{r['q_code']}: {r['question_text']}" for r in unanswered))
         for r in qa:
             if r["rule_result"] is None:
-                items.append(f"Please answer: {r['question_text']}")
-            elif r["rule_result"] == "unknown":
+                continue
+            if r["rule_result"] == "unknown":
                 items.append(f"{r['q_code']}: {r['rule_explanation']}. Please clarify.")
-            elif r["rule_result"] == "fail":
+            elif r["rule_result"] == "fail" and r["is_knockout"]:  # a failed optional question is not worth an email
                 items.append(f"{r['q_code']}: {r['rule_explanation']}. If you have a current certificate or evidence, please send it.")
     return items
 

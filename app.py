@@ -58,6 +58,8 @@ def get_conn():
     conn = connect()
     init_db(conn)
     seed_if_empty(conn)
+    from core import jobs
+    jobs.recover_interrupted(conn)
     ensure_quotes(conn)
     return conn
 
@@ -123,7 +125,8 @@ def main() -> None:
     banner(st_stats)
     renderers = {"Create RFQ": rfq.render, "Responses": responses.render, "Review & Reconcile": review.render,
                  "Bid Analysis": bid.render, "Analyst & Award": analyst.render}
-    for tab, name in zip(st.tabs(TABS, key="main_tab"), TABS):
+    tabs = st.tabs(TABS, key="main_tab", on_change="rerun")
+    for tab, name in zip(tabs, TABS):
         with tab:
             try:
                 renderers[name](conn)
