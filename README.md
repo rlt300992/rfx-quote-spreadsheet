@@ -3,7 +3,7 @@
 A Streamlit prototype for a category buyer: draft an RFQ for 30 corrugated-box lines, get five messy vendor replies (Excel, PDF, Word, a phone photo, an email) **extracted by Gemini, normalised to ₹/piece, validated and confidence-scored**, review only what needs a human, compare vendors, and ask an analyst for a defensible, line-wise award that you confirm with one click.
 The stubbed parts are the plumbing (sending email, vendor replies to clarifications); **the AI loops are real**.
 
-**Live:** `https://<your-app>.streamlit.app` (public app, passcode on request) · Fictional data: Sahyadri Consumer Products Ltd, 5 vendors, 30 lines.
+**Live:** `https://rfx-quote-spreadsheet-uy9qtwfahusgmwghhxjqhe.streamlit.app/` (public app, passcode on request) · Fictional data: Sahyadri Consumer Products Ltd, 5 vendors, 30 lines.
 
 | Review & Reconcile | Bid Analysis | Analyst & Award |
 |---|---|---|
