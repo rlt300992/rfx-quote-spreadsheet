@@ -278,7 +278,7 @@ def test_chat_message_limit_is_enforced_per_session(real_conn):
     c, path = real_conn
     at = run_app(path, setup=lambda a: a.session_state.__setitem__("chat", [{"role": "user", "text": "q"}] * 30))
     assert at.chat_input(key="chat_input").disabled is True                      # the analyst's input (the RFQ co-pilot has its own)
-    assert at.chat_input(key="rfq_chat_input").disabled is False
+    assert at.chat_input(key="demo_chat_input").disabled is False
     assert any("0 of 30 messages left" in x.value for x in at.caption)
 
 

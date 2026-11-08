@@ -140,3 +140,11 @@ do not touch secrets or Streamlit settings; keep Gemini calls minimal (cache fir
 - **B21-3 Review shortcut** works in a real browser only when the tab bar uses `on_change="rerun"`; verified with Playwright (Chrome). Content is still rendered for all tabs.
 - **B21-4 Clarification drafts** now list every unanswered questionnaire item (not just knock-outs); failed optional questions are not asked about. New drafts for changed item lists were generated (3 Gemini calls at most) and cached.
 - **B21-5 CSS** lives only in `ui/style.py` (link-style preview buttons, equal 40px rows, divider spacing).
+
+## UI batch 3 (Create RFQ rebuild)
+- **B3-1 Separation.** The new draft is one JSON document in its own table `rfq_drafts`; nothing in `core/rfq_draft.py` writes to rfqs, line_items, rfx_questions or quotes. Publish writes one `rfq_draft_publish` audit row and flips the draft to published. A test fingerprints the demo tables before and after.
+- **B3-2 Item catalog = the seed `line_items` (30 SKUs); "same as last year" = SKUs present in `last_year_prices`.** Unknown SKUs are never added; they show as red rows with the closest match (difflib).
+- **B3-3 Co-pilot.** `copilot/draft_copilot.py`: the model proposes ops (overview, add SKUs, last year, remove/edit line, load template, knock-out/document flags, terms, suppliers); Python validates and applies; every turn lists what was applied and what was refused. Suggestion chips that map to one plain action (add last year, standard questionnaire, invite all) run without the model. Gemini is called only when the buyer sends a message.
+- **B3-4 Demo RFQ.** Read-only by default; "Edit RFQ" opens the earlier editor (`ui/rfq_edit.py`) with its safeguards, plus an amber note. Chat on the demo RFQ is grounded in the RFQ text; two chips are answered from the database.
+- **B3-5 Dialog.** Streamlit does not swap one dialog for another from inside a dialog, so the email dialog switches between the email and the attachment preview internally.
+- **B3-6 Deviations.** Question text in the draft questionnaire is read-only (flags are editable). Chat history lives in the session; the draft itself autosaves. The buyer's name comes from the BUYER_NAME env var (no name otherwise).

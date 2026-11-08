@@ -138,6 +138,9 @@ def test_send_does_not_downgrade_an_evaluating_rfq(real_conn):
     assert c.execute("SELECT status FROM rfqs").fetchone()[0] == "evaluating"
 
 
+EDIT = lambda at: at.session_state.__setitem__("rfq_edit", True)   # the old editor now sits behind 'Edit RFQ' on the demo RFQ
+
+
 # ------------------------------------------------------------------ the tab in the real app (co-pilot stubbed)
 def _fake_copilot(monkeypatch, ops, reply="Done."):
     def fake(d, message, history=None):
@@ -150,7 +153,7 @@ def _fake_copilot(monkeypatch, ops, reply="Done."):
 def test_chat_edits_the_tables_and_warns_because_replies_exist(real_conn, monkeypatch):
     c, path = real_conn
     _fake_copilot(monkeypatch, [Op(op="set_term", target="payment_days", value="45"), Op(op="drop_line", target="26")], "Payment is now 45 days and the promo box is dropped.")
-    at = run_app(path)
+    at = run_app(path, setup=EDIT)
     assert not at.exception
     at.chat_input(key="rfq_chat_input").set_value("make payment 45 days and drop the promo box").run()
     assert not at.exception
@@ -166,7 +169,7 @@ def test_chat_edits_the_tables_and_warns_because_replies_exist(real_conn, monkey
 def test_confirm_then_send_through_the_ui(real_conn, monkeypatch):
     c, path = real_conn
     _fake_copilot(monkeypatch, [Op(op="set_term", target="payment_days", value="45"), Op(op="drop_line", target="26")])
-    at = run_app(path)
+    at = run_app(path, setup=EDIT)
     at.chat_input(key="rfq_chat_input").set_value("go").run()
     [b for b in at.button if b.key == "rfq_confirm"][0].click().run()
     assert not at.exception
@@ -185,7 +188,7 @@ def test_confirm_then_send_through_the_ui(real_conn, monkeypatch):
 def test_existing_responses_and_other_tabs_still_work_after_an_rfq_edit(real_conn, monkeypatch):
     c, path = real_conn
     _fake_copilot(monkeypatch, [Op(op="set_term", target="payment_days", value="45")])
-    at = run_app(path)
+    at = run_app(path, setup=EDIT)
     at.chat_input(key="rfq_chat_input").set_value("45 days").run()
     [b for b in at.button if b.key == "rfq_confirm"][0].click().run()
     assert not at.exception
@@ -197,6 +200,6 @@ def test_existing_responses_and_other_tabs_still_work_after_an_rfq_edit(real_con
 def test_chat_failure_is_shown_not_swallowed(real_conn, monkeypatch):
     c, path = real_conn
     monkeypatch.setattr(C, "ask_copilot", lambda *a, **k: (_ for _ in ()).throw(RuntimeError("quota")))
-    at = run_app(path)
+    at = run_app(path, setup=EDIT)
     at.chat_input(key="rfq_chat_input").set_value("hello").run()
     assert not at.exception and any("Sorry, the co-pilot failed: quota" in m.value for m in at.markdown)

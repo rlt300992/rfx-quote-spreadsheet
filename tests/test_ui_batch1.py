@@ -13,7 +13,7 @@ def test_header_banner_sidebar(real_db_path, real_conn):
     assert any("Response due" in x.value and "Evaluating" in x.value for x in at.caption)
     assert any(e.label == "Evaluation settings" for e in at.sidebar.expander)
     assert not any("Corrugated boxes" in m.value for m in at.sidebar.markdown)
-    assert [w for w in at.number_input if w.key.startswith("rfq_pay_")][0].value == 60
+    assert any("Payment 60 days" in e.label for e in at.expander)          # the demo RFQ still reads 60-day payment terms
     assert n >= 0
 
 

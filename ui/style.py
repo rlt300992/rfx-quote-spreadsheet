@@ -18,6 +18,8 @@ CSS = """
 [class*="st-key-qtable_"] hr { margin: 0; border-color: rgba(128,128,128,.25); }
 [class*="st-key-qtable_"] p { margin-bottom: 0; }
 [class*="st-key-mainrow_"] [data-testid="stColumn"] { display: flex; justify-content: center; }
+/* fields filled by the co-pilot get a subtle green left edge */
+[class*="st-key-ai_"] { border-left: 3px solid #3fb27f; padding-left: 0.5rem; }
 </style>
 """
 

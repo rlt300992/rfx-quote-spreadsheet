@@ -88,6 +88,12 @@ CREATE TABLE IF NOT EXISTS last_year_prices (
   UNIQUE (vendor_id, catalog_sku, period)
 );
 
+CREATE TABLE IF NOT EXISTS rfq_drafts (
+  draft_id INTEGER PRIMARY KEY,
+  state_json TEXT NOT NULL,
+  updated_at TEXT
+);
+
 CREATE TABLE IF NOT EXISTS extraction_jobs (
   vendor_code TEXT PRIMARY KEY,
   status TEXT NOT NULL CHECK (status IN ('extracting','extracted','failed')),
@@ -217,7 +223,7 @@ BEGIN SELECT RAISE(ABORT, 'audit_log is append-only'); END;
 """
 
 AUDIT_ACTIONS = ("extract_run", "confirm", "override", "reject", "spec_accept", "clarification_drafted", "clarification_sent_stub",
-                 "clarification_resolved", "response_superseded", "award", "unaward", "discount_toggle", "rfq_confirm", "rfq_send")
+                 "clarification_resolved", "response_superseded", "award", "unaward", "discount_toggle", "rfq_confirm", "rfq_send", "rfq_draft_publish")
 
 TABLES = ("rfqs", "vendors", "line_items", "rfx_questions", "last_year_prices",
           "vendor_responses", "quotes", "documents", "questionnaire_answers", "audit_log")
