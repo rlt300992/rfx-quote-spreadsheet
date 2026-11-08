@@ -15,6 +15,9 @@ from core.flags import FLAG_HELP, explain_reason
 from extract.extract import prompt_version
 
 
+_EMPTY_COLS = ["Line", "SKU", "Description", "Annual qty", "Awarded vendor", "Landed INR/pc", "Evaluated INR/pc", "Annual value INR", "Backup (L2)", "Backup price INR/pc", "Price not firm", "Freight imputed", "Review state"]
+
+
 def _award_frame(conn: sqlite3.Connection, proposal: dict | None) -> tuple[pd.DataFrame, str]:
     """The committed award if there is one, else the proposal, else the current best scenario (labelled as such)."""
     g = pd.read_sql_query("SELECT * FROM v_comparison_grid", conn)
@@ -40,6 +43,8 @@ def _award_frame(conn: sqlite3.Connection, proposal: dict | None) -> tuple[pd.Da
     else:
         s = award_scenario(conn)
         label = "CURRENT BEST SCENARIO (not committed)"
+    if s is None or len(s) == 0 or "line_no" not in s:
+        return pd.DataFrame(columns=_EMPTY_COLS), "NO AWARD PROPOSED YET (no quotes loaded)"
     out = pd.DataFrame({"Line": s["line_no"], "SKU": s["catalog_sku"], "Description": s["description"], "Annual qty": s["annual_qty"],
                         "Awarded vendor": s["vendor_code"], "Landed INR/pc": s["landed_inr_pc"], "Evaluated INR/pc": s["price_inr_pc"],
                         "Annual value INR": s["annual_value_inr"], "Backup (L2)": s["backup_vendor"], "Backup price INR/pc": s["backup_price_inr_pc"],
@@ -81,10 +86,12 @@ def build_workbook(conn: sqlite3.Connection, proposal: dict | None = None) -> by
     ws.write(1, 0, "Prices are INR per piece, GST excluded. Evaluated = landed + one-time charges + payment-terms loading (ranking price).")
     write_df(ws, award, 3, ("Landed INR/pc", "Evaluated INR/pc", "Backup price INR/pc"), ("Annual value INR", "Annual qty"), {"Description": 38})
     n = len(award)
-    ws.write(4 + n, 0, "Total", bold)
     col = list(award.columns).index("Annual value INR")
-    ws.write_formula(4 + n, col, f"=SUM({xlsxwriter.utility.xl_rowcol_to_cell(4, col)}:{xlsxwriter.utility.xl_rowcol_to_cell(3 + n, col)})", wb.add_format({"bold": True, "num_format": "#,##0"}),
-                     float(award["Annual value INR"].sum()))
+    if n:
+        ws.write(4 + n, 0, "Total", bold)
+    if n:
+        ws.write_formula(4 + n, col, f"=SUM({xlsxwriter.utility.xl_rowcol_to_cell(4, col)}:{xlsxwriter.utility.xl_rowcol_to_cell(3 + n, col)})", wb.add_format({"bold": True, "num_format": "#,##0"}),
+                         float(award["Annual value INR"].sum()))
     notes = []
     if "Price not firm" in award and (award["Price not firm"] == "YES").any():
         notes.append(f"{int((award['Price not firm'] == 'YES').sum())} awarded lines rest on NOT-FIRM (kraft-linked) prices.")

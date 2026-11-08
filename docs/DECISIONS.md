@@ -111,3 +111,12 @@ do not touch secrets or Streamlit settings; keep Gemini calls minimal (cache fir
 **Also fixed in this phase:** one P4 test selected the first chat input on the page; with the RFQ chat now on an earlier tab it picked the wrong one. It selects by key now.
 
 **P5 blockers:** none.
+
+## Hotfix: cold start on Streamlit Cloud (Python 3.14)
+
+| # | Decision | Why |
+|---|---|---|
+| H-1 | `get_conn()` now calls `ensure_quotes()`: if `quotes` is empty it runs `ingest_all(only_missing=True)` from the committed cache (0 API calls) under a spinner. `get_conn` is `st.cache_resource`, so once per container. If the cache is missing it logs and starts empty. | `rfx.db` is gitignored, so the cloud container only seeded and never ingested. |
+| H-2 | `build_workbook`/`_award_frame` return an empty "NO AWARD PROPOSED YET" sheet when there are no scenario rows. The Excel is built only when the download is clicked (callable `data`); with no quotes the button is disabled with a note. | Empty frame raised KeyError in `_award_frame`. |
+| H-3 | Each tab render and the banner count are wrapped in try/except; failure logs the traceback and shows a warning in that tab only. | One broken tab must not take down the others. |
+| H-4 | Python: developed and tested on 3.13.12 (175 tests pass). **3.14 could not be run locally (not installed)**; requirements are unpinned so the cloud resolves 3.14 wheels. Only pure-Python/wheel deps are used. If a package fails on 3.14, set Python 3.13 in the Streamlit Cloud advanced settings. | Honest: 3.14 is unverified here. |

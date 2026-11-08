@@ -3,6 +3,7 @@
 Page code lives in ui/; business logic lives in core/, extract/, agent/, copilot/ and export/.
 """
 import hmac
+import logging
 from pathlib import Path
 
 import streamlit as st
@@ -14,6 +15,7 @@ from extract.gemini_client import get_secret, load_config, ping
 from ui import analyst, bid, responses, review, rfq
 
 ROOT = Path(__file__).parent
+log = logging.getLogger("rfx.app")
 st.set_page_config(page_title="Kill the Quote Spreadsheet", layout="wide")
 
 TABS = ["Create RFQ", "Responses", "Review & Reconcile", "Bid Analysis", "Analyst & Award"]
@@ -43,7 +45,24 @@ def get_conn():
     conn = connect()
     init_db(conn)
     seed_if_empty(conn)
+    ensure_quotes(conn)
     return conn
+
+
+def ensure_quotes(conn) -> None:
+    """A fresh container has no rfx.db: build the quotes from the committed extraction cache (offline, 0 API calls)."""
+    if conn.execute("SELECT COUNT(*) FROM quotes").fetchone()[0] > 0:
+        return
+    from extract import cache
+    if len(list(cache.CACHE_DIR.glob("*.json"))) == 0:
+        log.warning("No quotes and no committed extraction cache; the app will start empty.")
+        return
+    from extract.extract import ingest_all
+    with st.spinner("First start: loading the vendor replies from the committed extraction cache (no API calls) ..."):
+        try:
+            ingest_all(conn, draft=True, only_missing=True)
+        except Exception:
+            log.exception("Offline ingest from cache failed")
 
 
 def sidebar(conn, cfg: dict) -> None:
@@ -68,22 +87,20 @@ def main() -> None:
     cfg = load_config()
     conn = get_conn()
     sidebar(conn, cfg)
-    n = pending_confirmation_count(conn)
+    try:
+        n = pending_confirmation_count(conn)
+    except Exception:
+        log.exception("pending count failed")
+        n = 0
     st.markdown(f"**{n} values awaiting confirmation could change the award**")
+    renderers = {"Create RFQ": rfq.render, "Responses": responses.render, "Review & Reconcile": review.render,
+                 "Bid Analysis": bid.render, "Analyst & Award": analyst.render}
     for tab, name in zip(st.tabs(TABS), TABS):
         with tab:
-            if name == "Create RFQ":
-                rfq.render(conn)
-            elif name == "Responses":
-                responses.render(conn)
-            elif name == "Review & Reconcile":
-                review.render(conn)
-            elif name == "Bid Analysis":
-                bid.render(conn)
-            elif name == "Analyst & Award":
-                analyst.render(conn)
-            else:
-                st.info(f"{name}: coming in a later phase.")
-
+            try:
+                renderers[name](conn)
+            except Exception:  # one tab's failure must not break the others
+                log.exception("Tab %s failed", name)
+                st.warning(f"The {name} tab hit a problem and could not be shown. The other tabs are unaffected. Details are in the app log.")
 
 main()

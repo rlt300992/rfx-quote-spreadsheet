@@ -119,10 +119,15 @@ def render(conn) -> None:
                    + (f"Bypass reason recorded on lines {res['bypass_lines']}." if res["bypass_lines"] else ""))
     _award_panel(conn)
     c = st.columns([1, 4])
-    c[0].download_button("Download Excel", data=build_workbook(conn, st.session_state.get("proposal")), file_name="award_workbook.xlsx",
-                         mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", key="dl_xlsx",
-                         help="Award, Scenario (all candidates and exclusion reasons), Audit trail and Assumptions sheets.")
-    c[1].caption("The workbook shows the committed award if there is one, otherwise the proposal or the current best scenario, and says which.")
+    if conn.execute("SELECT COUNT(*) FROM quotes WHERE is_current=1").fetchone()[0] == 0:
+        c[0].button("Download Excel", disabled=True, key="dl_xlsx_off")
+        c[1].caption("No award proposed yet: there are no quotes loaded, so there is nothing to export.")
+    else:
+        # data is a callable: the workbook is built only when the download is clicked
+        c[0].download_button("Download Excel", data=lambda: build_workbook(conn, st.session_state.get("proposal")),
+                             file_name="award_workbook.xlsx", mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", key="dl_xlsx",
+                             help="Award, Scenario (all candidates and exclusion reasons), Audit trail and Assumptions sheets.")
+        c[1].caption("The workbook shows the committed award if there is one, otherwise the proposal or the current best scenario, and says which.")
     _clarifications(conn)
 
     st.divider()
