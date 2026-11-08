@@ -13,6 +13,7 @@ from core.queries import pending_confirmation_count
 from core.seed import seed_if_empty
 from extract.gemini_client import get_secret, load_config, ping
 from ui import analyst, bid, responses, review, rfq
+from ui.rfq import status_label
 
 ROOT = Path(__file__).parent
 log = logging.getLogger("rfx.app")
@@ -25,17 +26,30 @@ def gate() -> bool:
     if st.session_state.get("authed"):
         return True
     expected = get_secret("APP_PASSCODE")
-    st.title("Kill the Quote Spreadsheet")
-    if not expected:
-        st.error("APP_PASSCODE is not configured.")
-        return False
-    code = st.text_input("Passcode", type="password")
-    if code:
-        if hmac.compare_digest(code, expected):
-            st.session_state["authed"] = True
-            st.rerun()
-        else:
-            st.error("Wrong passcode.")
+    _, mid, _ = st.columns([1, 1.4, 1])
+    with mid:
+        st.write("")
+        st.write("")
+        with st.container(border=True):
+            st.markdown("<h1 style='text-align:center;margin-bottom:0'>Kill the Quote Spreadsheet</h1>", unsafe_allow_html=True)
+            st.markdown("<p style='text-align:center;font-size:1.05rem;margin-top:.4rem'>RFQ co-pilot: from messy vendor replies to a defensible award</p>",
+                        unsafe_allow_html=True)
+            st.markdown("<p style='text-align:center;color:grey;font-size:.9rem'>Prototype by Rohit Tambe · Aerchain product assignment</p>",
+                        unsafe_allow_html=True)
+            if not expected:
+                st.error("APP_PASSCODE is not configured.")
+            else:
+                with st.form("passcode_form", border=False):
+                    code = st.text_input("Passcode", type="password")
+                    go = st.form_submit_button("Enter", type="primary", width="stretch")
+                if go:
+                    if code and hmac.compare_digest(code, expected):
+                        st.session_state["authed"] = True
+                        st.rerun()
+                    else:
+                        st.error("Wrong passcode.")
+        st.markdown("<p style='text-align:center;color:grey;font-size:.75rem'>Demo data is fictional · Corrugated packaging, 5 vendors, 30 lines · © 2026 Rohit Tambe</p>",
+                    unsafe_allow_html=True)
     return False
 
 
@@ -65,15 +79,14 @@ def ensure_quotes(conn) -> None:
             log.exception("Offline ingest from cache failed")
 
 
-def sidebar(conn, cfg: dict) -> None:
-    rfq = conn.execute("SELECT * FROM rfqs ORDER BY rfq_id LIMIT 1").fetchone()
+def sidebar(cfg: dict, rfq) -> None:
     with st.sidebar:
-        st.header(rfq["title"])
-        st.caption("Buyer: Sahyadri Consumer Products Ltd")
-        st.write(f"**USD/INR:** ₹{cfg['fx']['USD_INR']} ({cfg['fx']['date']})")
-        st.write(f"**Cost of funds:** {cfg['cost_of_funds_pct']}%")
-        st.write(f"**Standard payment:** {rfq['std_payment_terms_days']} days")
-        st.write(f"**Response due:** {rfq['response_due_date']}")
+        st.markdown("**Sahyadri Consumer Products Ltd · Procurement**")
+        with st.expander("Evaluation settings", expanded=False):
+            st.write(f"**USD/INR:** ₹{cfg['fx']['USD_INR']} ({cfg['fx']['date']})")
+            st.write(f"**Cost of funds:** {cfg['cost_of_funds_pct']}%")
+            st.write(f"**Standard payment:** {rfq['std_payment_terms_days']} days")
+        st.write("")
         if st.button("Test Gemini"):
             try:
                 st.success(f"Gemini replied OK ({ping()})")
@@ -81,18 +94,33 @@ def sidebar(conn, cfg: dict) -> None:
                 st.error(f"Gemini failed: {e}")
 
 
+def event_header(rfq) -> None:
+    st.markdown(f"<h2 style='margin-bottom:0'>{rfq['title']}</h2>", unsafe_allow_html=True)
+    chip = status_label(rfq["status"])
+    st.caption(f"Response due {rfq['response_due_date']}  ·  :{'green' if chip == 'Published' else 'orange'}-badge[{chip}]")
+
+
+def banner(n: int) -> None:
+    if n > 0:
+        st.warning(f"**{n} values awaiting confirmation.** These could change the award. Review them in Review & Reconcile.", icon="⚠️")
+    else:
+        st.success("All values confirmed, ready to award.")
+
+
 def main() -> None:
     if not gate():
         return
     cfg = load_config()
     conn = get_conn()
-    sidebar(conn, cfg)
+    rfq_row = conn.execute("SELECT * FROM rfqs ORDER BY rfq_id LIMIT 1").fetchone()
+    sidebar(cfg, rfq_row)
+    event_header(rfq_row)
     try:
         n = pending_confirmation_count(conn)
     except Exception:
         log.exception("pending count failed")
         n = 0
-    st.markdown(f"**{n} values awaiting confirmation could change the award**")
+    banner(n)
     renderers = {"Create RFQ": rfq.render, "Responses": responses.render, "Review & Reconcile": review.render,
                  "Bid Analysis": bid.render, "Analyst & Award": analyst.render}
     for tab, name in zip(st.tabs(TABS), TABS):
