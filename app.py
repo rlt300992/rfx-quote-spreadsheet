@@ -13,7 +13,6 @@ from core.queries import pending_confirmation_count
 from core.seed import seed_if_empty
 from extract.gemini_client import get_secret, load_config, ping
 from ui import analyst, bid, responses, review, rfq
-from ui.rfq import status_label
 
 ROOT = Path(__file__).parent
 log = logging.getLogger("rfx.app")
@@ -92,6 +91,11 @@ def sidebar(cfg: dict, rfq) -> None:
                 st.success(f"Gemini replied OK ({ping()})")
             except Exception as e:  # show the real error
                 st.error(f"Gemini failed: {e}")
+
+
+def status_label(status: str | None) -> str:
+    """DB status -> chip text: draft is Draft, anything issued onwards is Published."""
+    return "Draft" if (status or "draft") == "draft" else "Published"
 
 
 def event_header(rfq) -> None:

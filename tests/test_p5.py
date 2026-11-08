@@ -155,7 +155,7 @@ def test_chat_edits_the_tables_and_warns_because_replies_exist(real_conn, monkey
     at.chat_input(key="rfq_chat_input").set_value("make payment 45 days and drop the promo box").run()
     assert not at.exception
     assert [w for w in at.number_input if w.key.startswith("rfq_pay_")][0].value == 45
-    assert any("Line items (29 of 30 included)" in s.value for s in at.subheader)
+    assert any("Lines (29 of 30 included)" in s.value for s in at.subheader)
     assert any("5 vendors have replied" in w.value and "will not change what the vendors quoted" in w.value for w in at.warning)
     notes = " ".join(x.value for x in at.caption)
     assert "Applied: payment_days = 45" in notes and "promo" in notes.lower()
@@ -171,7 +171,7 @@ def test_confirm_then_send_through_the_ui(real_conn, monkeypatch):
     [b for b in at.button if b.key == "rfq_confirm"][0].click().run()
     assert not at.exception
     assert c.execute("SELECT std_payment_terms_days FROM rfqs").fetchone()[0] == 45
-    assert any("RFQ published" in s.value for s in at.success)
+    assert any("RFQ confirmed" in s.value for s in at.success)
     assert any("line 26" in w.value and "cannot be removed" in w.value for w in at.warning)          # the blocked drop is reported, not hidden
     assert c.execute("SELECT COUNT(*) FROM line_items").fetchone()[0] == 30
     send = [b for b in at.button if b.key == "rfq_send"][0]
