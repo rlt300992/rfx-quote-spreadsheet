@@ -22,9 +22,9 @@ def test_cards_render_for_all_vendors_without_gemini(real_conn, monkeypatch):
     assert "Re-run extraction" not in [b.label for b in at.button]
     assert any(b.label == "↻ Extract all" for b in at.button)
     labels = [e.label for e in at.expander]
-    assert any(l.startswith("Questionnaire (8) · 7 met · 1 not met") and "Qualified" in l for l in labels)     # V1
-    assert any(l.startswith("Questionnaire (8)") and "Disqualified" in l for l in labels)                      # V5
-    assert sum(l.startswith("Draft clarification email") for l in labels) == 5
+    assert any(l.startswith("**Questionnaire (8)**  7 met · 1 not met") and "📎" in l and "Qualified" in l for l in labels)     # V1
+    assert any(l.startswith("**Questionnaire (8)**") and "not answered" in l and "Disqualified" in l for l in labels)                      # V5
+    assert sum(l.startswith("Draft clarification email (drafted; sending is stubbed)") for l in labels) == 5
     assert any("large, not MSME" in m.value for m in at.markdown)                                              # V3
 
 
@@ -50,7 +50,7 @@ def test_evidence_and_other_attachment_preview(real_conn):
     at = run_app(path)
     _btn(at, "pv_ev_V5_Q01_ISO9001").click().run()
     assert not at.exception
-    assert any("V5_KKP_ISO9001.pdf" in m.value for m in at.markdown)
+    assert any("Krishna Kraft" in x.value and "expired 31 Mar 2026" in x.value for x in at.caption)   # the preview dialog caption
     # an unlinked attachment shows under "Other attachments" and previews
     c.execute("UPDATE questionnaire_answers SET evidence_doc_id=NULL WHERE evidence_doc_id=(SELECT doc_id FROM documents WHERE file_name='V1_BS_test_report.pdf')")
     c.commit()
@@ -64,7 +64,7 @@ def test_evidence_and_other_attachment_preview(real_conn):
 def test_v4_has_no_questionnaire_message(real_conn):
     c, path = real_conn
     at = run_app(path)
-    msgs = [i.value for i in at.info if "sent only a rate card" in i.value]
+    msgs = [m.value for m in at.markdown if "sent only a rate card" in m.value]
     assert len(msgs) == 1 and "All 8 answers are missing, including the 3 knock-outs" in msgs[0] and "Pending" in msgs[0]
 
 

@@ -9,7 +9,14 @@ from core.stage import fmt_date
 
 ROOT = Path(__file__).resolve().parent.parent
 FORMAT_LABEL = {"excel": "Excel", "pdf": "PDF", "word": "Word", "photo": "Photo", "email_text": "Email"}
-ROLE_LABEL = {"quote": "Rate card", "mixed": "Quote and answers", "questionnaire": "Questionnaire", "certificate": "Certificate"}
+ROLE_LABEL = {"quote": "Quote", "mixed": "Quote + questionnaire", "questionnaire": "Questionnaire", "certificate": "Certificate"}
+
+
+def role_label(role: str | None, fmt: str | None) -> str:
+    """'Quote + questionnaire (email body)', 'Quote (photo)', ..."""
+    base = ROLE_LABEL.get(role or "", role or "")
+    suffix = {"email_text": " (email body)", "photo": " (photo)"}.get(fmt or "", "")
+    return base + suffix
 DOC_LABEL = {"ISO9001": "ISO 9001", "test_report": "Test report", "FSC": "FSC chain of custody", "udyam_msme": "Udyam (MSME)",
              "gst_cert": "GST certificate", "other": "Document"}
 SIZE_LABEL = {"micro": "micro enterprise", "small": "small enterprise", "medium": "medium enterprise", "none": "large, not MSME"}
@@ -79,7 +86,9 @@ def questionnaire_view(conn: sqlite3.Connection, vendor_id: int, main_file: str 
         seen.add(r["file_name"])
         other.append({"file_name": r["file_name"], "file_path": r["file_path"]})
     qual = conn.execute("SELECT qual_status, ko_total FROM v_vendor_qualification WHERE vendor_id=?", (vendor_id,)).fetchone()
+    not_answered = sum(not r["answered"] for r in rows)
     return {"rows": rows, "met": met, "not_met": not_met, "pending": len(rows) - met - not_met,
+            "not_answered": not_answered, "to_confirm": len(rows) - met - not_met - not_answered,
             "evidence_n": sum(r["evidence"] is not None for r in rows), "other": other,
             "has_answers": any(r["answered"] for r in rows), "ko_total": qual["ko_total"] if qual else 0,
             "qual_status": qual["qual_status"] if qual else "pending"}
@@ -89,17 +98,20 @@ def card_extras(conn: sqlite3.Connection, vendor_id: int) -> dict:
     """Main reply file, draft ownership and sent date, failure flag for one vendor (current responses only)."""
     rs = conn.execute("SELECT * FROM v_response_summary WHERE vendor_id=? ORDER BY response_id", (vendor_id,)).fetchall()
     main = next((r for r in rs if r["lines_quoted"] + r["lines_not_quoted"] + r["lines_unmatched"] > 0), None)
+    shown = main if main is not None else next((r for r in rs if r["content_role"] in ("quote", "mixed")), rs[0] if rs else None)
     f = None
-    if main is not None:
-        f = conn.execute("SELECT file_path FROM vendor_responses WHERE response_id=?", (main["response_id"],)).fetchone()
+    if shown is not None:
+        f = conn.execute("SELECT file_path FROM vendor_responses WHERE response_id=?", (shown["response_id"],)).fetchone()
     draft = conn.execute("""SELECT response_id, clarification_draft, clarification_status FROM vendor_responses
                             WHERE vendor_id=? AND clarification_draft IS NOT NULL ORDER BY response_id DESC LIMIT 1""", (vendor_id,)).fetchone()
     sent_at = None
     if draft is not None and draft["clarification_status"] == "sent_stub":
         sent_at = conn.execute("SELECT MAX(ts) FROM audit_log WHERE action='clarification_sent_stub' AND entity_type='response' AND entity_id=?",
                                (draft["response_id"],)).fetchone()[0]
-    return {"main_file": main["file_name"] if main else None, "main_path": f["file_path"] if f else None,
-            "main_role": main["content_role"] if main else None, "main_response_id": main["response_id"] if main else None,
+    return {"main_file": shown["file_name"] if shown else None, "main_path": f["file_path"] if f else None,
+            "main_role": shown["content_role"] if shown else None, "main_response_id": shown["response_id"] if shown else None,
+            "main_format": shown["source_type"] if shown else None, "main_model": shown["extraction_model"] if shown else None,
+            "main_status": shown["extraction_status"] if shown else None,
             "failed": any(r["extraction_status"] == "failed" for r in rs), "draft_response_id": draft["response_id"] if draft else None,
             "clarification_sent_at": sent_at}
 

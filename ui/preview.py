@@ -15,6 +15,15 @@ MIME = {".jpg": "image/jpeg", ".jpeg": "image/jpeg", ".png": "image/png", ".pdf"
         ".docx": "application/vnd.openxmlformats-officedocument.wordprocessingml.document", ".eml": "message/rfc822"}
 
 
+def _col_letter(i: int) -> str:
+    s = ""
+    i += 1
+    while i:
+        i, r = divmod(i - 1, 26)
+        s = chr(65 + r) + s
+    return s
+
+
 def excel_sheets(path: Path) -> dict[str, pd.DataFrame]:
     """Every sheet as a table of display strings (values, not formulas)."""
     import openpyxl
@@ -24,7 +33,10 @@ def excel_sheets(path: Path) -> dict[str, pd.DataFrame]:
     for ws in wb.worksheets:
         rows = [["" if v is None else str(v) for v in r] for r in ws.iter_rows(values_only=True)]
         width = max((len(r) for r in rows), default=0)
-        out[ws.title] = pd.DataFrame([r + [""] * (width - len(r)) for r in rows])
+        df = pd.DataFrame([r + [""] * (width - len(r)) for r in rows])
+        df.columns = [_col_letter(i) for i in range(width)]
+        df.index = range(1, len(df) + 1)
+        out[ws.title] = df
     return out
 
 
@@ -52,8 +64,9 @@ def render_file(path: Path, key: str) -> None:
         st.pdf(path.read_bytes(), height=600)
     elif kind == "excel":
         sheets = excel_sheets(path)
-        name = st.selectbox("Sheet", list(sheets), key=f"{key}_sheet") if len(sheets) > 1 else next(iter(sheets))
-        st.dataframe(sheets[name], hide_index=True, width="stretch", height=480, column_config=None)
+        for tab, (name, df) in zip(st.tabs(list(sheets)), sheets.items()):
+            with tab:
+                st.dataframe(df, hide_index=False, width="stretch", height=480)
     elif kind == "word":
         paras, tables = word_content(path)
         for i, p in enumerate(paras, 1):
@@ -71,10 +84,10 @@ def render_file(path: Path, key: str) -> None:
         st.info("No preview for this file type. Use Download original.")
 
 
-@st.dialog("File preview", width="large")
-def preview_dialog(file_path: str | None, file_name: str | None) -> None:
+def _body(file_path: str | None, file_name: str | None, caption: str) -> None:
     path = resolve_path(file_path, file_name)
-    st.markdown(f"**{file_name or (path.name if path else 'file')}**")
+    if caption:
+        st.caption(caption + (f" · {len(excel_sheets(path))} sheets" if path is not None and file_kind(path) == "excel" else ""))
     if path is None:
         st.error("The original file is not available on this server.")
         return
@@ -82,5 +95,11 @@ def preview_dialog(file_path: str | None, file_name: str | None) -> None:
         render_file(path, key=f"pv_{path.name}")
     except Exception as e:  # a corrupt file must not break the page
         st.error(f"Could not render this file: {e}")
-    st.download_button("Download original", data=path.read_bytes(), file_name=path.name, mime=MIME.get(path.suffix.lower(), "application/octet-stream"),
-                       key=f"pv_dl_{path.name}")
+    c = st.columns([3, 1.3])
+    c[1].download_button("⬇ Download original", data=path.read_bytes(), file_name=path.name,
+                         mime=MIME.get(path.suffix.lower(), "application/octet-stream"), key=f"pv_dl_{path.name}", width="stretch")
+
+
+def preview_dialog(file_path: str | None, file_name: str | None, caption: str = "") -> None:
+    """Open the preview dialog; its title is the file name, the caption says whose file it is."""
+    st.dialog(file_name or "File preview", width="large")(_body)(file_path, file_name, caption)

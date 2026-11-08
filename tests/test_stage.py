@@ -25,16 +25,16 @@ def test_chip_states():
 
 def test_banner_priority_order():
     assert stage.banner(s(failed=["V4"], pending=9, received=["V1"]))[0] == "error"
-    assert "1 response couldn't be read (V4)" in stage.banner(s(failed=["V4"]))[1]
-    assert "2 responses couldn't be read (V3, V4)" in stage.banner(s(failed=["V3", "V4"]))[1]
+    assert "**1 response couldn't be read (V4).** Re-extract it in Responses." == stage.banner(s(failed=["V4"]))[1]
+    assert "**2 responses couldn't be read (V3, V4).**" in stage.banner(s(failed=["V3", "V4"]))[1]
     lvl, txt = stage.banner(s(received=["V1", "V2", "V3"], pending=4))
-    assert lvl == "info" and txt == "3 of 5 responses received. Response due 16 Nov 2026."
+    assert lvl == "info" and txt == "**3 of 5 responses received.** Response due 16 Nov 2026."
     lvl, txt = stage.banner(s(pending=7))
     assert lvl == "warning" and txt.startswith("**7 values awaiting confirmation.**")
-    assert stage.banner(s()) == ("success", "All values confirmed. Ready to award in Analyst & Award.")
-    assert stage.banner(s(proposal_open=True)) == ("info", "Award proposed, awaiting your confirmation in Analyst & Award.")
+    assert stage.banner(s()) == ("success", "**All values confirmed.** Ready to award in Analyst & Award.")
+    assert stage.banner(s(proposal_open=True)) == ("info", "**Award proposed, awaiting your confirmation** in Analyst & Award.")
     lvl, txt = stage.banner(s(awarded_at="2026-11-20T10:00:00", proposal_open=True))
-    assert lvl == "success" and txt == "Award confirmed on 20 Nov 2026. Download it in Analyst & Award."
+    assert lvl == "success" and txt == "**Award confirmed on 20 Nov 2026.** Download it in Analyst & Award."
 
 
 def test_demo_shows_evaluating_and_one_banner(real_conn):
@@ -75,4 +75,6 @@ def test_failed_response_drives_banner_and_card(real_conn):
     at = run_app(path)
     assert not at.exception
     assert any("1 response couldn't be read (V4)" in e.value for e in at.error)
+    assert any(m.value == "Status: :red-badge[failed]" for m in at.markdown)
+    assert any(b.key == "pv_main_V4" for b in at.button)       # the file stays previewable when extraction failed
     assert any(b.key == "rerun_V4" for b in at.button)       # the re-extract icon stays available when failed

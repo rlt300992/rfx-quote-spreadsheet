@@ -50,14 +50,14 @@ def banner(s: dict) -> tuple[str, str]:
     if s["failed"]:
         n = len(s["failed"])
         codes = ", ".join(s["failed"])
-        return "error", (f"{n} response{'s' if n > 1 else ''} couldn't be read ({codes}). Re-extract {'them' if n > 1 else 'it'} in Responses, "
-                         "or correct the values in Review & Reconcile.")
+        return "error", (f"**{n} response{'s' if n > 1 else ''} couldn't be read ({codes}).** "
+                         f"Re-extract {'them' if n > 1 else 'it'} in Responses.")
     if len(s["received"]) < s["total"]:
-        return "info", f"{len(s['received'])} of {s['total']} responses received. Response due {due}."
+        return "info", f"**{len(s['received'])} of {s['total']} responses received.** Response due {due}."
     if s["pending"] > 0:
         return "warning", f"**{s['pending']} values awaiting confirmation.** These could change the award. Review them in Review & Reconcile."
     if s["awarded_at"]:
-        return "success", f"Award confirmed on {fmt_date(s['awarded_at'])}. Download it in Analyst & Award."
+        return "success", f"**Award confirmed on {fmt_date(s['awarded_at'])}.** Download it in Analyst & Award."
     if s["proposal_open"]:
-        return "info", "Award proposed, awaiting your confirmation in Analyst & Award."
-    return "success", "All values confirmed. Ready to award in Analyst & Award."
+        return "info", "**Award proposed, awaiting your confirmation** in Analyst & Award."
+    return "success", "**All values confirmed.** Ready to award in Analyst & Award."

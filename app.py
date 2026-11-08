@@ -103,7 +103,8 @@ def banner(st_stats: dict | None) -> None:
     if not st_stats:
         return
     level, text = stage.banner(st_stats)
-    {"error": st.error, "info": st.info, "warning": st.warning, "success": st.success}[level](text)
+    icon = {"error": "🚫", "info": "ℹ️", "warning": "⚠️", "success": "✅"}[level]
+    {"error": st.error, "info": st.info, "warning": st.warning, "success": st.success}[level](text, icon=icon)
 
 
 def main() -> None:
