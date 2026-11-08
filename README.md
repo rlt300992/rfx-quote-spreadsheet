@@ -61,7 +61,7 @@ flowchart LR
 | Questionnaire cells correct | 39/40 |
 | Items to review | 22 (from 495 open values) |
 
-The answer key is kept private so the extraction can't be tuned to it; results above were measured against it.
+The answer key isn't committed; it can be regenerated with data/generators/gen_task2.py, which is how the demo dataset was built. Extraction was never tuned against it.
 
 ## Left out (phase 2)
 Percentage dual-sourcing within a line; a kraft-paper escalation formula; reading vendor clarification replies automatically; multi-category specs; supply terms (palletisation, tolerances, LDs); real email sending and rate-contract/PO creation; vendor-side portal.
