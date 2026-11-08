@@ -41,6 +41,8 @@ def render(conn) -> None:
         st.caption(f"Already sent; {replies} vendors have replied. Edits here are checked against those replies before they are saved.")
 
     # ---- chat
+    if w := st.session_state.pop("ai_warn", None):
+        st.warning(w, icon="⚠️")
     box = st.container(height=240, border=True)
     with box:
         for m in st.session_state["rfq_chat"]:
@@ -58,7 +60,9 @@ def render(conn) -> None:
             st.session_state["rfq_chat"].append({"role": "assistant", "text": reply.reply, "notes": notes})
             _bump()
         except Exception as e:  # show the real error
-            st.session_state["rfq_chat"].append({"role": "assistant", "text": f"Sorry, the co-pilot failed: {e}"})
+            from core import errors
+            st.session_state["rfq_chat"].append({"role": "assistant", "text": "⚠️ " + errors.friendly(e)})
+            st.session_state["ai_warn"] = errors.friendly(e)
         st.rerun()
 
     # ---- terms

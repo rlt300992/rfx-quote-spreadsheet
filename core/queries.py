@@ -75,6 +75,12 @@ def _loads(v, default):
 
 
 def review_rows(conn: sqlite3.Connection) -> list[dict]:
+    from core.memo import memo
+
+    return memo(conn, "review_rows", lambda: _review_rows(conn))
+
+
+def _review_rows(conn: sqlite3.Connection) -> list[dict]:
     """Every current quote with its line spec, raw vendor values, normalized values, flags and evidence, parsed
     for display. Ordered so the items most likely to matter come first."""
     rows = conn.execute("""

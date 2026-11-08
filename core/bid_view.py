@@ -56,6 +56,12 @@ def scenario_defs(g: pd.DataFrame) -> list[dict]:
 
 
 def run_scenarios(conn: sqlite3.Connection, g: pd.DataFrame | None = None) -> list[dict]:
+    from core.memo import memo
+
+    return memo(conn, "scenarios", lambda: _run_scenarios(conn, g))
+
+
+def _run_scenarios(conn: sqlite3.Connection, g: pd.DataFrame | None = None) -> list[dict]:
     g = g if g is not None else comparison_grid(conn)
     out = []
     for d in scenario_defs(g):

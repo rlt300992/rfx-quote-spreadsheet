@@ -122,8 +122,15 @@ def _process(conn, q: str) -> None:
                "trace": r.trace, "followups": r.followups, "scenario": scen, "badges": _badges(conn, scen), "q": q}
         if r.proposal:
             st.session_state["proposal"] = r.proposal
-    except Exception as e:  # show the real error to the buyer
-        msg = {"role": "assistant", "text": f"Sorry, the analyst failed: {e}", "headline": f"Sorry, the analyst failed: {e}", "context": "", "followups": [], "q": q}
+    except Exception as e:  # a model problem is never a stack trace: say what happened and answer from the data we already have
+        from core import errors
+        msg = {"role": "assistant", "warn": errors.friendly(e), "q": q, "followups": ["Which unconfirmed values could change the winner?"], "text": "", "context": "", "headline": ""}
+        try:
+            best = B.run_scenarios(conn)[0]
+            msg.update(headline=B.headline(best, conn.execute("SELECT COUNT(*) FROM line_items").fetchone()[0]),
+                       context="This is the current best scenario computed from the saved data, not an answer to your question.", text="(fallback)")
+        except Exception:
+            msg["headline"] = "The saved data is unchanged."
     st.session_state["chat"].append(msg)
 
 
@@ -179,6 +186,8 @@ def _message(conn, i: int, m: dict, last: bool) -> None:
         st.html(f"<div class='aa-user'>{_e(m['text'])}</div>")
         return
     with st.container(key=f"aa_ans_{i}"):
+        if m.get("warn"):
+            st.warning(m["warn"], icon="⚠️")
         head = m.get("headline") or m["text"]
         ctx_lines = (m.get("context") or "").splitlines() if m.get("headline") else []
         first = next((x for x in ctx_lines if x.strip()), "")

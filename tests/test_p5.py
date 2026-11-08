@@ -202,4 +202,4 @@ def test_chat_failure_is_shown_not_swallowed(real_conn, monkeypatch):
     monkeypatch.setattr(C, "ask_copilot", lambda *a, **k: (_ for _ in ()).throw(RuntimeError("quota")))
     at = run_app(path, setup=EDIT)
     at.chat_input(key="rfq_chat_input").set_value("hello").run()
-    assert not at.exception and any("Sorry, the co-pilot failed: quota" in m.value for m in at.markdown)
+    assert not at.exception and any("Gemini" in m.value and "quota" in m.value for m in at.markdown) and any("quota" in w.value for w in at.warning)

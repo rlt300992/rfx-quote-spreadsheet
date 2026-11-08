@@ -117,6 +117,12 @@ def evaluate(conn: sqlite3.Connection) -> dict:
         qual = conn.execute("SELECT qual_status FROM v_vendor_qualification WHERE vendor_code=?", (code,)).fetchone()[0]
         qres[code] = {"cells": cells, "qual": qual, "expected_qual": qk.loc[code, "expected_qualification"].split()[0]}
     res["questionnaire"] = qres
+    from core.queries import pending_confirmation_count
+    from core.review_items import open_item_count
+
+    res["items_open"] = open_item_count(conn)                       # review items (vendor terms + one card per line)
+    res["values_open"] = conn.execute("SELECT COUNT(*) FROM v_review_queue").fetchone()[0]
+    res["values_could_change"] = pending_confirmation_count(conn)
     return res
 
 
@@ -140,7 +146,9 @@ def render(res: dict, cfg: dict) -> str:
             f"- **Planted unit traps flagged (V2 'Rate/box' lines):** {_pct(tot['trap_flagged'], tot['trap_total'])}",
             f"- **Expected flags found:** {_pct(tot['flags_found'], tot['flags_expected'])}",
             f"- **Not-quoted lines detected:** {_pct(tot['notquoted_ok'], tot['notquoted_total'])}",
-            f"- **Unmatched vendor lines:** {sum(res['unmatched'].values()) or 0}", "",
+            f"- **Unmatched vendor lines:** {sum(res['unmatched'].values()) or 0}",
+            f"- **Vendor qualification correct:** {sum(d['qual'] == d['expected_qual'] for d in res['questionnaire'].values())}/{len(res['questionnaire'])}",
+            f"- **Items to review:** {res['items_open']} (from {res['values_open']} open values; {res['values_could_change']} must-confirm values could change a winner)", "",
             "## Per vendor", "",
             "| Vendor | Status | Price | Price or trap | Unit | Currency | Spec | Freight basis | Freight value | Expected flags found |",
             "|---|---|---|---|---|---|---|---|---|---|"]
@@ -186,7 +194,16 @@ def main() -> None:
     conn = connect()
     res = evaluate(conn)
     REPORT.write_text(render(res, load_config()), encoding="utf-8")
-    print(REPORT.read_text(encoding="utf-8"))
+    tot = Counter()
+    for m in res["vendors"].values():
+        tot.update(m)
+    q = res["questionnaire"]
+    print("Eval summary (report written to eval/report.md):")
+    print(f"  prices extracted exactly (within 1%): {_pct(tot['price_ok'], tot['priced'])}; with the unit traps flagged and blocked: {_pct(tot['effective_ok'], tot['priced'])}")
+    print(f"  planted issues flagged: unit traps {_pct(tot['trap_flagged'], tot['trap_total'])}; expected flags {_pct(tot['flags_found'], tot['flags_expected'])}; not-quoted lines {_pct(tot['notquoted_ok'], tot['notquoted_total'])}")
+    print(f"  vendor qualification correct: {sum(d['qual'] == d['expected_qual'] for d in q.values())}/{len(q)}")
+    print(f"  items to review: {res['items_open']} (from {res['values_open']} open values)")
+    print(f"  mismatches against the key: {len(res['mismatches'])}")
 
 
 if __name__ == "__main__":

@@ -94,7 +94,10 @@ def _chip_body(conn, code: str, failed: bool, status: str, tip: str | None, was_
     if running:
         st.markdown("Status: :orange-badge[Extracting…]", help="Running in the background. You can close dialogs or switch tabs; it keeps going.")
     elif job is not None and job["status"] == "failed":
-        st.markdown("Status: :red-badge[failed]", help=job["error"] or "Re-extraction failed.")
+        if failed:      # nothing usable for this vendor
+            st.markdown("Status: :red-badge[failed]", help=job["error"] or "Re-extraction failed.")
+        else:           # the re-extract failed but the saved (cached) extraction is still in use
+            st.markdown("Status: :orange-badge[Re-extract failed]", help=(job["error"] or "") + " The saved extraction is still in use; nothing changed.")
     elif failed:
         st.markdown("Status: :red-badge[failed]")
     else:

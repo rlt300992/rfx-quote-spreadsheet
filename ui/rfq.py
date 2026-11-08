@@ -268,11 +268,15 @@ def _send(conn, d: dict, msg: str) -> None:
         notes = [f"✓ {n}" for n in ok] + [f"✗ {n}" for n in no]
         _say(d, reply, notes, sugg)
         _bump()
-    except Exception as e:  # show the real error, never swallow it
-        st.session_state["rfq_chat"].append({"role": "assistant", "text": f"Sorry, the co-pilot failed: {e}"})
+    except Exception as e:  # a model problem is never a stack trace
+        from core import errors
+        st.session_state["rfq_chat"].append({"role": "assistant", "text": "⚠️ " + errors.friendly(e)})
+        st.session_state["ai_warn"] = errors.friendly(e)
 
 
 def _copilot_panel(conn, d: dict, key: str) -> None:
+    if w := st.session_state.pop("ai_warn", None):
+        st.warning(w, icon="⚠️")
     with st.container(key="rr_card_rfq3"):
         h = st.columns([1, 1.6], vertical_alignment="center")
         h[0].markdown("**Co-pilot**")
@@ -336,6 +340,8 @@ def _readonly(conn, d: dict, published_at: str | None, key: str, sent_n: int | N
 
 # ------------------------------------------------------------------ demo mode
 def _demo_chat(conn) -> None:
+    if w := st.session_state.pop("ai_warn", None):
+        st.warning(w, icon="⚠️")
     st.session_state.setdefault("demo_chat", [{"role": "assistant", "text": "This RFQ was published on 7 Nov and all 5 suppliers have replied. Ask me about it, or start a new draft to see how I build an RFQ from scratch."}])
     with st.container(key="rr_card_rfq4"):
         h = st.columns([1, 1.6], vertical_alignment="center")
@@ -364,7 +370,9 @@ def _demo_chat(conn) -> None:
                 with st.spinner("Co-pilot is reading the RFQ ..."):
                     st.session_state["demo_chat"].append({"role": "assistant", "text": DC.answer_about_demo(conn, q)})
         except Exception as e:
-            st.session_state["demo_chat"].append({"role": "assistant", "text": f"Sorry, the co-pilot failed: {e}"})
+            from core import errors
+            st.session_state["demo_chat"].append({"role": "assistant", "text": "⚠️ " + errors.friendly(e)})
+            st.session_state["ai_warn"] = errors.friendly(e)
         st.rerun()
 
 

@@ -49,7 +49,7 @@ def test_cache_only_run_is_labelled_from_cache_and_failure_is_recorded(real_conn
 
     jobs.start(c, [ENTRY], runner=boom, db_file=path, wait=True)
     r = _status(path)
-    assert r["status"] == "failed" and "quota exhausted" in r["error"]
+    assert r["status"] == "failed" and "quota" in r["error"]
     assert not jobs.is_running(c, "V1")
 
 

@@ -72,10 +72,10 @@ def ensure_quotes(conn) -> None:
     if len(list(cache.CACHE_DIR.glob("*.json"))) == 0:
         log.warning("No quotes and no committed extraction cache; the app will start empty.")
         return
-    from extract.extract import ingest_all
+    from core.reset import build_from_cache
     with st.spinner("First start: loading the vendor replies from the committed extraction cache (no API calls) ..."):
         try:
-            ingest_all(conn, draft=True, only_missing=True)
+            build_from_cache(conn)
         except Exception:
             log.exception("Offline ingest from cache failed")
 

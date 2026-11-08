@@ -8,6 +8,7 @@ from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from typing import Callable
 
+from core import errors
 from core.db import connect
 
 STALE_AFTER = timedelta(minutes=30)
@@ -77,7 +78,7 @@ def start(conn: sqlite3.Connection, entries: list[dict], runner: Callable[[sqlit
                 except Exception as ex:  # the failure is recorded and shown on the card, never swallowed
                     c.rollback()
                     c.execute("UPDATE extraction_jobs SET status='failed', finished_at=?, error=? WHERE vendor_code=?",
-                              (_now(), f"{type(ex).__name__}: {ex}"[:500], code))
+                              (_now(), f"{errors.friendly(ex)} ({type(ex).__name__})"[:500], code))
                 c.commit()
         finally:
             c.close()

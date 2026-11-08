@@ -88,6 +88,12 @@ def _decisions(conn: sqlite3.Connection) -> dict[str, sqlite3.Row]:
 
 
 def build_items(conn: sqlite3.Connection, rows: list[dict] | None = None) -> list[dict]:
+    from core.memo import memo
+
+    return memo(conn, "review_items", lambda: _build_items(conn, rows))
+
+
+def _build_items(conn: sqlite3.Connection, rows: list[dict] | None = None) -> list[dict]:
     """Every review item for every vendor, open or not. Item = {id, vendor, scope, kind, title, line_nos, quotes: {quote_id: [fields]},
     state (open/asked/done), could_change, severity, ...}."""
     rows = rows if rows is not None else review_rows(conn)

@@ -1,6 +1,6 @@
 # Extraction evaluation
 
-Run 2026-11-07. Compared with `data/answer_key` (eval only; the app never reads it).
+Run 2026-11-08. Compared with `data/answer_key` (eval only; the app never reads it).
 
 Pipeline that produced each vendor's current values (from `vendor_responses.extraction_model`):
 
@@ -20,6 +20,8 @@ Configured default model `gemini-3.8-flash`; fallbacks used when a model's daily
 - **Expected flags found:** 223/223 (100%)
 - **Not-quoted lines detected:** 3/3 (100%)
 - **Unmatched vendor lines:** 0
+- **Vendor qualification correct:** 5/5
+- **Items to review:** 22 (from 495 open values; 159 must-confirm values could change a winner)
 
 ## Per vendor
 
